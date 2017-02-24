@@ -1,0 +1,94 @@
+package models.pojo;
+
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+
+/**
+ * Created by smoldyrev on 16.02.17.
+ * Класс сущности, хранимой в таблице d_Users
+ * реализованы геттеры и сеттеры всех полей
+ */
+@XmlType(propOrder={"userType","login","password","person","blocked"})
+@XmlRootElement
+public class User {
+
+    private Integer userID;
+    private String userType;
+    private String login;
+    private String password;
+    private Person person;
+    private boolean blocked;
+
+    /**Дефолтный конструктор
+     * требуется для JAXB
+     * */
+    public User() {
+    }
+
+    public User(Integer userID, String userType, String login, String password, Person person, boolean blocked) {
+        this.userID = userID;
+        this.userType = userType;
+        this.login = login;
+        this.password = password;
+        this.person = person;
+        this.blocked = blocked;
+    }
+
+
+    @XmlAttribute(name = "id")
+    public Integer getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Integer userID) {
+        this.userID = userID;
+    }
+
+    @XmlElement
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    @XmlElement
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    @XmlElement
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    @XmlElement
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String passwd) {
+        this.password = passwd;
+    }
+
+    @XmlElement
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+}
