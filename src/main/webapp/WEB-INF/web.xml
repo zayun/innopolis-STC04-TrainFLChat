@@ -3,9 +3,34 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
+    <resource-ref>
+        <description>DB Connection</description>
+        <res-ref-name>jdbc/LFLChat</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
+    <filter>
+        <filter-name>FilterAuth</filter-name>
+        <filter-class>controllers.filters.FilterAuth</filter-class>
+        <init-param>
+            <param-name>active</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
     <servlet>
         <servlet-name>Authorization</servlet-name>
         <servlet-class>controllers.AuthorizationServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>SendMessage</servlet-name>
+        <servlet-class>controllers.SendMessageServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>PrivateOffice</servlet-name>
+        <servlet-class>controllers.PrivateOfficeServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
@@ -19,6 +44,11 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
+        <servlet-name>PrivateChatRoom</servlet-name>
+        <servlet-class>controllers.PrivateChatRoomServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
         <servlet-name>Registration</servlet-name>
         <servlet-class>controllers.RegistrationServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
@@ -26,6 +56,10 @@
     <servlet-mapping>
         <servlet-name>Authorization</servlet-name>
         <url-pattern>/auth</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PrivateOffice</servlet-name>
+        <url-pattern>/privateoffice</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>GeneralChat</servlet-name>
@@ -39,4 +73,19 @@
         <servlet-name>Registration</servlet-name>
         <url-pattern>/registration</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SendMessage</servlet-name>
+        <url-pattern>/sendmessage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PrivateChatRoom</servlet-name>
+        <url-pattern>/privatechatroom</url-pattern>
+    </servlet-mapping>
+    <filter-mapping>
+        <filter-name>FilterAuth</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <listener>
+        <listener-class>controllers.listeners.SessionListener</listener-class>
+    </listener>
 </web-app>

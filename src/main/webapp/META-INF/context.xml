@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <Resource name="jdbc/LFLChat"
+              auth="Container"
+              type="javax.sql.DataSource"
+              factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+              testWhileIdle="true"
+              testOnBorrow="true"
+              testOnReturn="false"
+              validationQuery="SELECT 10"
+              maxActive="100"
+              maxIdle="30"
+              maxWait="10000"
+              username="postgres"
+              password="123456"
+              driverClassName="org.postgresql.Driver"
+              url="jdbc:postgresql://localhost:5433/LFLChat"/>
+</Context>

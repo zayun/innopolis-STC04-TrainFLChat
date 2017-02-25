@@ -9,15 +9,18 @@ import models.pojo.User;
  */
 public class UserService {
 
-    public static boolean authorize(String login, String password) {
-        return (UserDAO.getUserByLoginAndPassword(login, password) != null);
+    private static UserDAO userDAO = new UserDAO();
+
+    public static User authorize(String login, String password) {
+        return (userDAO.getUserByLoginAndPassword(login, password));
     }
 
     public static boolean registration(User user) {
+
         PersonDAO pdao = new PersonDAO();
-        UserDAO udao = new UserDAO();
+
         if (pdao.create(user.getPerson())) {
-            return (udao.create(user));
+            return (userDAO.create(user));
         } else return false;
     }
 

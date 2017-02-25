@@ -1,5 +1,6 @@
 package controllers;
 
+import models.pojo.User;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import service.UserService;
@@ -32,15 +33,21 @@ public class AuthorizationServlet extends HttpServlet {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
 
-        if (UserService.authorize(login, password)) {
-            logger.trace(login + " authorize successful");
-            req.setAttribute("wname",login);
-            req.getRequestDispatcher("/generalchat.jsp").forward(req, resp);
-//            resp.sendRedirect("/chat/generalchat");
+        User user = UserService.authorize(login, password);
+        if (user.getUserID() != 0) {
+
+            logger.trace(login +"/id=" + user.getUserID()+ " authorize successful");
+
+            req.getSession().setAttribute("wname",login);
+            req.getSession().setAttribute("idd",user.getUserID());
+            req.getSession().setAttribute("idSession",req.getSession().getId());
+//            req.setAttribute("wname", login);
+//            req.setAttribute("idd", user.getUserID());
+            req.getRequestDispatcher("/generalchat").forward(req, resp);
         } else {
             logger.trace(login + " not authorize");
             String msg = "Комбинация логин/пароль не верна!";
-            req.setAttribute("msg",msg);
+            req.setAttribute("msg", msg);
             req.getRequestDispatcher("/").forward(req, resp);
         }
     }

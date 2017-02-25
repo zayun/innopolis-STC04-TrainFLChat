@@ -19,15 +19,15 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
     private static final String SQL_SELECT_ALL_PERSON = "SELECT * FROM \"Main\".\"d_Persons\"";
 
     private static final String SQL_INSERT_PERSON = "INSERT INTO \"Main\".\"d_Persons\"(\n" +
-                    "\t\"FirstName\", \"LastName\", \"birthDay\", email, \"phoneNumber\", male)\n" +
-                    "\tVALUES (?, ?, ?, ?, ?, ?) RETURNING \"personID\";";
+            "\t\"FirstName\", \"LastName\", \"birthDay\", email, \"phoneNumber\", male)\n" +
+            "\tVALUES (?, ?, ?, ?, ?, ?) RETURNING \"personID\";";
 
     @Override
     public List<Person> getAll() {
 
         List<Person> persones = new ArrayList<>();
 
-        try (Statement statement = super.getStatement()) {
+        try (Statement statement = getStatement()) {
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_PERSON);
             if (resultSet.next()) {
                 persones.add(new Person(
@@ -63,16 +63,17 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
         return false;
     }
 
-    /**Вставляет в таблицу значение полей полученной сущности
+    /**
+     * Вставляет в таблицу значение полей полученной сущности
      * после вставки устанавливает ключевое поле сущности,
      * в значение, полученное от сервера
-     * @see SQL_INSERT_PERSON
+     *
      * @return true - если все успешно прошло
-     * */
+     */
     @Override
     public boolean create(Person entity) {
 
-        try(PreparedStatement preparedStatement = super.getPrepareStatement(SQL_INSERT_PERSON)) {
+        try (PreparedStatement preparedStatement = getPrepareStatement(SQL_INSERT_PERSON)) {
             preparedStatement.setString(1, entity.getFirstName());
             preparedStatement.setString(2, entity.getLastName());
             preparedStatement.setDate(3, new Date(entity.getBirthDay().getTime()));
@@ -84,10 +85,11 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
             if (rs.next()) {
                 entity.setId(rs.getInt("personID"));
             }
-            logger.debug(entity.getId()+"/"+entity.getFirstName()+"/ person was insert");
+            logger.debug(entity.getId() + "/" + entity.getFirstName() + "/ person was insert");
+            return true;
         } catch (SQLException e) {
             logger.error(e);
         }
-        return true;
+        return false;
     }
 }

@@ -36,7 +36,7 @@
     <input type="tel" name="phoneNumber" id="phoneNumber" value="" placeholder="number">
 
     <label for="male">Male?</label><%--надо разобраться не пишется в базу тру, всегда фолс--%>
-    <input type="checkbox" name="male" id="male" value="" placeholder="male">
+    <input type="checkbox" name="male" id="male" value="true" checked placeholder="male">
 
     <input type="submit" value="Зарегистрироваться" formmethod="post">
 </form>

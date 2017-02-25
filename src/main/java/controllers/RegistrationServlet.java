@@ -26,7 +26,6 @@ public class RegistrationServlet extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.debug(req.getParameter("male"));
         Person person = new Person(
                 0,
                 req.getParameter("firstName"),

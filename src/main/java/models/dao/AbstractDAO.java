@@ -16,7 +16,7 @@ public abstract class AbstractDAO<T, K> {
 
     private static Logger logger = Logger.getLogger(AbstractDAO.class);
 
-    private Connection connection = DatabaseManager.getConnection();
+    private static Connection connection = DatabaseManager.getConnection();
 
     public abstract List<T> getAll();
     public abstract T update(T entity);
@@ -26,7 +26,7 @@ public abstract class AbstractDAO<T, K> {
 
     /**Получаем экземпляр PreparedStatement
      * @return ps*/
-    public PreparedStatement getPrepareStatement(String sql) {
+    public static PreparedStatement getPrepareStatement(String sql) {
         PreparedStatement ps = null;
         try {
             ps = connection.prepareStatement(sql);
@@ -39,7 +39,7 @@ public abstract class AbstractDAO<T, K> {
 
     /**Закрываем полученный PreparedStatement
      *@param ps*/
-    public void closePrepareStatement(PreparedStatement ps) {
+    public static void closePrepareStatement(PreparedStatement ps) {
         if (ps != null) {
             try {
                 ps.close();
@@ -51,7 +51,7 @@ public abstract class AbstractDAO<T, K> {
 
     /**Получаем экземпляр Statement
      * @return statement*/
-    public Statement getStatement() {
+    public static Statement getStatement() {
         Statement statement = null;
         try {
             statement = connection.createStatement();
@@ -64,7 +64,7 @@ public abstract class AbstractDAO<T, K> {
 
     /**Закрываем полученный PreparedStatement
      *@param statement*/
-    public void closeStatement(Statement statement) {
+    public static void closeStatement(Statement statement) {
         if (statement != null) {
             try {
                 statement.close();
