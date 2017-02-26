@@ -1,6 +1,8 @@
 package controllers;
 
+import exceptions.InvalidRoleException;
 import models.dao.LanguageDAO;
+import models.dao.PersonDAO;
 import models.dao.UserDAO;
 import models.pojo.LangOwner;
 import models.pojo.Language;
@@ -20,20 +22,33 @@ import java.util.List;
 
 /**
  * Created by smoldyrev on 24.02.17.
+ * Личный кабинет, данные о пользователе
+ * doGet заполнение формы из БД
+ * doPost запись в БД
  */
 public class PrivateOfficeServlet extends HttpServlet {
 
-    private static Logger logger = Logger.getLogger(GeneralChatServlet.class);
+    private static Logger logger = Logger.getLogger(PrivateOfficeServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        int id = Integer.parseInt(req.getParameter("id"));
-
+        String  id = (req.getParameter("id")==null)?"":req.getParameter("id");
+        String sessionId = (req.getSession().getAttribute("sessionId")==null)?"":
+                req.getSession().getAttribute("sessionId").toString();
+//        if (!((req.getSession().getAttribute("sessionId")).toString().equals(id))) {
+        if (!id.equals(sessionId)) {
+            try {
+                throw new InvalidRoleException();
+            } catch (InvalidRoleException e) {
+                req.setAttribute("msg", "Вам не плоложено здесь быть");
+                req.getRequestDispatcher("/error.jsp").forward(req, resp);
+            }
+        }
         UserDAO userDAO = new UserDAO();
         LanguageDAO languageDAO = new LanguageDAO();
 
-        User user = userDAO.getEntityById(id);
+        User user = userDAO.getEntityById(Integer.parseInt(id));
 
         List<LangOwner> languages = languageDAO.getLanguagesOnPerson(user.getPerson().getId());
 
@@ -49,15 +64,35 @@ public class PrivateOfficeServlet extends HttpServlet {
         req.setAttribute("phoneNumber", user.getPerson().getPhoneNumber());
         req.setAttribute("male", user.getPerson().isMale());
 
-        logger.debug("langSize"+languages.size());
-
         req.setAttribute("languages", languages);
 
-        req.getRequestDispatcher("/privateoffice.jsp").forward(req, resp);
+        req.getRequestDispatcher("/rooms/privateoffice.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        int id = (int) req.getSession().getAttribute("sessionId");
+        UserDAO userDAO = new UserDAO();
+        PersonDAO personDAO= new PersonDAO();
+        User user = userDAO.getEntityById(id);
+
+        user.setLogin(req.getParameter("login"));
+        user.setPassword(req.getParameter("password"));
+        user.getPerson().setFirstName(req.getParameter("firstName"));
+        user.getPerson().setLastName(req.getParameter("lastName"));
+        user.getPerson().setBirthDay(Date.valueOf(req.getParameter("birthday")));
+        user.getPerson().setEmail(req.getParameter("email"));
+        user.getPerson().setPhoneNumber(req.getParameter("phoneNumber"));
+        user.getPerson().setMale(new Boolean(req.getParameter("isMale")));
+
+        if ((personDAO.update(user.getPerson())!=null)&&
+                userDAO.update(user)!=null) {
+            logger.trace("update "+user.getUserID()+" is ok");
+            req.getRequestDispatcher("/rooms/generalchat").forward(req, resp);
+        } else {
+            logger.trace("update "+user.getUserID()+" is false");
+            req.getRequestDispatcher("/error.jsp").forward(req, resp);
+        }
     }
 }

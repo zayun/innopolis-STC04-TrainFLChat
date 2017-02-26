@@ -48,7 +48,8 @@ public class UserDAO extends AbstractDAO<User, Integer> {
             "  \"male\" AS isMale\n" +
             "FROM \"Main\".\"d_Users\"\n" +
             "LEFT JOIN \"Main\".\"d_Persons\"\n" +
-            "  ON \"d_Users\".\"personID\" = \"d_Persons\".\"personID\"\n";
+            "  ON \"d_Users\".\"personID\" = \"d_Persons\".\"personID\"\n" +
+            "ORDER BY \"login\"";
 
     private static final String SQL_FIND_USER_ID = "SELECT\n" +
             "  \"userID\" AS id,\n" +
@@ -70,11 +71,15 @@ public class UserDAO extends AbstractDAO<User, Integer> {
 
     private static final String SQL_INSERT_USER = "INSERT INTO \"Main\".\"d_Users\"(\n" +
             "\tlogin, pwd, \"personID\", blocked, usertype)\n" +
-            "\tVALUES (?, ?, ?, ?, ?) RETURNING \"userID\";";
+            "\tVALUES (?, ?, ?, ?, ?) RETURNING \"userID\"";
+
+    private static final String SQL_UPDATE_USER = "UPDATE \"Main\".\"d_Users\"\n" +
+            "\tSET \"login\"=?, \"pwd\"=?, \"personID\"=?, \"blocked\"=?, \"usertype\"=?\n" +
+            "\tWHERE \"userID\" = ?";
 
     public User getUserByLoginAndPassword(String login, String password) {
 
-        User user = new User();
+        User user = null;
         Person person = null;
         try (PreparedStatement preparedStatement = getPrepareStatement(SQL_FIND_USER_LP)) {
             preparedStatement.setString(1, login);
@@ -109,8 +114,8 @@ public class UserDAO extends AbstractDAO<User, Integer> {
     @Override
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
-
-        try (Statement statement = getStatement()) {
+        Statement statement = getStatement();
+        try {
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_USERS);
             while (resultSet.next()) {
                 Person person = new Person(
@@ -131,20 +136,40 @@ public class UserDAO extends AbstractDAO<User, Integer> {
             }
         } catch (SQLException e) {
             logger.error(e);
+        } finally {
+            closeStatement(statement);
         }
         return users;
     }
 
     @Override
     public User update(User entity) {
+        PreparedStatement preparedStatement = getPrepareStatement(SQL_UPDATE_USER);
+        try {
+            preparedStatement.setString(1, entity.getLogin());
+            preparedStatement.setString(2, entity.getPassword());
+            preparedStatement.setInt(3, entity.getPerson().getId());
+            preparedStatement.setBoolean(4, entity.isBlocked());
+            preparedStatement.setString(5, entity.getUserType());
+            preparedStatement.setInt(6, entity.getUserID());
+            preparedStatement.executeUpdate();
+
+            logger.debug(entity.getUserID()+" user was update");
+            return entity;
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            closePrepareStatement(preparedStatement);
+        }
+        logger.error(entity.getUserID() + "was not updated");
         return null;
     }
 
     @Override
     public User getEntityById(Integer id) {
-        User user = new User();
-
-        try (PreparedStatement preparedStatement = getPrepareStatement(SQL_FIND_USER_ID)) {
+        User user = null;
+        PreparedStatement preparedStatement = getPrepareStatement(SQL_FIND_USER_ID);
+        try {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -168,6 +193,8 @@ public class UserDAO extends AbstractDAO<User, Integer> {
             }
         } catch (SQLException e) {
             logger.error(e);
+        } finally {
+            closePrepareStatement(preparedStatement);
         }
         return user;
     }
@@ -179,7 +206,8 @@ public class UserDAO extends AbstractDAO<User, Integer> {
 
     @Override
     public boolean create(User entity) {
-        try (PreparedStatement preparedStatement = getPrepareStatement(SQL_INSERT_USER)) {
+        PreparedStatement preparedStatement = getPrepareStatement(SQL_INSERT_USER);
+        try {
             preparedStatement.setString(1, entity.getLogin());
             preparedStatement.setString(2, entity.getPassword());
             preparedStatement.setInt(3, entity.getPerson().getId());
@@ -194,6 +222,8 @@ public class UserDAO extends AbstractDAO<User, Integer> {
             return true;
         } catch (SQLException e) {
             logger.error(e);
+        } finally {
+            closePrepareStatement(preparedStatement);
         }
         return false;
     }

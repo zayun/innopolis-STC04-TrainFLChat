@@ -52,8 +52,8 @@ public class LanguageDAO extends AbstractDAO<Language, String> {
         List<LangOwner> langOwners = new ArrayList<>();
         PersonDAO personDAO = new PersonDAO();
         Person person = personDAO.getEntityById(personId);
-        try (PreparedStatement preparedStatement = getPrepareStatement(SQL_LANG_ON_PERSON)) {
-            logger.debug("personId" + personId+"///////");
+        PreparedStatement preparedStatement = getPrepareStatement(SQL_LANG_ON_PERSON);
+        try {
             preparedStatement.setInt(1, personId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -65,10 +65,12 @@ public class LanguageDAO extends AbstractDAO<Language, String> {
                                 resultSet.getInt("level"));
                 langOwners.add(langOwner);
             }
+            closePrepareStatement(preparedStatement);
         } catch (SQLException e) {
             logger.error(e);
+        } finally {
+            closePrepareStatement(preparedStatement);
         }
-        logger.debug("/////langOwnerSize"+langOwners.size());
         return langOwners;
     }
 }

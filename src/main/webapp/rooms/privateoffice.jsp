@@ -15,9 +15,9 @@
 <body>
 <h1>Добро пожаловать в личный кабинет, ${firstName}</h1>
 
-<form action="/chat/privateoffice" method="post">
+<form action="/chat/rooms/privateoffice" method="post">
     <table border="0" width="10%" cellpadding="2">
-
+        <input type="text" name="id" id="id" value="${id}" placeholder="id" hidden>
         <tr>
             <td><label for="login">Login:</label>
                 <input type="text" name="login" id="login" value="${login}" placeholder="Login">
@@ -91,6 +91,9 @@
     </table>
 
     <input type="submit" value="ОК" formmethod="post">
+</form>
+<form action="/chat/rooms/generalchat" method="post">
+    <input type="submit" value="exit" formmethod="post">
 </form>
 
 

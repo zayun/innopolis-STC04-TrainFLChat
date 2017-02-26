@@ -15,6 +15,8 @@ import java.util.List;
 
 /**
  * Created by smoldyrev on 23.02.17.
+ * Сервлет заполнения основной формы чата
+ * загружает все сообщения и пользователей
  */
 public class GeneralChatServlet extends HttpServlet {
 
@@ -28,8 +30,9 @@ public class GeneralChatServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        int chatroom = 0;
         MessageDAO messageDAO = new MessageDAO();
-        List<Message> messages = messageDAO.getAll();
+        List<Message> messages = messageDAO.getAllInRoom(chatroom);
 
         UserDAO userDAO = new UserDAO();
         List<User> users =  userDAO.getAll();
@@ -37,9 +40,9 @@ public class GeneralChatServlet extends HttpServlet {
         req.setAttribute("messages", messages);
         req.setAttribute("users", users);
 
-        req.setAttribute("userFrom",req.getSession().getAttribute("idd"));
-        req.setAttribute("chatRoom",0);
+        req.setAttribute("userFrom",req.getSession().getAttribute("sessionId"));
+        req.setAttribute("chatRoom",chatroom);
 
-        req.getRequestDispatcher("/generalchat.jsp").forward(req, resp);
+        req.getRequestDispatcher("/rooms/generalchat.jsp").forward(req, resp);
     }
 }

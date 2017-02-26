@@ -1,7 +1,5 @@
 package controllers.listeners;
 
-import models.dao.UserDAO;
-import models.pojo.User;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpSessionAttributeListener;
@@ -25,16 +23,14 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
 
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
-        logger.trace(se.getSession().getAttribute("name"));
+
     }
 
     @Override
     public void attributeAdded(HttpSessionBindingEvent event) {
 
-        logger.trace("SHO PROISHODIT????"+event.getName());
-
-        if ("id".equals(event.getName()) && event.getValue() != null) {
-            logger.trace("loging is ok");
+        if ("sessionId".equals(event.getName()) && event.getValue() != null) {
+            logger.trace("auth is ok. Start session.");
         }
     }
 

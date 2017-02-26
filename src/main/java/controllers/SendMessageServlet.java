@@ -1,8 +1,8 @@
 package controllers;
 
-import models.dao.MessageDAO;
 import models.dao.UserDAO;
 import models.pojo.Message;
+import models.pojo.User;
 import org.apache.log4j.Logger;
 import service.MessageService;
 
@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Date;
 
 /**
  * Created by smoldyrev on 25.02.17.
+ * Отправка сообщения
  */
 public class SendMessageServlet extends HttpServlet {
 
@@ -22,36 +22,42 @@ public class SendMessageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/chat/generalchat.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String userFrom = req.getParameter("userFrom");
-        String userTo = req.getParameter("userTo");
-        String chatroom = req.getParameter("chatroom");
-        String textMessage = req.getParameter("textMessage");
+        String userFromId = ("".equals(req.getParameter("userFrom"))?"0":req.getParameter("userFrom"));
+        String userToId = ("".equals(req.getParameter("userTo"))?"999":req.getParameter("userTo"));
 
         UserDAO userDAO = new UserDAO();
+        User userFrom = userDAO.getEntityById(Integer.parseInt(userFromId));
+        User userTo = userDAO.getEntityById(Integer.parseInt(userToId));
 
-        logger.debug("???"+userFrom+"???");
+        int chatroom = Integer.parseInt(req.getParameter("chatroom"));
+        String textMessage = req.getParameter("textMessage");
+
+        if (userFrom == null || userTo == null) {
+            req.setAttribute("msg", "Отправка сообщения не удалась, не найден пользователь");
+            req.getRequestDispatcher("/error.jsp").forward(req, resp);
+        }
+
         Message message = new Message();
-        message.setFromUser(userDAO.getEntityById(Integer.parseInt(userFrom)));
-        message.setToUser(userDAO.getEntityById(Integer.parseInt(userTo)));
+        message.setFromUser(userFrom);
+        message.setToUser(userTo);
         message.setBodyText(textMessage);
-        message.setChatRoom(Integer.parseInt(chatroom));
+        message.setChatRoom(chatroom);
 
         if (MessageService.sendMessage(message)) {
-            logger.trace("message was sended");
-            if (chatroom.equals(0)) {
-                req.getRequestDispatcher("/generalchat").forward(req, resp);
-            }else {
-                req.getRequestDispatcher("/privatechatroom").forward(req, resp);
+            if (chatroom == 0) {
+                req.getRequestDispatcher("/rooms/generalchat").forward(req, resp);
+            } else {
+                req.getRequestDispatcher("/rooms/privatechatroom").forward(req, resp);
             }
 
         } else {
-            logger.trace("message was lost");
+            logger.error("message was lost");
+            req.setAttribute("msg", "Отправка сообщения не удалась");
             req.getRequestDispatcher("/error.jsp").forward(req, resp);
         }
     }

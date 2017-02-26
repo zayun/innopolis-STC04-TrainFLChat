@@ -22,12 +22,16 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
             "\t\"FirstName\", \"LastName\", \"birthDay\", email, \"phoneNumber\", male)\n" +
             "\tVALUES (?, ?, ?, ?, ?, ?) RETURNING \"personID\";";
 
+    private static final String SQL_UPDATE_PERSON = "UPDATE \"Main\".\"d_Persons\"\n" +
+            "\tSET \"FirstName\"=?, \"LastName\"=?, \"birthDay\"=?, email=?, \"phoneNumber\"=?, male=?\n" +
+            "\tWHERE \"d_Persons\".\"personID\"=?;";
+
     @Override
     public List<Person> getAll() {
 
         List<Person> persones = new ArrayList<>();
-
-        try (Statement statement = getStatement()) {
+        Statement statement = getStatement();
+        try  {
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_PERSON);
             if (resultSet.next()) {
                 persones.add(new Person(
@@ -43,6 +47,8 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
             }
         } catch (SQLException e) {
             logger.error(e);
+        } finally {
+            closeStatement(statement);
         }
 
         return persones;
@@ -50,6 +56,27 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
 
     @Override
     public Person update(Person entity) {
+
+        PreparedStatement preparedStatement = getPrepareStatement(SQL_UPDATE_PERSON);
+        try {
+            preparedStatement.setString(1, entity.getFirstName());
+            preparedStatement.setString(2, entity.getLastName());
+            preparedStatement.setDate(3, entity.getBirthDay());
+            preparedStatement.setString(4, entity.getEmail());
+            preparedStatement.setString(5, entity.getPhoneNumber());
+            preparedStatement.setBoolean(6, new Boolean(entity.isMale()));
+            preparedStatement.setInt(7, entity.getId());
+
+            preparedStatement.setInt(5, entity.getId());
+            preparedStatement.executeUpdate();
+            logger.debug(entity.getId() + " person was update");
+            return entity;
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            closePrepareStatement(preparedStatement);
+        }
+        logger.error(entity.getId() + " person was not updated");
         return null;
     }
 
@@ -73,7 +100,8 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
     @Override
     public boolean create(Person entity) {
 
-        try (PreparedStatement preparedStatement = getPrepareStatement(SQL_INSERT_PERSON)) {
+        PreparedStatement preparedStatement = getPrepareStatement(SQL_INSERT_PERSON);
+        try {
             preparedStatement.setString(1, entity.getFirstName());
             preparedStatement.setString(2, entity.getLastName());
             preparedStatement.setDate(3, new Date(entity.getBirthDay().getTime()));
@@ -89,6 +117,8 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
             return true;
         } catch (SQLException e) {
             logger.error(e);
+        } finally {
+            closePrepareStatement(preparedStatement);
         }
         return false;
     }

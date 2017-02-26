@@ -62,7 +62,7 @@ public abstract class AbstractDAO<T, K> {
         return statement;
     }
 
-    /**Закрываем полученный PreparedStatement
+    /**Закрываем полученный Statement
      *@param statement*/
     public static void closeStatement(Statement statement) {
         if (statement != null) {

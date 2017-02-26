@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Created by smoldyrev on 25.02.17.
+ * Приватная комната чата
  */
 public class PrivateChatRoomServlet extends HttpServlet {
     @Override
@@ -23,11 +24,6 @@ public class PrivateChatRoomServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        MessageDAO messageDAO = new MessageDAO();
-        List<Message> messages = messageDAO.getAll();
-
-        req.setAttribute("messages", messages);
-        req.setAttribute("userFrom",req.getSession().getAttribute("idd"));
 
         String chatroom;
         if (req.getParameter("chatroomin") != null) {
@@ -35,8 +31,16 @@ public class PrivateChatRoomServlet extends HttpServlet {
         } else {
             chatroom = req.getParameter("chatroom");
         }
+
+        MessageDAO messageDAO = new MessageDAO();
+        List<Message> messages = messageDAO.getAllInRoom(Integer.parseInt(chatroom));
+
+        req.setAttribute("messages", messages);
+        req.setAttribute("userFrom",req.getSession().getAttribute("idd"));
+
+
         req.setAttribute("chatroom", chatroom);
 
-        req.getRequestDispatcher("/privatechatroom.jsp").forward(req, resp);
+        req.getRequestDispatcher("/rooms/privatechatroom.jsp").forward(req, resp);
     }
 }
