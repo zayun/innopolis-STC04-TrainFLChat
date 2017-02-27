@@ -1,10 +1,10 @@
 package controllers;
 
-import models.dao.UserDAO;
 import models.pojo.Message;
 import models.pojo.User;
 import org.apache.log4j.Logger;
 import service.MessageService;
+import service.UserService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -26,21 +26,21 @@ public class SendMessageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        req.setCharacterEncoding("UTF-8");
         String userFromId = ("".equals(req.getParameter("userFrom"))?"0":req.getParameter("userFrom"));
         String userToId = ("".equals(req.getParameter("userTo"))?"999":req.getParameter("userTo"));
 
-        UserDAO userDAO = new UserDAO();
-        User userFrom = userDAO.getEntityById(Integer.parseInt(userFromId));
-        User userTo = userDAO.getEntityById(Integer.parseInt(userToId));
+        User userFrom = UserService.getUserById(Integer.parseInt(userFromId));
+        User userTo = UserService.getUserById(Integer.parseInt(userToId));
 
         int chatroom = Integer.parseInt(req.getParameter("chatroom"));
-        String textMessage = req.getParameter("textMessage");
 
+        String textMessage = req.getParameter("textMessage");
         if (userFrom == null || userTo == null) {
             req.setAttribute("msg", "Отправка сообщения не удалась, не найден пользователь");
             req.getRequestDispatcher("/error.jsp").forward(req, resp);
         }
+
 
         Message message = new Message();
         message.setFromUser(userFrom);

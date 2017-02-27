@@ -3,6 +3,7 @@ package models.dao;
 import models.pojo.Notifyer;
 import models.pojo.User;
 import org.apache.log4j.Logger;
+import service.UserService;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -48,12 +49,11 @@ public class NotifyDAO extends AbstractDAO <Notifyer, Integer>{
     public List<Notifyer> getAll() {
         List<Notifyer> notifyers = new ArrayList<>();
 
-        UserDAO userDAO = new UserDAO();
         Statement statement = getStatement();
         try {
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_NOTIFY);
             while (resultSet.next()) {
-                User user = userDAO.getEntityById(resultSet.getInt("userId"));
+                User user = UserService.getUserById(resultSet.getInt("userId"));
 
                 notifyers.add(new Notifyer(
                         resultSet.getInt("id"),
@@ -86,15 +86,16 @@ public class NotifyDAO extends AbstractDAO <Notifyer, Integer>{
 
     @Override
     public Notifyer getEntityById(Integer id) {
+
         Notifyer notifyer = null;
-        UserDAO userDAO = new UserDAO();
+
         PreparedStatement preparedStatement = getPrepareStatement(SQL_SELECT_BY_ID);
         try {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
 
-                User user = userDAO.getEntityById(resultSet.getInt("userId"));
+                User user = UserService.getUserById(resultSet.getInt("userId"));
                 notifyer = new Notifyer(resultSet.getInt("id"),
                         user, resultSet.getString("notType"));
             }
@@ -144,7 +145,6 @@ public class NotifyDAO extends AbstractDAO <Notifyer, Integer>{
     public List<Notifyer> getAllByNotType(String notyType) {
 
         List<Notifyer> notifyers= new ArrayList<>();
-        UserDAO userDAO = new UserDAO();
 
         PreparedStatement preparedStatement = getPrepareStatement(SQL_SELECT_BY_TYPE);
 
@@ -153,7 +153,7 @@ public class NotifyDAO extends AbstractDAO <Notifyer, Integer>{
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
 
-                User user = userDAO.getEntityById(resultSet.getInt("userId"));
+                User user = UserService.getUserById(resultSet.getInt("userId"));
                 notifyers.add(new Notifyer(resultSet.getInt("id"),
                         user, resultSet.getString("notType")));
             }
@@ -169,7 +169,6 @@ public class NotifyDAO extends AbstractDAO <Notifyer, Integer>{
     public List<Notifyer> getAllByUser(int userId) {
 
         List<Notifyer> notifyers= new ArrayList<>();
-        UserDAO userDAO = new UserDAO();
 
         PreparedStatement preparedStatement = getPrepareStatement(SQL_SELECT_BY_USER);
 
@@ -178,7 +177,7 @@ public class NotifyDAO extends AbstractDAO <Notifyer, Integer>{
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
 
-                User user = userDAO.getEntityById(resultSet.getInt("userId"));
+                User user = UserService.getUserById(resultSet.getInt("userId"));
                 notifyers.add(new Notifyer(resultSet.getInt("id"),
                         user, resultSet.getString("notType")));
             }

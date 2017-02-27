@@ -2,6 +2,8 @@ package models.pojo;
 
 /**
  * Created by smoldyrev on 27.02.17.
+ * Класс сущности, хранимой в таблице r_Notifyer
+ * реализованы геттеры и сеттеры всех полей
  */
 public class Notifyer {
 

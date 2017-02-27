@@ -1,8 +1,6 @@
 package models.dao;
 
-import models.connector.DatabaseManager;
 import models.pojo.Person;
-import models.pojo.User;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
@@ -67,7 +65,6 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
             preparedStatement.setBoolean(6, new Boolean(entity.isMale()));
             preparedStatement.setInt(7, entity.getId());
 
-            preparedStatement.setInt(5, entity.getId());
             preparedStatement.executeUpdate();
             logger.debug(entity.getId() + " person was update");
             return entity;

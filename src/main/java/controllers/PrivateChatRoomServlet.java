@@ -1,9 +1,7 @@
 package controllers;
 
-import models.dao.MessageDAO;
-import models.dao.UserDAO;
 import models.pojo.Message;
-import models.pojo.User;
+import service.MessageService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -32,8 +30,7 @@ public class PrivateChatRoomServlet extends HttpServlet {
             chatroom = req.getParameter("chatroom");
         }
 
-        MessageDAO messageDAO = new MessageDAO();
-        List<Message> messages = messageDAO.getAllInRoom(Integer.parseInt(chatroom));
+        List<Message> messages = MessageService.getAllInRoom(Integer.parseInt(chatroom));
 
         req.setAttribute("messages", messages);
         req.setAttribute("userFrom",req.getSession().getAttribute("idd"));

@@ -1,10 +1,10 @@
 package controllers;
 
-import models.dao.MessageDAO;
-import models.dao.UserDAO;
 import models.pojo.Message;
 import models.pojo.User;
 import org.apache.log4j.Logger;
+import service.MessageService;
+import service.UserService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -31,11 +31,9 @@ public class GeneralChatServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         int chatroom = 0;
-        MessageDAO messageDAO = new MessageDAO();
-        List<Message> messages = messageDAO.getAllInRoom(chatroom);
+        List<Message> messages = MessageService.getAllInRoom(chatroom);
 
-        UserDAO userDAO = new UserDAO();
-        List<User> users =  userDAO.getAll();
+        List<User> users =  UserService.getAll();
 
         req.setAttribute("messages", messages);
         req.setAttribute("users", users);

@@ -55,7 +55,6 @@
             </form>
 
         </tr>
-        fff${users.size()}
         <c:forEach items="${users}" var="user">
             <tr>
                 <td><c:out value="${user.getLogin()}"></c:out></td>

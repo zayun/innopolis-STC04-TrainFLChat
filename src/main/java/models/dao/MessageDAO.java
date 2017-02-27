@@ -3,6 +3,7 @@ package models.dao;
 import models.pojo.Message;
 import models.pojo.User;
 import org.apache.log4j.Logger;
+import service.UserService;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +16,6 @@ import java.util.List;
  * Created by smoldyrev on 25.02.17.
  */
 public class MessageDAO extends AbstractDAO<Message, Integer> {
-
 
     private static Logger logger = Logger.getLogger(MessageDAO.class);
 
@@ -39,9 +39,9 @@ public class MessageDAO extends AbstractDAO<Message, Integer> {
         try {
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_MESSAGES);
             while (resultSet.next()) {
-                UserDAO userDAO = new UserDAO();
-                User userFrom = userDAO.getEntityById(resultSet.getInt("FromUserID"));
-                User userTo = userDAO.getEntityById(resultSet.getInt("ToUserID"));
+
+                User userFrom = UserService.getUserById(resultSet.getInt("FromUserID"));
+                User userTo = UserService.getUserById(resultSet.getInt("ToUserID"));
                 messages.add(new Message(
                         resultSet.getInt("id"),
                         resultSet.getDate("DateTime"),
@@ -69,9 +69,9 @@ public class MessageDAO extends AbstractDAO<Message, Integer> {
             preparedStatement.setInt(1, chatRoom);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                UserDAO userDAO = new UserDAO();
-                User userFrom = userDAO.getEntityById(resultSet.getInt("FromUserID"));
-                User userTo = userDAO.getEntityById(resultSet.getInt("ToUserID"));
+
+                User userFrom = UserService.getUserById(resultSet.getInt("FromUserID"));
+                User userTo = UserService.getUserById(resultSet.getInt("ToUserID"));
                 messages.add(new Message(
                         resultSet.getInt("id"),
                         resultSet.getDate("DateTime"),

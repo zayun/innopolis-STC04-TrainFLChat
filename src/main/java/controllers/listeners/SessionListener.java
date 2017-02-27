@@ -1,21 +1,23 @@
 package controllers.listeners;
 
 import common.urilities.MailMaker;
-import models.dao.NotifyDAO;
 import models.pojo.Notifyer;
 import org.apache.log4j.Logger;
+import service.NotifyService;
 
 import javax.servlet.http.HttpSessionAttributeListener;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import java.sql.Date;
+
 import java.sql.Timestamp;
 import java.util.List;
 
 /**
  * Created by smoldyrev on 24.02.17.
+ * Слушатель сессии
  */
+
 //начало работы сессии
 public class SessionListener implements HttpSessionListener, HttpSessionAttributeListener {
 
@@ -41,8 +43,7 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
         if ("sessionUserType".equals(event.getName()) && "admin".equals(event.getValue())) {
             logger.trace("admin is logged");
 
-            NotifyDAO notifyDAO = new NotifyDAO();
-            List<Notifyer> notifyers = notifyDAO.getAllByNotType("admLog");
+            List<Notifyer> notifyers = NotifyService.getAllByNotType("admLog");
 
             logger.debug(event.getSession().getAttribute("sessionId"));
 

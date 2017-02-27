@@ -1,12 +1,13 @@
 package controllers;
 
 import exceptions.InvalidRoleException;
-import models.dao.LanguageDAO;
-import models.dao.PersonDAO;
-import models.dao.UserDAO;
 import models.pojo.LangOwner;
 import models.pojo.User;
 import org.apache.log4j.Logger;
+import service.LanguageService;
+import service.PersonService;
+import service.UserService;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,10 +29,11 @@ public class PrivateOfficeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        req.setCharacterEncoding("UTF-8");
         String  id = (req.getParameter("id")==null)?"":req.getParameter("id");
         String sessionId = (req.getSession().getAttribute("sessionId")==null)?"":
                 req.getSession().getAttribute("sessionId").toString();
-//        if (!((req.getSession().getAttribute("sessionId")).toString().equals(id))) {
+
         if (!id.equals(sessionId)) {
             try {
                 throw new InvalidRoleException();
@@ -40,12 +42,10 @@ public class PrivateOfficeServlet extends HttpServlet {
                 req.getRequestDispatcher("/error.jsp").forward(req, resp);
             }
         }
-        UserDAO userDAO = new UserDAO();
-        LanguageDAO languageDAO = new LanguageDAO();
 
-        User user = userDAO.getEntityById(Integer.parseInt(id));
+        User user = UserService.getUserById(Integer.parseInt(id));
 
-        List<LangOwner> languages = languageDAO.getLanguagesOnPerson(user.getPerson().getId());
+        List<LangOwner> languages = LanguageService.getLanguagesOnPerson(user.getPerson().getId());
 
         req.setAttribute("id", user.getUserID());
         req.setAttribute("login", user.getLogin());
@@ -66,11 +66,9 @@ public class PrivateOfficeServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        req.setCharacterEncoding("UTF-8");
         int id = (int) req.getSession().getAttribute("sessionId");
-        UserDAO userDAO = new UserDAO();
-        PersonDAO personDAO= new PersonDAO();
-        User user = userDAO.getEntityById(id);
+        User user = UserService.getUserById(id);
 
         user.setLogin(req.getParameter("login"));
         user.setPassword(req.getParameter("password"));
@@ -81,8 +79,8 @@ public class PrivateOfficeServlet extends HttpServlet {
         user.getPerson().setPhoneNumber(req.getParameter("phoneNumber"));
         user.getPerson().setMale(new Boolean(req.getParameter("isMale")));
 
-        if ((personDAO.update(user.getPerson())!=null)&&
-                userDAO.update(user)!=null) {
+        if ((PersonService.update(user.getPerson())!=null)&&
+                UserService.update(user)!=null) {
             logger.trace("update "+user.getUserID()+" is ok");
             req.getRequestDispatcher("/rooms/generalchat").forward(req, resp);
         } else {

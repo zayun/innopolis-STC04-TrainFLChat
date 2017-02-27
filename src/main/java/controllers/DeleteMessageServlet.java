@@ -1,7 +1,7 @@
 package controllers;
 
-import models.dao.MessageDAO;
 import org.apache.log4j.Logger;
+import service.MessageService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +11,7 @@ import java.io.IOException;
 
 /**
  * Created by smoldyrev on 26.02.17.
+ * Сервлет удаления сообщения
  */
 public class DeleteMessageServlet extends HttpServlet{
 
@@ -25,8 +26,8 @@ public class DeleteMessageServlet extends HttpServlet{
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.debug("msgid: "+req.getParameter("msgid"));
-        MessageDAO messageDAO = new MessageDAO();
-        messageDAO.delete(Integer.parseInt(req.getParameter("msgid")));
+
+        MessageService.deleteMessage(Integer.parseInt(req.getParameter("msgid")));
 
         req.getRequestDispatcher("/rooms/generalchat").forward(req, resp);
     }

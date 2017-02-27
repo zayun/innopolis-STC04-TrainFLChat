@@ -9,18 +9,24 @@ import java.util.Properties;
 
 /**
  * Created by smoldyrev on 27.02.17.
+ * Класс для отправки почты
  */
 public class MailMaker {
 
     private static Logger logger = Logger.getLogger(MailMaker.class);
 
     private static final String USER_NAME = "e.smoldyrev.stc@innopolis.ru";
+
     private static final String PASSWORD = "";
 
+    /**Отправка почты
+     * @param sendTo адрес получателя
+     * @param subject тема письма
+     * @param text текст письма
+    * */
     public static void sendEmail(String sendTo, String subject, String text) {
 
         logger.debug("mail send: " + sendTo);
-
 //        Properties props = new Properties();
 //        props.put("mail.smtp.auth", "true");
 //        props.put("mail.smtp.starttls.enable", "true");

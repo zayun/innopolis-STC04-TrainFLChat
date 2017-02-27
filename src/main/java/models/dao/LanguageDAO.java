@@ -5,6 +5,7 @@ import models.pojo.Language;
 import models.pojo.Person;
 import models.pojo.User;
 import org.apache.log4j.Logger;
+import service.PersonService;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -50,8 +51,8 @@ public class LanguageDAO extends AbstractDAO<Language, String> {
 
     public List<LangOwner> getLanguagesOnPerson(int personId) {
         List<LangOwner> langOwners = new ArrayList<>();
-        PersonDAO personDAO = new PersonDAO();
-        Person person = personDAO.getEntityById(personId);
+
+        Person person = PersonService.getPersonOnId(personId);
         PreparedStatement preparedStatement = getPrepareStatement(SQL_LANG_ON_PERSON);
         try {
             preparedStatement.setInt(1, personId);
