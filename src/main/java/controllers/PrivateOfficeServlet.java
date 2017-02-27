@@ -5,19 +5,14 @@ import models.dao.LanguageDAO;
 import models.dao.PersonDAO;
 import models.dao.UserDAO;
 import models.pojo.LangOwner;
-import models.pojo.Language;
-import models.pojo.Person;
 import models.pojo.User;
 import org.apache.log4j.Logger;
-import service.UserService;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

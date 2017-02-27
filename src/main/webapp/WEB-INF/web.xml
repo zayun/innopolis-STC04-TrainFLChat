@@ -27,6 +27,11 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
+        <servlet-name>EditNotifyList</servlet-name>
+        <servlet-class>controllers.EditNotifyListServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
         <servlet-name>DeleteMessage</servlet-name>
         <servlet-class>controllers.DeleteMessageServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
@@ -69,6 +74,10 @@
     <servlet-mapping>
         <servlet-name>Authorization</servlet-name>
         <url-pattern>/auth</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditNotifyList</servlet-name>
+        <url-pattern>/admin/edittnotifylist</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DeleteMessage</servlet-name>

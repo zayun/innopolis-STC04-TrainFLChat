@@ -47,7 +47,7 @@ public class AuthorizationServlet extends HttpServlet {
             req.getRequestDispatcher("/rooms/generalchat").forward(req, resp);
         } else {
             logger.trace(login + " not authorize");
-            String msg = "Комбинация логин/пароль не верна! Или пользователь заблокирован!";
+            String msg = "Комбинация логин/пароль не верна!\nИли пользователь заблокирован!";
             req.setAttribute("msg", msg);
             req.getRequestDispatcher("/login.jsp").forward(req, resp);
         }

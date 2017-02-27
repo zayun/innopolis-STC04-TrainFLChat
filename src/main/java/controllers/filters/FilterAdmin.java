@@ -29,15 +29,14 @@ public class FilterAdmin implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
         if ((httpRequest.getSession().getAttribute("sessionUserType") != null)
-                && (httpRequest.getSession().getAttribute("sessionUserType").equals("admin"))) {
-            logger.trace("Authentificator is true");
+                && ((httpRequest.getSession().getAttribute("sessionUserType").equals("admin"))
+                || (httpRequest.getSession().getAttribute("sessionUserType").equals("administrator")))) {
             chain.doFilter(request, response);
         } else {
             String msg = "Нехватает прав для посещения этого ресурса!";
             httpRequest.setAttribute("msg", msg);
             httpRequest.getRequestDispatcher("/login.jsp").forward(httpRequest, httpResponse);
         }
-//        chain.doFilter(request, response);
     }
 
     @Override

@@ -11,10 +11,32 @@
 <html>
 <head>
     <title>Adminka</title>
+    <style>
+        .userlist {
+            overflow: scroll;
+            width: 800px; /* Ширина блока */
+            height: 800px; /* Высота блока */
+            background-color: #c8dfff; /* Цвет фона слоя */
+            padding: 5px; /* Поля вокруг текста */
+            float: left; /* Обтекание по правому краю */
+        }
+
+        .notifyerList {
+            overflow: scroll;
+            background-color: #c0c0c0; /* Цвет фона слоя */
+            padding: 5px;
+            height: 300px; /* Поля вокруг текста */
+            width: 400px; /* Ширина слоя */
+            float: left; /* Обтекание по правому краю */
+        }
+        .gen {
+            clear: left; /* Отмена обтекания */
+        }
+    </style>
 </head>
 <body>
 <h1>Adminka</h1>
-
+<div class="userlist">
 <table border="1" cellpadding="1">
     <tr>
         <th>user</th>
@@ -41,10 +63,17 @@
                     <input type="submit" value="change" formmethod="post">
                 </form>
             </td>
+            <td>
+                <form action="/chat/admin/edittnotifylist" method="get">
+                    <input type="text" name="userID" id="userID" value="${user.getUserID()}" hidden>
+                    <input type="submit" value=">>notify>>" formmethod="get">
+                </form>
+            </td>
         </tr>
     </c:forEach>
 
 </table>
+</div>
 <form action="/chat/rooms/generalchat" method="post">
     <input type="submit" value="exit" formmethod="post">
 </form>

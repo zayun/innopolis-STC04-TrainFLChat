@@ -17,7 +17,7 @@
             overflow: scroll;
             width: 800px; /* Ширина блока */
             height: 300px; /* Высота блока */
-            background-color: #fc0; /* Цвет фона слоя */
+            background-color: #fbefbc; /* Цвет фона слоя */
             padding: 5px; /* Поля вокруг текста */
             float: left; /* Обтекание по правому краю */
         }
