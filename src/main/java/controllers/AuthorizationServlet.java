@@ -14,7 +14,8 @@ import java.io.IOException;
 /**
  * Created by smoldyrev on 23.02.17.
  * Сервлет авторизации пользователей
- * проверяет наличие пользователя и поле blocked должнобыть false
+ * проверяет соответсвие пользователя и пароля
+ * и поле blocked должнобыть false
  */
 public class AuthorizationServlet extends HttpServlet {
 
@@ -29,6 +30,11 @@ public class AuthorizationServlet extends HttpServlet {
         logger.debug("authGet");
     }
 
+    /**Проверка наличия пользователя с таким паролем в БД
+     * если пользовательнайден и не имеет флага isBlocked = true
+     * открываем generalchat
+     * и заполняем параметры сессии
+     * sessionLogin, sessionId, sessionUserType*/
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
@@ -40,6 +46,7 @@ public class AuthorizationServlet extends HttpServlet {
 
             logger.trace(login +"/id=" + user.getUserID()+ " authorize successful");
 
+            /*тут вопрос надо ли засовывать с атрибут сессии целый объект?*/
             req.getSession().setAttribute("sessionLogin",login);
             req.getSession().setAttribute("sessionId",user.getUserID());
             req.getSession().setAttribute("sessionUserType",user.getUserType());

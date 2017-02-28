@@ -45,7 +45,6 @@
 
         <form action="/chat/sendmessage" method="post">
 
-            <%--<label for="userFrom">From:</label>--%>
             <input type="text" name="userFrom" id="userFrom" value="<%=request.getSession().getAttribute("sessionId")%>"
                    readonly placeholder="userFrom" hidden>
 

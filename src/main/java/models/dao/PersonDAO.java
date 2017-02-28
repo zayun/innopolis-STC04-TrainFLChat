@@ -29,7 +29,7 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
 
         List<Person> persones = new ArrayList<>();
         Statement statement = getStatement();
-        try  {
+        try {
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_PERSON);
             if (resultSet.next()) {
                 persones.add(new Person(
@@ -59,7 +59,7 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
         try {
             preparedStatement.setString(1, entity.getFirstName());
             preparedStatement.setString(2, entity.getLastName());
-            preparedStatement.setDate(3, entity.getBirthDay());
+            preparedStatement.setDate(3, entity.getBirthday());
             preparedStatement.setString(4, entity.getEmail());
             preparedStatement.setString(5, entity.getPhoneNumber());
             preparedStatement.setBoolean(6, new Boolean(entity.isMale()));
@@ -101,7 +101,7 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
         try {
             preparedStatement.setString(1, entity.getFirstName());
             preparedStatement.setString(2, entity.getLastName());
-            preparedStatement.setDate(3, new Date(entity.getBirthDay().getTime()));
+            preparedStatement.setDate(3, new Date(entity.getBirthday().getTime()));
             preparedStatement.setString(4, entity.getEmail());
             preparedStatement.setString(5, entity.getPhoneNumber());
             preparedStatement.setBoolean(6, entity.isMale());
@@ -114,6 +114,8 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
             return true;
         } catch (SQLException e) {
             logger.error(e);
+        } catch (NullPointerException e) {
+            logger.debug("trouble with statement");
         } finally {
             closePrepareStatement(preparedStatement);
         }

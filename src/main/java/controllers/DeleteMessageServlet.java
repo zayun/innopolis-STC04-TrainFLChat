@@ -11,7 +11,7 @@ import java.io.IOException;
 
 /**
  * Created by smoldyrev on 26.02.17.
- * Сервлет удаления сообщения
+ * Сервлет удаления сообщения по id
  */
 public class DeleteMessageServlet extends HttpServlet{
 
@@ -23,6 +23,8 @@ public class DeleteMessageServlet extends HttpServlet{
 
     }
 
+    /**Получаем msgid - id сообщения в БД
+     * отправляем запрос на удаление сообщения по id*/
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.debug("msgid: "+req.getParameter("msgid"));

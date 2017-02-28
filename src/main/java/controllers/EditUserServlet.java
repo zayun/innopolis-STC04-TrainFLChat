@@ -24,6 +24,9 @@ public class EditUserServlet extends HttpServlet {
 
     }
 
+    /**Изменяем административные данные пользователя
+     * isBlocked - блокируем пользователя
+     * userType - роль для работы (admin/administrator/moder/user)*/
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");

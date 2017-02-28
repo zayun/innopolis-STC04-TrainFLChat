@@ -49,7 +49,7 @@
             <form action="/chat/rooms/privatechatroom" method="post">
 
                 <label for="chatroomin">Go to room #:</label>
-                <input type="number" name="chatroomin" id="chatroomin" value="" placeholder="chatroomin">
+                <input type="number" name="chatroomin" id="chatroomin" value="" placeholder="#">
 
                 <input type="submit" value="privat" formmethod="post">
             </form>

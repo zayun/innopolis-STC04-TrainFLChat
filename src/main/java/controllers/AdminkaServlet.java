@@ -20,6 +20,9 @@ public class AdminkaServlet extends HttpServlet {
         doPost(req, resp);
     }
 
+
+    /**Заполняем список пользователей программы
+     * и выводим jsp с этим списком*/
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 

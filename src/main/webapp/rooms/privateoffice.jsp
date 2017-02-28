@@ -17,52 +17,52 @@
 
 <form action="/chat/rooms/privateoffice" method="post">
     <table border="0" width="10%" cellpadding="2">
-        <input type="text" name="id" id="id" value="${id}" placeholder="id" hidden>
+        <input type="text" name="id" id="id" value="${user.userID}" placeholder="id" hidden>
         <tr>
             <td><label for="login">Login:</label>
-                <input type="text" name="login" id="login" value="${login}" placeholder="Login">
+                <input type="text" name="login" id="login" value="${user.login}" placeholder="Login">
         </tr>
         </td>
 
         <tr>
             <td><label for="password">Password:</label>
-                <input type="password" name="password" id="password" value="${password}" placeholder="Password">
+                <input type="password" name="password" id="password" value="${user.password}" placeholder="Password">
         </tr>
         </td>
 
         <tr>
             <td><label for="firstName">First name:</label>
-                <input type="text" name="firstName" id="firstName" value="${firstName}" placeholder="FirstName">
+                <input type="text" name="firstName" id="firstName" value="${user.person.firstName}" placeholder="FirstName">
         </tr>
         </td>
 
         <tr>
             <td><label for="lastName">LastName:</label>
-                <input type="text" name="lastName" id="lastName" value="${lastName}" placeholder="LastName">
+                <input type="text" name="lastName" id="lastName" value="${user.person.lastName}" placeholder="LastName">
         </tr>
         </td>
 
         <tr>
             <td><label for="birthday">Birthday:</label>
-                <input type="date" name="birthday" id="birthday" value="${birthday}" placeholder="Birthday">
+                <input type="date" name="birthday" id="birthday" value="${user.person.birthday}" placeholder="Birthday">
         </tr>
         </td>
 
         <tr>
             <td><label for="email">E-MAIL:</label>
-                <input type="email" name="email" id="email" value="${email}" placeholder="email">
+                <input type="email" name="email" id="email" value="${user.person.email}" placeholder="email">
         </tr>
         </td>
 
         <tr>
             <td><label for="phoneNumber">Phone:</label>
-                <input type="tel" name="phoneNumber" id="phoneNumber" value="${phoneNumber}" placeholder="number">
+                <input type="tel" name="phoneNumber" id="phoneNumber" value="${user.person.phoneNumber}" placeholder="number">
         </tr>
         </td>
 
         <tr>
             <td><label for="male">Male?</label><%--надо разобраться не пишется в базу тру, всегда фолс--%>
-                <input type="checkbox" name="male" id="male" value="${male}" placeholder="male">
+                <input type="checkbox" name="male" id="male" value="${user.person.male}" placeholder="male">
         </tr>
         </td>
     </table>

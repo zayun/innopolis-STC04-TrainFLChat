@@ -26,6 +26,11 @@ public class PrivateOfficeServlet extends HttpServlet {
 
     private static Logger logger = Logger.getLogger(PrivateOfficeServlet.class);
 
+    /**Открытие формы личного кабинета
+     * загружаем данные пользоавтеля с id из sessionId
+     * если id не совпадают редирект на ошибку
+     *
+     * загружаем данные user, person, langOwner*/
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -47,34 +52,29 @@ public class PrivateOfficeServlet extends HttpServlet {
 
         List<LangOwner> languages = LanguageService.getLanguagesOnPerson(user.getPerson().getId());
 
-        req.setAttribute("id", user.getUserID());
-        req.setAttribute("login", user.getLogin());
-        req.setAttribute("password", user.getPassword());
-        req.setAttribute("usertype", user.getUserType());
-
-        req.setAttribute("firstName", user.getPerson().getFirstName());
-        req.setAttribute("lastName", user.getPerson().getLastName());
-        req.setAttribute("birthday", user.getPerson().getBirthDay());
-        req.setAttribute("email", user.getPerson().getEmail());
-        req.setAttribute("phoneNumber", user.getPerson().getPhoneNumber());
-        req.setAttribute("male", user.getPerson().isMale());
-
+        /*тут вопрос про передачу всего объекта*/
+        req.setAttribute("user", user);
         req.setAttribute("languages", languages);
 
         req.getRequestDispatcher("/rooms/privateoffice.jsp").forward(req, resp);
     }
 
+
+    /**Закрытие личного кабинета с сохранением внесенных изменения
+     * если все прошло удачно - редирект на основную форму
+     * если ошибка при update - редирект на error.jsp
+     * */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         int id = (int) req.getSession().getAttribute("sessionId");
-        User user = UserService.getUserById(id);
+        User user = UserService.getUserById(id); // а надо ли?
 
         user.setLogin(req.getParameter("login"));
         user.setPassword(req.getParameter("password"));
         user.getPerson().setFirstName(req.getParameter("firstName"));
         user.getPerson().setLastName(req.getParameter("lastName"));
-        user.getPerson().setBirthDay(Date.valueOf(req.getParameter("birthday")));
+        user.getPerson().setBirthday(Date.valueOf(req.getParameter("birthday")));
         user.getPerson().setEmail(req.getParameter("email"));
         user.getPerson().setPhoneNumber(req.getParameter("phoneNumber"));
         user.getPerson().setMale(new Boolean(req.getParameter("isMale")));

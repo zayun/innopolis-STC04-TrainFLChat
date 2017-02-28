@@ -20,6 +20,11 @@ public class PrivateChatRoomServlet extends HttpServlet {
 
     }
 
+
+    /**форма приватной chatroom
+     * загружаем все сообщения
+     * открываем chatroom
+     * */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -33,9 +38,6 @@ public class PrivateChatRoomServlet extends HttpServlet {
         List<Message> messages = MessageService.getAllInRoom(Integer.parseInt(chatroom));
 
         req.setAttribute("messages", messages);
-        req.setAttribute("userFrom",req.getSession().getAttribute("idd"));
-
-
         req.setAttribute("chatroom", chatroom);
 
         req.getRequestDispatcher("/rooms/privatechatroom.jsp").forward(req, resp);

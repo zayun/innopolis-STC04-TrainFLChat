@@ -24,6 +24,13 @@ public class SendMessageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     }
 
+
+    /**Отправка сообщения
+     * парметры userFrom, userTo, textMessage
+     * после записи сообщения в БД редирект
+     * на privatechatroom если chatroom!=0
+     * на generalchat если chatroom==0;
+     * */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");

@@ -27,6 +27,10 @@ public class GeneralChatServlet extends HttpServlet {
 
     }
 
+    /**Открываем основную форму программы
+     * загружаем все сообщения chatroom#0
+     * загружаем всехпользователе
+     * открываем форму*/
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 

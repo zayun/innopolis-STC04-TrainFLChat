@@ -19,15 +19,25 @@ public abstract class AbstractDAO<T, K> {
     private static Connection connection = DatabaseManager.getConnection();
 
     public abstract List<T> getAll();
+
     public abstract T update(T entity);
+
     public abstract T getEntityById(K id);
+
     public abstract boolean delete(K id);
+
     public abstract boolean create(T entity);
 
-    /**Получаем экземпляр PreparedStatement
-     * @return ps*/
+    /**
+     * Получаем экземпляр PreparedStatement
+     *
+     * @return ps
+     */
     public static PreparedStatement getPrepareStatement(String sql) {
-        PreparedStatement ps = null;
+
+        if (connection == null) return null;
+
+            PreparedStatement ps = null;
         try {
             ps = connection.prepareStatement(sql);
         } catch (SQLException e) {
@@ -37,9 +47,15 @@ public abstract class AbstractDAO<T, K> {
         return ps;
     }
 
-    /**Закрываем полученный PreparedStatement
-     *@param ps*/
+    /**
+     * Закрываем полученный PreparedStatement
+     *
+     * @param ps
+     */
     public static void closePrepareStatement(PreparedStatement ps) {
+
+        if (connection == null) return;
+
         if (ps != null) {
             try {
                 ps.close();
@@ -49,9 +65,15 @@ public abstract class AbstractDAO<T, K> {
         }
     }
 
-    /**Получаем экземпляр Statement
-     * @return statement*/
+    /**
+     * Получаем экземпляр Statement
+     *
+     * @return statement
+     */
     public static Statement getStatement() {
+
+        if (connection == null) return null;
+
         Statement statement = null;
         try {
             statement = connection.createStatement();
@@ -62,9 +84,15 @@ public abstract class AbstractDAO<T, K> {
         return statement;
     }
 
-    /**Закрываем полученный Statement
-     *@param statement*/
+    /**
+     * Закрываем полученный Statement
+     *
+     * @param statement
+     */
     public static void closeStatement(Statement statement) {
+
+        if (connection == null) return;
+
         if (statement != null) {
             try {
                 statement.close();

@@ -26,6 +26,9 @@ public class RegistrationServlet extends HttpServlet{
         req.getRequestDispatcher("/registration.jsp").forward(req, resp);
     }
 
+    /**Запись дынных внесенных на форму registration.jsp в БД
+     * при любом исходе редирект на login.jsp
+     * с сообщением о результате*/
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 

@@ -107,6 +107,8 @@ public class UserDAO extends AbstractDAO<User, Integer> {
             }
         } catch (SQLException e) {
             logger.error(e);
+        } catch (NullPointerException e) {
+            logger.debug("trouble with statement");
         }
         return user;
     }

@@ -27,6 +27,10 @@ public class EditNotifyListServlet extends HttpServlet {
 
     }
 
+
+    /**Изменение оповещений у пользователя
+     * получаем editType в зависимости от значения
+     * добавляем, удаляем или изменяем запись оповещения*/
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
