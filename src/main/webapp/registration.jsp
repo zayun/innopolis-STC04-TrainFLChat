@@ -15,10 +15,10 @@
 <form action="/chat/registration" method="post">
 
     <label for="login">Login:</label>
-    <input type="text" name="login" id="login" value="" placeholder="Login">
+    <input type="text" name="login" id="login" value="" placeholder="Login" required>
 
     <label for="password">Password:</label>
-    <input type="password" name="password" id="password" value="" placeholder="Password">
+    <input type="password" name="password" id="password" value="" placeholder="Password" required>
 
     <label for="firstName">First name:</label>
     <input type="text" name="firstName" id="firstName" value="" placeholder="FirstName">

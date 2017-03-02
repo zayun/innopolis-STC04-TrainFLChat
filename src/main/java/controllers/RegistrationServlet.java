@@ -19,7 +19,7 @@ import java.sql.Date;
  */
 public class RegistrationServlet extends HttpServlet{
 
-    private static Logger logger = Logger.getLogger(AuthorizationServlet.class);
+    private static Logger logger = Logger.getLogger(RegistrationServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -33,13 +33,19 @@ public class RegistrationServlet extends HttpServlet{
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
+
+        Date date = new Date(1L);
+        if (!"".equals(req.getParameter("birthday"))) {
+            date = Date.valueOf(req.getParameter("birthday"));
+        }
+
         Person person = new Person(
                 0,
                 req.getParameter("firstName"),
                 req.getParameter("lastName"),
                 req.getParameter("email"),
                 req.getParameter("phoneNumber"),
-                Date.valueOf(req.getParameter("birthday")),
+                date,
                 new Boolean(req.getParameter("male")));
         User user = new User(
                 0,

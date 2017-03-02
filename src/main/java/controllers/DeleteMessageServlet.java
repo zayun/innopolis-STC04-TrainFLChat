@@ -29,6 +29,7 @@ public class DeleteMessageServlet extends HttpServlet{
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.debug("msgid: "+req.getParameter("msgid"));
 
+        logger.debug("020317////"+req.getContextPath());
         MessageService.deleteMessage(Integer.parseInt(req.getParameter("msgid")));
 
         req.getRequestDispatcher("/rooms/generalchat").forward(req, resp);

@@ -37,7 +37,7 @@
     </style>
 </head>
 <body>
-<h1><%=request.getSession().getAttribute("sessionLogin")%>
+<h1>Welcome to FLChat, dear <%=request.getSession().getAttribute("sessionLogin")%>
 </h1>
 <div class="gen">
     <a href="/chat/rooms/privateoffice?id=<%=request.getSession().getAttribute("sessionId")%>">Личный кабинет</a>

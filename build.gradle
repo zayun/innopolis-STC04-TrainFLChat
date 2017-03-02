@@ -17,4 +17,6 @@ dependencies {
     compile 'jstl:jstl:1.2'
     compile group: 'postgresql', name: 'postgresql', version: '9.0-801.jdbc4'
     compile 'javax:javaee-api:7.0'
+
+    compile group: 'org.springframework', name: 'spring-context', version: '4.3.5.RELEASE'
 }

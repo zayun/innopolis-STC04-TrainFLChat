@@ -1,4 +1,4 @@
-package common.urilities;
+package common.utilities;
 
 import org.apache.log4j.Logger;
 

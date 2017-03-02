@@ -34,6 +34,8 @@ public class SendMessageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
+
+        logger.debug("020317////"+req.getContextPath());
         String userFromId = ("".equals(req.getParameter("userFrom"))?"0":req.getParameter("userFrom"));
         String userToId = ("".equals(req.getParameter("userTo"))?"999":req.getParameter("userTo"));
 

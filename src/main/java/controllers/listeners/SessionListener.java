@@ -1,6 +1,6 @@
 package controllers.listeners;
 
-import common.urilities.MailMaker;
+import common.utilities.MailMaker;
 import models.pojo.Notifyer;
 import org.apache.log4j.Logger;
 import service.NotifyService;
