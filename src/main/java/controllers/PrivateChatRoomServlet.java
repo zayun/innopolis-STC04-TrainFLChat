@@ -1,6 +1,9 @@
 package controllers;
 
+import common.utilities.ErrorForwarder;
+import exceptions.MessageServiceException;
 import models.pojo.Message;
+import org.apache.log4j.Logger;
 import service.MessageService;
 
 import javax.servlet.ServletException;
@@ -15,6 +18,9 @@ import java.util.List;
  * Приватная комната чата
  */
 public class PrivateChatRoomServlet extends HttpServlet {
+
+    private static Logger logger = Logger.getLogger(PrivateChatRoomServlet.class);
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -35,7 +41,14 @@ public class PrivateChatRoomServlet extends HttpServlet {
             chatroom = req.getParameter("chatroom");
         }
 
-        List<Message> messages = MessageService.getAllInRoom(Integer.parseInt(chatroom));
+        List<Message> messages = null;
+        try {
+            messages = MessageService.getAllInRoom(Integer.parseInt(chatroom));
+        } catch (MessageServiceException e) {
+            logger.error(e);
+            ErrorForwarder.forwardToErrorPage(req,resp,
+                    "Ошибка получения сообщений");
+        }
 
         req.setAttribute("messages", messages);
         req.setAttribute("chatroom", chatroom);

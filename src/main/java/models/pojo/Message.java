@@ -12,8 +12,7 @@ import java.util.Date;
  * Класс сущности, хранимой в таблице r_Messages
  * реализованы геттеры и сеттеры всех полей
  */
-@XmlType(propOrder = {"date", "fromUser", "toUser", "bodyText", "viewed","chatRoom"})
-@XmlRootElement
+
 public class Message {
 
     private int id;
@@ -41,7 +40,6 @@ public class Message {
         this.chatRoom = chatRoom;
     }
 
-    @XmlAttribute(name = "identity")
     public int getId() {
         return id;
     }
@@ -50,7 +48,6 @@ public class Message {
         this.id = id;
     }
 
-    @XmlElement
     public Date getDate() {
         return date;
     }
@@ -59,7 +56,6 @@ public class Message {
         this.date = date;
     }
 
-    @XmlElement
     public User getFromUser() {
         return fromUser;
     }
@@ -68,7 +64,6 @@ public class Message {
         this.fromUser = fromUser;
     }
 
-    @XmlElement
     public User getToUser() {
         return toUser;
     }
@@ -77,7 +72,6 @@ public class Message {
         this.toUser = toUser;
     }
 
-    @XmlElement
     public String getBodyText() {
         return bodyText;
     }
@@ -86,7 +80,6 @@ public class Message {
         this.bodyText = bodyText;
     }
 
-    @XmlElement
     public boolean isViewed() {
         return viewed;
     }
@@ -99,7 +92,6 @@ public class Message {
         return chatRoom;
     }
 
-    @XmlElement
     public void setChatRoom(int chatRoom) {
         this.chatRoom = chatRoom;
     }

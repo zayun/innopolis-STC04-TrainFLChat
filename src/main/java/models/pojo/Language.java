@@ -10,8 +10,6 @@ import javax.xml.bind.annotation.XmlType;
  * Класс сущности, хранимой в таблице d_Languages
  * реализованы геттеры и сеттеры всех полей
  */
-@XmlType(propOrder={"shortName","fullName","dialekt"})
-@XmlRootElement
 public class Language {
 
     private String shortName;
@@ -30,7 +28,6 @@ public class Language {
         this.dialekt = dialekt;
     }
 
-    @XmlAttribute(name = "id")
     public String getShortName() {
         return shortName;
     }
@@ -39,7 +36,6 @@ public class Language {
         this.shortName = shortName;
     }
 
-    @XmlElement
     public String getFullName() {
         return fullName;
     }
@@ -48,7 +44,6 @@ public class Language {
         this.fullName = fullName;
     }
 
-    @XmlElement
     public String getDialekt() {
         return dialekt;
     }

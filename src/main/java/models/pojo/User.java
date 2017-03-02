@@ -11,8 +11,6 @@ import javax.xml.bind.annotation.XmlType;
  * Класс сущности, хранимой в таблице d_Users
  * реализованы геттеры и сеттеры всех полей
  */
-@XmlType(propOrder={"userType","login","password","person","blocked"})
-@XmlRootElement
 public class User {
 
     private Integer userID;
@@ -38,7 +36,6 @@ public class User {
     }
 
 
-    @XmlAttribute(name = "id")
     public Integer getUserID() {
         return userID;
     }
@@ -47,7 +44,6 @@ public class User {
         this.userID = userID;
     }
 
-    @XmlElement
     public boolean isBlocked() {
         return blocked;
     }
@@ -56,7 +52,6 @@ public class User {
         this.blocked = blocked;
     }
 
-    @XmlElement
     public String getUserType() {
         return userType;
     }
@@ -65,7 +60,6 @@ public class User {
         this.userType = userType;
     }
 
-    @XmlElement
     public String getLogin() {
         return login;
     }
@@ -74,7 +68,6 @@ public class User {
         this.login = login;
     }
 
-    @XmlElement
     public String getPassword() {
         return password;
     }
@@ -83,7 +76,6 @@ public class User {
         this.password = passwd;
     }
 
-    @XmlElement
     public Person getPerson() {
         return person;
     }

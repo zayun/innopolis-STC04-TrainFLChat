@@ -1,5 +1,8 @@
 package controllers;
 
+import common.utilities.ErrorForwarder;
+import exceptions.MessageServiceException;
+import exceptions.UserServiceException;
 import models.pojo.Message;
 import models.pojo.User;
 import org.apache.log4j.Logger;
@@ -35,9 +38,23 @@ public class GeneralChatServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         int chatroom = 0;
-        List<Message> messages = MessageService.getAllInRoom(chatroom);
+        List<Message> messages = null;
+        try {
+            messages = MessageService.getAllInRoom(chatroom);
+        } catch (MessageServiceException e) {
+            logger.error(e);
+            ErrorForwarder.forwardToErrorPage(req,resp,
+                    "Ошибка получения списка сообщений");
+        }
 
-        List<User> users =  UserService.getAll();
+        List<User> users = null;
+        try {
+            users = UserService.getAll();
+        } catch (UserServiceException e) {
+            logger.error(e);
+            ErrorForwarder.forwardToErrorPage(req,resp,
+                    "Ошибка при получении доступа к таблице пользователей");
+        }
 
         req.setAttribute("messages", messages);
         req.setAttribute("users", users);

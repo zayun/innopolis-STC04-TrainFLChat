@@ -11,8 +11,6 @@ import java.sql.Date;
  * Класс сущности, хранимой в таблице d_Persones
  * реализованы геттеры и сеттеры всех полей
  */
-@XmlType(propOrder={"firstName","lastName","male","birthday","email","phoneNumber"})
-@XmlRootElement
 public class Person {
 
     private Integer id;
@@ -41,7 +39,6 @@ public class Person {
         this.male = male;
     }
 
-    @XmlAttribute(name = "id")
     public Integer getId() {
         return id;
     }
@@ -50,7 +47,6 @@ public class Person {
         this.id = id;
     }
 
-    @XmlElement
     public String getFirstName() {
         return firstName;
     }
@@ -59,7 +55,6 @@ public class Person {
         this.firstName = firstName;
     }
 
-    @XmlElement
     public String getLastName() {
         return lastName;
     }
@@ -68,7 +63,6 @@ public class Person {
         this.lastName = lastName;
     }
 
-    @XmlElement
     public String getEmail() {
         return email;
     }
@@ -77,7 +71,6 @@ public class Person {
         this.email = email;
     }
 
-    @XmlElement
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -86,7 +79,6 @@ public class Person {
         this.phoneNumber = phoneNumber;
     }
 
-    @XmlElement
     public boolean isMale() {
         return male;
     }
@@ -95,11 +87,9 @@ public class Person {
         this.male = male;
     }
 
-    @XmlElement
     public Date getBirthday() {
         return birthday;
     }
-
 
     public void setBirthday(Date birthDay) {
         this.birthday = birthDay;

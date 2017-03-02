@@ -1,5 +1,7 @@
 package models.dao;
 
+import exceptions.UserDaoException;
+import models.connector.DatabaseManager;
 import models.pojo.Person;
 import models.pojo.User;
 import org.apache.log4j.Logger;
@@ -11,7 +13,7 @@ import java.util.List;
 /**
  * Created by smoldyrev on 23.02.17.
  */
-public class UserDAO extends AbstractDAO<User, Integer> {
+public class UserDAO {
 
     private static Logger logger = Logger.getLogger(UserDAO.class);
 
@@ -77,11 +79,11 @@ public class UserDAO extends AbstractDAO<User, Integer> {
             "\tSET \"login\"=?, \"pwd\"=?, \"personID\"=?, \"blocked\"=?, \"usertype\"=?\n" +
             "\tWHERE \"userID\" = ?";
 
-    public User getUserByLoginAndPassword(String login, String password) {
+    public User getUserByLoginAndPassword(String login, String password) throws UserDaoException {
 
         User user = null;
         Person person = null;
-        try (PreparedStatement preparedStatement = getPrepareStatement(SQL_FIND_USER_LP)) {
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_FIND_USER_LP)) {
             preparedStatement.setString(1, login);
             preparedStatement.setString(2, password);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -107,17 +109,18 @@ public class UserDAO extends AbstractDAO<User, Integer> {
             }
         } catch (SQLException e) {
             logger.error(e);
+            throw new UserDaoException();
         } catch (NullPointerException e) {
-            logger.debug("trouble with statement");
+            logger.error(e);
+            throw new UserDaoException();
         }
         return user;
     }
 
-    @Override
-    public List<User> getAll() {
+    public List<User> getAll() throws UserDaoException {
         List<User> users = new ArrayList<>();
-        Statement statement = getStatement();
-        try {
+
+        try (Statement statement = DatabaseManager.getStatement()) {
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_USERS);
             while (resultSet.next()) {
                 Person person = new Person(
@@ -138,16 +141,14 @@ public class UserDAO extends AbstractDAO<User, Integer> {
             }
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closeStatement(statement);
+            throw new UserDaoException();
         }
         return users;
     }
 
-    @Override
-    public User update(User entity) {
-        PreparedStatement preparedStatement = getPrepareStatement(SQL_UPDATE_USER);
-        try {
+    public User update(User entity) throws UserDaoException {
+
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_UPDATE_USER)){
             preparedStatement.setString(1, entity.getLogin());
             preparedStatement.setString(2, entity.getPassword());
             preparedStatement.setInt(3, entity.getPerson().getId());
@@ -160,18 +161,14 @@ public class UserDAO extends AbstractDAO<User, Integer> {
             return entity;
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closePrepareStatement(preparedStatement);
+            throw new UserDaoException();
         }
-        logger.error(entity.getUserID() + "was not updated");
-        return null;
     }
 
-    @Override
-    public User getEntityById(Integer id) {
+    public User getEntityById(Integer id) throws UserDaoException {
         User user = null;
-        PreparedStatement preparedStatement = getPrepareStatement(SQL_FIND_USER_ID);
-        try {
+
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_FIND_USER_ID)){
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -195,21 +192,14 @@ public class UserDAO extends AbstractDAO<User, Integer> {
             }
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closePrepareStatement(preparedStatement);
+            throw new UserDaoException();
         }
         return user;
     }
 
-    @Override
-    public boolean delete(Integer id) {
-        return false;
-    }
+    public boolean create(User entity) throws UserDaoException {
 
-    @Override
-    public boolean create(User entity) {
-        PreparedStatement preparedStatement = getPrepareStatement(SQL_INSERT_USER);
-        try {
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_INSERT_USER)){
             preparedStatement.setString(1, entity.getLogin());
             preparedStatement.setString(2, entity.getPassword());
             preparedStatement.setInt(3, entity.getPerson().getId());
@@ -224,9 +214,7 @@ public class UserDAO extends AbstractDAO<User, Integer> {
             return true;
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closePrepareStatement(preparedStatement);
+            throw new UserDaoException();
         }
-        return false;
     }
 }

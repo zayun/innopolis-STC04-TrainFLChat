@@ -1,5 +1,7 @@
 package controllers;
 
+import common.utilities.ErrorForwarder;
+import exceptions.UserServiceException;
 import models.pojo.Person;
 import models.pojo.User;
 import org.apache.log4j.Logger;
@@ -17,7 +19,7 @@ import java.sql.Date;
  * doGet открывает форму регистрации
  * doPost записывает данные в БД - регистрирует пользователя
  */
-public class RegistrationServlet extends HttpServlet{
+public class RegistrationServlet extends HttpServlet {
 
     private static Logger logger = Logger.getLogger(RegistrationServlet.class);
 
@@ -26,9 +28,11 @@ public class RegistrationServlet extends HttpServlet{
         req.getRequestDispatcher("/registration.jsp").forward(req, resp);
     }
 
-    /**Запись дынных внесенных на форму registration.jsp в БД
+    /**
+     * Запись дынных внесенных на форму registration.jsp в БД
      * при любом исходе редирект на login.jsp
-     * с сообщением о результате*/
+     * с сообщением о результате
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -54,14 +58,16 @@ public class RegistrationServlet extends HttpServlet{
                 req.getParameter("password"),
                 person,
                 false);
-        if (UserService.registration(user)) {
-            logger.trace(user.getUserID()+"/" + user.getLogin() + " registration successful");
-            req.setAttribute("msg","registration " + user.getLogin() + " completed successfully");
+        try {
+            UserService.registration(user);
+            logger.trace(user.getUserID() + "/" + user.getLogin() + " registration successful");
+            req.setAttribute("msg", "registration " + user.getLogin() + " completed successfully");
             req.getRequestDispatcher("/login.jsp").forward(req, resp);
-        } else {
-            logger.trace(user.getUserID()+"/" + user.getLogin() + " registration failed");
-            req.setAttribute("msg","registration " + user.getLogin() + " was failed, try again");
-            req.getRequestDispatcher("/login.jsp").forward(req, resp);
+
+        } catch (UserServiceException e) {
+            logger.error(e);
+            ErrorForwarder.forwardToErrorPage(req, resp,
+                    "Ошибка при получении доступа к таблице пользователей");
         }
     }
 }

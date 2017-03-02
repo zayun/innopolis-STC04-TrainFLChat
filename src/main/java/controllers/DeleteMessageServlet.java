@@ -1,5 +1,7 @@
 package controllers;
 
+import common.utilities.ErrorForwarder;
+import exceptions.MessageServiceException;
 import org.apache.log4j.Logger;
 import service.MessageService;
 
@@ -27,11 +29,14 @@ public class DeleteMessageServlet extends HttpServlet{
      * отправляем запрос на удаление сообщения по id*/
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.debug("msgid: "+req.getParameter("msgid"));
 
-        logger.debug("020317////"+req.getContextPath());
-        MessageService.deleteMessage(Integer.parseInt(req.getParameter("msgid")));
-
-        req.getRequestDispatcher("/rooms/generalchat").forward(req, resp);
+        try {
+            MessageService.deleteMessage(Integer.parseInt(req.getParameter("msgid")));
+            req.getRequestDispatcher("/rooms/generalchat").forward(req, resp);
+        } catch (MessageServiceException e) {
+            logger.error(e);
+            ErrorForwarder.forwardToErrorPage(req,resp,
+                    "Ошибка удаления сообщения");
+        }
     }
 }

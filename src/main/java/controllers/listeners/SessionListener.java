@@ -1,6 +1,7 @@
 package controllers.listeners;
 
 import common.utilities.MailMaker;
+import exceptions.NotifyServiceException;
 import models.pojo.Notifyer;
 import org.apache.log4j.Logger;
 import service.NotifyService;
@@ -42,31 +43,11 @@ public class SessionListener implements HttpSessionListener, HttpSessionAttribut
         }
         if ("sessionUserType".equals(event.getName()) && "admin".equals(event.getValue())) {
             logger.trace("admin is logged");
-
-            List<Notifyer> notifyers = NotifyService.getAllByNotType("admLog");
-
-            logger.debug(event.getSession().getAttribute("sessionId"));
-
-            /*запустим в отдельном потоке, чтобы не повесить систему при ожидании МэйлСервера*/
-            Thread thread = new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    for (Notifyer notifyer :
-                            notifyers) {
-                        logger.debug("mail send to "+notifyer.getUser().getPerson().getEmail());
-                        MailMaker.sendEmail(notifyer.getUser().getPerson().getEmail(),
-                                "admin " + notifyer.getUser().getLogin() + "is logged in",
-                                "admin with login " + notifyer.getUser().getLogin() +
-                        " is logged in programm in "+new Timestamp(System.currentTimeMillis()));
-                    }
-                }
-            });
-
-            thread.start();
         }
+
+        logger.debug(event.getSession().getAttribute("sessionId"));
     }
+
 
     @Override
     public void attributeRemoved(HttpSessionBindingEvent event) {

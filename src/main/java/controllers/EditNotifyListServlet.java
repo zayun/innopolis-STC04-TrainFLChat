@@ -1,5 +1,9 @@
 package controllers;
 
+import common.utilities.ErrorForwarder;
+import exceptions.NotifyServiceException;
+import exceptions.UserNotFoundException;
+import exceptions.UserServiceException;
 import models.pojo.Notifyer;
 import org.apache.log4j.Logger;
 import service.NotifyService;
@@ -38,19 +42,47 @@ public class EditNotifyListServlet extends HttpServlet {
 
         if (req.getParameter("editType") != null) {
             if ("add".equals(req.getParameter("editType"))) {
-                notifyer.setNotType(req.getParameter("notType"));
-                notifyer.setUser(UserService.getUserById(Integer.parseInt(req.getParameter("userID"))));
-                NotifyService.create(notifyer);
+
+                try {
+                    notifyer.setNotType(req.getParameter("notType"));
+                    notifyer.setUser(UserService.getUserById(Integer.parseInt(req.getParameter("userID"))));
+                    NotifyService.create(notifyer);
+                } catch (UserServiceException e) {
+                    logger.error(e);
+                    ErrorForwarder.forwardToErrorPage(req,resp,
+                            "Ошибка при получении доступа к таблице пользователей");
+                } catch (UserNotFoundException e) {
+                    logger.error(e);
+                    ErrorForwarder.forwardToErrorPage(req,resp,
+                            "Не найден пользователь");
+                } catch (NotifyServiceException e) {
+                    logger.error(e);
+                    ErrorForwarder.forwardToErrorPage(req,resp,
+                            "Ошибка при получении списка оповещений");
+                }
+
             } else if ("del".equals(req.getParameter("editType"))) {
-                notifyer = NotifyService.getNotifyById(Integer.parseInt(req.getParameter("notId")));
-                NotifyService.delete(Integer.parseInt(req.getParameter("notId")));
+                try {
+                    notifyer = NotifyService.getNotifyById(Integer.parseInt(req.getParameter("notId")));
+                    NotifyService.delete(Integer.parseInt(req.getParameter("notId")));
+                } catch (NotifyServiceException e) {
+                    logger.error(e);
+                    ErrorForwarder.forwardToErrorPage(req,resp,
+                            "Ошибка при получении списка оповещений");
+                }
+
             } else if ("edit".equals(req.getParameter("editType"))) {
-                notifyer = NotifyService.getNotifyById(Integer.parseInt(req.getParameter("notId")));
-                notifyer.setNotType(req.getParameter("notType"));
-                NotifyService.update(notifyer);
+                try {
+                    notifyer = NotifyService.getNotifyById(Integer.parseInt(req.getParameter("notId")));
+                    notifyer.setNotType(req.getParameter("notType"));
+                    NotifyService.update(notifyer);
+                } catch (NotifyServiceException e) {
+                    logger.error(e);
+                    ErrorForwarder.forwardToErrorPage(req,resp,
+                            "Ошибка при получении списка оповещений");
+                }
             }
         }
-
 
         goToPage(notifyer.getUser().getUserID(), req, resp);
 
@@ -58,10 +90,17 @@ public class EditNotifyListServlet extends HttpServlet {
 
     public void goToPage(int userId, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        List<Notifyer> notifyerList = NotifyService.getAllByUser(userId);
-        req.setAttribute("notifyers", notifyerList);
-        req.setAttribute("userID", userId);
-        req.getRequestDispatcher("/admin/notifyerlist.jsp").forward(req, resp);
+        try {
+            List<Notifyer> notifyerList = NotifyService.getAllByUser(userId);
+            req.setAttribute("notifyers", notifyerList);
+            req.setAttribute("userID", userId);
+            req.getRequestDispatcher("/admin/notifyerlist.jsp").forward(req, resp);
+        } catch (NotifyServiceException e) {
+            logger.error(e);
+            ErrorForwarder.forwardToErrorPage(req,resp,
+                    "Ошибка при получении списка оповещений");
+        }
+
     }
 }
 

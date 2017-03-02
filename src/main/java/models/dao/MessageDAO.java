@@ -1,5 +1,9 @@
 package models.dao;
 
+import exceptions.MessageDaoException;
+import exceptions.UserNotFoundException;
+import exceptions.UserServiceException;
+import models.connector.DatabaseManager;
 import models.pojo.Message;
 import models.pojo.User;
 import org.apache.log4j.Logger;
@@ -15,7 +19,7 @@ import java.util.List;
 /**
  * Created by smoldyrev on 25.02.17.
  */
-public class MessageDAO extends AbstractDAO<Message, Integer> {
+public class MessageDAO {
 
     private static Logger logger = Logger.getLogger(MessageDAO.class);
 
@@ -32,11 +36,10 @@ public class MessageDAO extends AbstractDAO<Message, Integer> {
     private static final String SQL_DELETE_MESSAGE = "DELETE FROM \"Main\".\"r_Messages\"\n" +
             "\tWHERE id = ?" ;
 
-    @Override
-    public List<Message> getAll() {
+    public List<Message> getAll() throws MessageDaoException {
         List<Message> messages = new ArrayList<>();
-        Statement statement = getStatement();
-        try {
+
+        try (Statement statement = DatabaseManager.getStatement()){
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_MESSAGES);
             while (resultSet.next()) {
 
@@ -53,19 +56,22 @@ public class MessageDAO extends AbstractDAO<Message, Integer> {
             }
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closeStatement(statement);
+            throw new MessageDaoException();
+        } catch (UserNotFoundException e) {
+            logger.error(e);
+            throw new MessageDaoException();
+        } catch (UserServiceException e) {
+            logger.error(e);
+            throw new MessageDaoException();
         }
 
         return messages;
     }
 
-    public List<Message> getAllInRoom(int chatRoom) {
+    public List<Message> getAllInRoom(int chatRoom) throws MessageDaoException {
         List<Message> messages = new ArrayList<>();
 
-        PreparedStatement preparedStatement = getPrepareStatement(SQL_SELECT_MESSAGES_IN_CR);
-
-        try {
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_SELECT_MESSAGES_IN_CR)){
             preparedStatement.setInt(1, chatRoom);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -84,42 +90,32 @@ public class MessageDAO extends AbstractDAO<Message, Integer> {
 
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closePrepareStatement(preparedStatement);
+            throw new MessageDaoException();
+        } catch (UserNotFoundException e) {
+            logger.error(e);
+            throw new MessageDaoException();
+        } catch (UserServiceException e) {
+            logger.error(e);
+            throw new MessageDaoException();
         }
-
         return messages;
     }
 
-    @Override
-    public Message update(Message entity) {
-        return null;
-    }
+    public boolean delete(Integer id) throws MessageDaoException {
 
-    @Override
-    public Message getEntityById(Integer id) {
-        return null;
-    }
-
-    @Override
-    public boolean delete(Integer id) {
-        PreparedStatement preparedStatement = getPrepareStatement(SQL_DELETE_MESSAGE);
-        try {
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_DELETE_MESSAGE)){
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
             return true;
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closePrepareStatement(preparedStatement);
+            throw new MessageDaoException();
         }
-        return false;
     }
 
-    @Override
-    public boolean create(Message entity) {
-        PreparedStatement preparedStatement = getPrepareStatement(SQL_INSERT_MESSAGE);
-        try {
+    public boolean create(Message entity) throws MessageDaoException {
+
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_INSERT_MESSAGE)){
             preparedStatement.setInt(1, entity.getFromUser().getUserID());
             preparedStatement.setInt(2, entity.getToUser().getUserID());
             preparedStatement.setString(3, entity.getBodyText());
@@ -129,9 +125,7 @@ public class MessageDAO extends AbstractDAO<Message, Integer> {
             return true;
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closePrepareStatement(preparedStatement);
+            throw new MessageDaoException();
         }
-        return false;
     }
 }

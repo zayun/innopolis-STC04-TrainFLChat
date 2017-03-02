@@ -1,5 +1,9 @@
 package models.dao;
 
+import exceptions.NotifyDaoException;
+import exceptions.UserNotFoundException;
+import exceptions.UserServiceException;
+import models.connector.DatabaseManager;
 import models.pojo.Notifyer;
 import models.pojo.User;
 import org.apache.log4j.Logger;
@@ -15,7 +19,7 @@ import java.util.List;
 /**
  * Created by smoldyrev on 27.02.17.
  */
-public class NotifyDAO extends AbstractDAO <Notifyer, Integer>{
+public class NotifyDAO {
 
     private static Logger logger = Logger.getLogger(NotifyDAO.class);
 
@@ -45,12 +49,11 @@ public class NotifyDAO extends AbstractDAO <Notifyer, Integer>{
     private static final String SQL_DELETE_NOTIFY = "DELETE FROM \"Main\".\"r_Notifyer\"\n" +
             "\tWHERE id = ?" ;
 
-    @Override
-    public List<Notifyer> getAll() {
+    public List<Notifyer> getAll() throws NotifyDaoException {
         List<Notifyer> notifyers = new ArrayList<>();
 
-        Statement statement = getStatement();
-        try {
+
+        try (Statement statement = DatabaseManager.getStatement()){
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_NOTIFY);
             while (resultSet.next()) {
                 User user = UserService.getUserById(resultSet.getInt("userId"));
@@ -62,35 +65,36 @@ public class NotifyDAO extends AbstractDAO <Notifyer, Integer>{
             }
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closeStatement(statement);
+            throw new NotifyDaoException();
+        } catch (UserNotFoundException e) {
+            logger.error(e);
+            throw new NotifyDaoException();
+        } catch (UserServiceException e) {
+            logger.error(e);
+            throw new NotifyDaoException();
         }
         return notifyers;
     }
 
-    @Override
-    public Notifyer update(Notifyer entity) {
-        PreparedStatement preparedStatement = getPrepareStatement(SQL_UPDATE_NOTIFY);
-        try {
+    public Notifyer update(Notifyer entity) throws NotifyDaoException {
+
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_UPDATE_NOTIFY)){
             preparedStatement.setString(1, entity.getNotType());
             preparedStatement.setInt(2, entity.getId());
             preparedStatement.executeUpdate();
             return entity;
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closePrepareStatement(preparedStatement);
+            throw new NotifyDaoException();
         }
-        return null;
     }
 
-    @Override
-    public Notifyer getEntityById(Integer id) {
+    public Notifyer getEntityById(Integer id) throws NotifyDaoException {
 
         Notifyer notifyer = null;
 
-        PreparedStatement preparedStatement = getPrepareStatement(SQL_SELECT_BY_ID);
-        try {
+
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_SELECT_BY_ID)){
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -101,31 +105,32 @@ public class NotifyDAO extends AbstractDAO <Notifyer, Integer>{
             }
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closePrepareStatement(preparedStatement);
+            throw new NotifyDaoException();
+        } catch (UserNotFoundException e) {
+            logger.error(e);
+            throw new NotifyDaoException();
+        } catch (UserServiceException e) {
+            logger.error(e);
+            throw new NotifyDaoException();
         }
         return notifyer;
     }
 
-    @Override
-    public boolean delete(Integer id) {
-        PreparedStatement preparedStatement = getPrepareStatement(SQL_DELETE_NOTIFY);
-        try {
+    public boolean delete(Integer id) throws NotifyDaoException {
+
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_DELETE_NOTIFY)){
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
             return true;
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closePrepareStatement(preparedStatement);
+            throw new NotifyDaoException();
         }
-        return false;
     }
 
-    @Override
-    public boolean create(Notifyer entity) {
-        PreparedStatement preparedStatement = getPrepareStatement(SQL_INSERT_NOTIFY);
-        try {
+    public boolean create(Notifyer entity) throws NotifyDaoException {
+
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_INSERT_NOTIFY)){
             preparedStatement.setInt(1, entity.getUser().getUserID());
             preparedStatement.setString(2, entity.getNotType());
 
@@ -136,19 +141,14 @@ public class NotifyDAO extends AbstractDAO <Notifyer, Integer>{
             return true;
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closePrepareStatement(preparedStatement);
+            throw new NotifyDaoException();
         }
-        return false;
     }
 
-    public List<Notifyer> getAllByNotType(String notyType) {
+    public List<Notifyer> getAllByNotType(String notyType) throws NotifyDaoException {
 
         List<Notifyer> notifyers= new ArrayList<>();
-
-        PreparedStatement preparedStatement = getPrepareStatement(SQL_SELECT_BY_TYPE);
-
-        try {
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_SELECT_BY_TYPE)){
             preparedStatement.setString(1, notyType);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -160,19 +160,22 @@ public class NotifyDAO extends AbstractDAO <Notifyer, Integer>{
 
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closePrepareStatement(preparedStatement);
+            throw new NotifyDaoException();
+        } catch (UserNotFoundException e) {
+            logger.error(e);
+            throw new NotifyDaoException();
+        } catch (UserServiceException e) {
+            logger.error(e);
+            throw new NotifyDaoException();
         }
         return notifyers;
     }
 
-    public List<Notifyer> getAllByUser(int userId) {
+    public List<Notifyer> getAllByUser(int userId) throws NotifyDaoException {
 
         List<Notifyer> notifyers= new ArrayList<>();
 
-        PreparedStatement preparedStatement = getPrepareStatement(SQL_SELECT_BY_USER);
-
-        try {
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_SELECT_BY_USER)){
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -184,8 +187,13 @@ public class NotifyDAO extends AbstractDAO <Notifyer, Integer>{
 
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closePrepareStatement(preparedStatement);
+            throw new NotifyDaoException();
+        } catch (UserNotFoundException e) {
+            logger.error(e);
+            throw new NotifyDaoException();
+        } catch (UserServiceException e) {
+            logger.error(e);
+            throw new NotifyDaoException();
         }
         return notifyers;
     }

@@ -1,7 +1,9 @@
 package controllers;
 
-import exceptions.InvalidRoleException;
+import common.utilities.ErrorForwarder;
+import exceptions.*;
 import models.pojo.LangOwner;
+import models.pojo.Language;
 import models.pojo.User;
 import org.apache.log4j.Logger;
 import service.LanguageService;
@@ -26,49 +28,75 @@ public class PrivateOfficeServlet extends HttpServlet {
 
     private static Logger logger = Logger.getLogger(PrivateOfficeServlet.class);
 
-    /**Открытие формы личного кабинета
+    /**
+     * Открытие формы личного кабинета
      * загружаем данные пользоавтеля с id из sessionId
      * если id не совпадают редирект на ошибку
-     *
-     * загружаем данные user, person, langOwner*/
+     * <p>
+     * загружаем данные user, person, langOwner
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
-        String  id = (req.getParameter("id")==null)?"":req.getParameter("id");
-        String sessionId = (req.getSession().getAttribute("sessionId")==null)?"":
+        String id = (req.getParameter("id") == null) ? "" : req.getParameter("id");
+        String sessionId = (req.getSession().getAttribute("sessionId") == null) ? "" :
                 req.getSession().getAttribute("sessionId").toString();
 
         if (!id.equals(sessionId)) {
             try {
                 throw new InvalidRoleException();
             } catch (InvalidRoleException e) {
-                req.setAttribute("msg", "Вам не плоложено здесь быть");
-                req.getRequestDispatcher("/error.jsp").forward(req, resp);
+                ErrorForwarder.forwardToErrorPage(req, resp,
+                        "Вам не положенобыть здесь");
             }
         }
 
-        User user = UserService.getUserById(Integer.parseInt(id));
+        try {
+            User user = UserService.getUserById(Integer.parseInt(id));
+            List<LangOwner> languages = LanguageService.getLanguagesOnPerson(user.getPerson().getId());
 
-        List<LangOwner> languages = LanguageService.getLanguagesOnPerson(user.getPerson().getId());
+            req.setAttribute("user", user);
+            req.setAttribute("languages", languages);
 
-        /*тут вопрос про передачу всего объекта*/
-        req.setAttribute("user", user);
-        req.setAttribute("languages", languages);
-
-        req.getRequestDispatcher("/rooms/privateoffice.jsp").forward(req, resp);
+            req.getRequestDispatcher("/rooms/privateoffice.jsp").forward(req, resp);
+        } catch (UserServiceException e) {
+            logger.error(e);
+            ErrorForwarder.forwardToErrorPage(req, resp,
+                    "Ошибка при получении доступа к таблице пользователей");
+        } catch (UserNotFoundException e) {
+            logger.error(e);
+            ErrorForwarder.forwardToErrorPage(req, resp,
+                    "Не найден пользователь");
+        } catch (LanguageServiceException e) {
+            logger.error(e);
+            ErrorForwarder.forwardToErrorPage(req, resp,
+                    "Проблемы с получением языков");
+        }
     }
 
 
-    /**Закрытие личного кабинета с сохранением внесенных изменения
+    /**
+     * Закрытие личного кабинета с сохранением внесенных изменения
      * если все прошло удачно - редирект на основную форму
      * если ошибка при update - редирект на error.jsp
-     * */
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         int id = (int) req.getSession().getAttribute("sessionId");
-        User user = UserService.getUserById(id); // а надо ли?
+        User user = null; // а надо ли?
+        try {
+            user = UserService.getUserById(id);
+        } catch (UserServiceException e) {
+            logger.error(e);
+            ErrorForwarder.forwardToErrorPage(req, resp,
+                    "Ошибка при получении доступа к таблице пользователей");
+        } catch (UserNotFoundException e) {
+            logger.error(e);
+            ErrorForwarder.forwardToErrorPage(req, resp,
+                    "Не найден пользователь");
+        }
 
         user.setLogin(req.getParameter("login"));
         user.setPassword(req.getParameter("password"));
@@ -79,13 +107,23 @@ public class PrivateOfficeServlet extends HttpServlet {
         user.getPerson().setPhoneNumber(req.getParameter("phoneNumber"));
         user.getPerson().setMale(new Boolean(req.getParameter("isMale")));
 
-        if ((PersonService.update(user.getPerson())!=null)&&
-                UserService.update(user)!=null) {
-            logger.trace("update "+user.getUserID()+" is ok");
+        try {
+            PersonService.update(user.getPerson());
+            UserService.update(user);
+            logger.trace("update " + user.getUserID() + " is ok");
             req.getRequestDispatcher("/rooms/generalchat").forward(req, resp);
-        } else {
-            logger.trace("update "+user.getUserID()+" is false");
-            req.getRequestDispatcher("/error.jsp").forward(req, resp);
+        } catch (UserServiceException e) {
+            logger.error(e);
+            ErrorForwarder.forwardToErrorPage(req, resp,
+                    "Ошибка при получении доступа к таблице пользователей");
+        } catch (UserNotFoundException e) {
+            logger.error(e);
+            ErrorForwarder.forwardToErrorPage(req, resp,
+                    "Не найден пользователь");
+        } catch (PersonServiceException e) {
+            logger.error(e);
+            ErrorForwarder.forwardToErrorPage(req, resp,
+                    "Не получена запись физического лица");
         }
     }
 }

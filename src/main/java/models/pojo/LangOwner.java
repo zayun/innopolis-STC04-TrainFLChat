@@ -9,8 +9,6 @@ import javax.xml.bind.annotation.XmlType;
  * Класс сущности, хранимой в таблице r_LangOwners
  * реализованы геттеры и сеттеры всех полей
  */
-@XmlType(propOrder={"person","language","level"})
-@XmlRootElement
 public class LangOwner {
 
     private Person person;
@@ -29,7 +27,6 @@ public class LangOwner {
         this.level = level;
     }
 
-    @XmlElement
     public Person getPerson() {
         return person;
     }
@@ -38,7 +35,6 @@ public class LangOwner {
         this.person = person;
     }
 
-    @XmlElement
     public Language getLanguage() {
         return language;
     }
@@ -47,7 +43,6 @@ public class LangOwner {
         this.language = language;
     }
 
-    @XmlElement
     public int getLevel() {
         return level;
     }

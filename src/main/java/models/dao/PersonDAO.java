@@ -1,5 +1,7 @@
 package models.dao;
 
+import exceptions.PersonDaoException;
+import models.connector.DatabaseManager;
 import models.pojo.Person;
 import org.apache.log4j.Logger;
 
@@ -10,7 +12,7 @@ import java.util.List;
 /**
  * Created by smoldyrev on 23.02.17.
  */
-public class PersonDAO extends AbstractDAO<Person, Integer> {
+public class PersonDAO {
 
     private static Logger logger = Logger.getLogger(PersonDAO.class);
 
@@ -24,12 +26,11 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
             "\tSET \"FirstName\"=?, \"LastName\"=?, \"birthDay\"=?, email=?, \"phoneNumber\"=?, male=?\n" +
             "\tWHERE \"d_Persons\".\"personID\"=?;";
 
-    @Override
-    public List<Person> getAll() {
+    public List<Person> getAll() throws PersonDaoException {
 
         List<Person> persones = new ArrayList<>();
-        Statement statement = getStatement();
-        try {
+
+        try (Statement statement = DatabaseManager.getStatement()){
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_PERSON);
             if (resultSet.next()) {
                 persones.add(new Person(
@@ -45,18 +46,15 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
             }
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closeStatement(statement);
+            throw new PersonDaoException();
         }
 
         return persones;
     }
 
-    @Override
-    public Person update(Person entity) {
+    public Person update(Person entity) throws PersonDaoException {
 
-        PreparedStatement preparedStatement = getPrepareStatement(SQL_UPDATE_PERSON);
-        try {
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_UPDATE_PERSON)){
             preparedStatement.setString(1, entity.getFirstName());
             preparedStatement.setString(2, entity.getLastName());
             preparedStatement.setDate(3, entity.getBirthday());
@@ -70,21 +68,12 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
             return entity;
         } catch (SQLException e) {
             logger.error(e);
-        } finally {
-            closePrepareStatement(preparedStatement);
+            throw new PersonDaoException();
         }
-        logger.error(entity.getId() + " person was not updated");
-        return null;
     }
 
-    @Override
     public Person getEntityById(Integer id) {
         return null;
-    }
-
-    @Override
-    public boolean delete(Integer id) {
-        return false;
     }
 
     /**
@@ -94,11 +83,10 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
      *
      * @return true - если все успешно прошло
      */
-    @Override
-    public boolean create(Person entity) {
+    public boolean create(Person entity) throws PersonDaoException {
 
-        PreparedStatement preparedStatement = getPrepareStatement(SQL_INSERT_PERSON);
-        try {
+
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_INSERT_PERSON)){
             preparedStatement.setString(1, entity.getFirstName());
             preparedStatement.setString(2, entity.getLastName());
             preparedStatement.setDate(3, new Date(entity.getBirthday().getTime()));
@@ -114,11 +102,10 @@ public class PersonDAO extends AbstractDAO<Person, Integer> {
             return true;
         } catch (SQLException e) {
             logger.error(e);
+            throw new PersonDaoException();
         } catch (NullPointerException e) {
-            logger.debug("trouble with statement");
-        } finally {
-            closePrepareStatement(preparedStatement);
+            logger.error(e);
+            throw new PersonDaoException();
         }
-        return false;
     }
 }
