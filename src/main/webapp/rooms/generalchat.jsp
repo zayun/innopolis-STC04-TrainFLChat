@@ -41,7 +41,10 @@
 </h1>
 <div class="gen">
     <a href="/chat/rooms/privateoffice?id=<%=request.getSession().getAttribute("sessionId")%>">Личный кабинет</a>
-    <a href="/chat/admin/adminoffice">Админка</a>
+    <%if ("admin".equals(request.getSession().getAttribute("sessionUserType"))) {
+        out.print("<a href=\"/chat/admin/adminoffice\">Админка</a>");
+    }%>
+
 </div>
 <div class="userlist">
     <table border="0" cellpadding="1">
@@ -59,7 +62,9 @@
             <tr>
                 <td><c:out value="${user.getLogin()}"></c:out></td>
 
-                <td><a href="/chat/sendmessage?messageto=${user.getUserID()}">></a>
+                <td><a href="/chat/rooms/generalchat?userTo=${user.getUserID()}">></a>
+                </td>
+                <td><a href="/chat/rooms/privatechatroom?userTo=${user.getUserID()}">>pr></a>
                 </td>
             </tr>
         </c:forEach>
@@ -88,16 +93,26 @@
 
         <c:forEach items="${messages}" var="message">
             <tr>
+                <td><c:out value="${message.getStrDate()}"></c:out></td>
                 <td><c:out value="${message.getFromUser().getLogin()}"></c:out></td>
                 <td><c:out value="${message.getToUser().getLogin()}"></c:out></td>
                 <td><c:out value="${message.getBodyText()}"></c:out></td>
-                    <%--<td><a href="admin/deletemsg?msgid=${message.getId()}">del</a>--%>
                 <td>
                     <form action="/chat/deletemsg" method="post">
-                        <input type="text" name="msgid" id="msgid" value="${message.getId()}" hidden>
-                        <input type="submit" value="X" formmethod="post">
+                    <input type="text" name="msgid" id="msgid" value="${message.getId()}" hidden>
+                    <input type="submit" value="X" formmethod="post">
                     </form>
+
                 </td>
+
+            <%--<td>--%>
+                    <%--<%if ("admin".equals(request.getSession().getAttribute("sessionUserType"))) {--%>
+                        <%--out.print("<form action=\"/chat/deletemsg\" method=\"post\">\n" +--%>
+                                <%--"<input type=\"text\" name=\"msgid\" id=\"msgid\" value=\"${message.getId()}\" hidden>\n" +--%>
+                                <%--"<input type=\"submit\" value=\"X\" formmethod=\"post\">\n" +--%>
+                                <%--"</form>");--%>
+                    <%--}%>--%>
+                <%--</td>--%>
             </tr>
         </c:forEach>
 

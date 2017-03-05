@@ -64,6 +64,7 @@
         <c:forEach items="${messages}" var="message">
 
             <tr>
+                <td><c:out value="${message.getStrDate()}"></c:out></td>
                 <td><c:out value="${message.getFromUser().getLogin()}"></c:out></td>
                 <td><c:out value="${message.getToUser().getLogin()}"></c:out></td>
                 <td><c:out value="${message.getBodyText()}"></c:out></td>

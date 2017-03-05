@@ -14,61 +14,61 @@
     </welcome-file-list>
     <filter>
         <filter-name>FilterAuth</filter-name>
-        <filter-class>controllers.filters.FilterAuth</filter-class>
+        <filter-class>ru.innopolis.smoldyrev.controllers.filters.FilterAuth</filter-class>
     </filter>
     <filter>
         <filter-name>FilterAdmin</filter-name>
-        <filter-class>controllers.filters.FilterAdmin</filter-class>
+        <filter-class>ru.innopolis.smoldyrev.controllers.filters.FilterAdmin</filter-class>
     </filter>
 
     <servlet>
         <servlet-name>Authorization</servlet-name>
-        <servlet-class>controllers.AuthorizationServlet</servlet-class>
+        <servlet-class>ru.innopolis.smoldyrev.controllers.AuthorizationServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>EditNotifyList</servlet-name>
-        <servlet-class>controllers.EditNotifyListServlet</servlet-class>
+        <servlet-class>ru.innopolis.smoldyrev.controllers.EditNotifyListServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>DeleteMessage</servlet-name>
-        <servlet-class>controllers.DeleteMessageServlet</servlet-class>
+        <servlet-class>ru.innopolis.smoldyrev.controllers.DeleteMessageServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>SendMessage</servlet-name>
-        <servlet-class>controllers.SendMessageServlet</servlet-class>
+        <servlet-class>ru.innopolis.smoldyrev.controllers.SendMessageServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>PrivateOffice</servlet-name>
-        <servlet-class>controllers.PrivateOfficeServlet</servlet-class>
+        <servlet-class>ru.innopolis.smoldyrev.controllers.PrivateOfficeServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>EditUserServlet</servlet-name>
-        <servlet-class>controllers.EditUserServlet</servlet-class>
+        <servlet-class>ru.innopolis.smoldyrev.controllers.EditUserServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>GeneralChat</servlet-name>
-        <servlet-class>controllers.GeneralChatServlet</servlet-class>
+        <servlet-class>ru.innopolis.smoldyrev.controllers.GeneralChatServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>PrivateChatRoom</servlet-name>
-        <servlet-class>controllers.PrivateChatRoomServlet</servlet-class>
+        <servlet-class>ru.innopolis.smoldyrev.controllers.PrivateChatRoomServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>AdminOffice</servlet-name>
-        <servlet-class>controllers.AdminkaServlet</servlet-class>
+        <servlet-class>ru.innopolis.smoldyrev.controllers.AdminkaServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>Registration</servlet-name>
-        <servlet-class>controllers.RegistrationServlet</servlet-class>
+        <servlet-class>ru.innopolis.smoldyrev.controllers.RegistrationServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
@@ -124,6 +124,19 @@
         <url-pattern>/deletemsg</url-pattern>
     </filter-mapping>
     <listener>
-        <listener-class>controllers.listeners.SessionListener</listener-class>
+        <listener-class>ru.innopolis.smoldyrev.controllers.listeners.SessionListener</listener-class>
     </listener>
+
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            SPR-INF/beans.xml
+        </param-value>
+    </context-param>
+
 </web-app>

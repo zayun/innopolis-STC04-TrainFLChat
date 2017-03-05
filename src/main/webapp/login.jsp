@@ -21,7 +21,16 @@
 </form>
 <form action="/chat/registration" method="post">
     <input type="submit" value="Регистрация" formmethod="GET">
+
 </form>
+
+<%--<%--%>
+    <%--for (int i = 0; i < 10; i++) {--%>
+        <%--out.println("<form action=\"/chat/registration\" method=\"post\">\n" +--%>
+                <%--"    <input type=\"submit\" value=\"Регистрация\" formmethod=\"GET\">\n" +--%>
+                <%--"\n" +--%>
+                <%--"</form>");--%>
+    <%--}%>--%>
 ${msg}
 </body>
 </html>
