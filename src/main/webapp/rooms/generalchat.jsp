@@ -49,7 +49,7 @@
 <div class="userlist">
     <table border="0" cellpadding="1">
         <tr>
-            <form action="/chat/rooms/privatechatroom" method="post">
+            <form action="/chat/rooms/privatechatroom" target="_self" method="post">
 
                 <label for="chatroomin">Go to room #:</label>
                 <input type="number" name="chatroomin" id="chatroomin" value="" placeholder="#">
