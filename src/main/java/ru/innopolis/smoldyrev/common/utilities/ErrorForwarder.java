@@ -1,6 +1,5 @@
 package ru.innopolis.smoldyrev.common.utilities;
 
-import ru.innopolis.smoldyrev.controllers.AuthorizationServlet;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;

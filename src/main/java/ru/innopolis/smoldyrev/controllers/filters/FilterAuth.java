@@ -33,7 +33,7 @@ public class FilterAuth implements Filter {
         } else {
             logger.trace("Authentificator is false, go to auth");
             request.setAttribute("msg", "Сначала авторизируйтесь");
-            request.getRequestDispatcher("/login.jsp").forward(request, response);
+//            request.getRequestDispatcher("/login.jsp").forward(request, response);
         }
         chain.doFilter(request, response);
     }

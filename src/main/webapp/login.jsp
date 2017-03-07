@@ -12,7 +12,7 @@
 </head>
 <body>
 <b>Авторизируйтесь для входа в чат</b>
-<form action="/chat/auth" method="post">
+<form action="/chat/login" method="post">
     <label for="login">Login:</label>
     <input type="text" name="login" id="login" value="" placeholder="Login">
     <label for="password">Password:</label>

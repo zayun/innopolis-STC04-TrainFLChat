@@ -1,4 +1,4 @@
-package ru.innopolis.smoldyrev.controllers;
+package ru.innopolis.smoldyrev.controllers.servlet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
