@@ -12,7 +12,7 @@
 </head>
 <body>
 <h1>Регистрация нового пользователя</h1>
-<form action="/chat/registration" method="post">
+<form action="/registration" method="post">
 
     <label for="login">Login:</label>
     <input type="text" name="login" id="login" value="" placeholder="Login" required>

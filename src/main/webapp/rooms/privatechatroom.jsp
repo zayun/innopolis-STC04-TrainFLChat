@@ -36,29 +36,28 @@
 </head>
 <body>
 <h1>Private chatroom#${chatroom}</h1>
-<form action="/chat/rooms/generalchat" method="post">
-    <input type="submit" value="exit" formmethod="post">
+<form action="/generalchat" method="get">
+    <input type="submit" value="exit" formmethod="get">
 </form>
 
 <div class="chat">
     <table border="0" cellpadding="1">
 
-        <form action="/chat/sendmessage" method="post">
+        <form action="/sendmessage" method="post">
 
             <input type="text" name="userFrom" id="userFrom" value="<%=request.getSession().getAttribute("sessionId")%>"
                    readonly placeholder="userFrom" hidden>
 
-            <label for="userTo">To:</label>
-            <input type="text" name="userTo" id="userTo" value="${userTo}" placeholder="userTo">
+            <label for="toUserId">To:</label>
+            <input type="number" name="toUserId" id="toUserId" value="${toUserId}" placeholder="userTo">
 
             <label for="textMessage">Text:</label>
             <input type="text" name="textMessage" id="textMessage" value="${textMessage}" placeholder="textMessage">
 
-            <input type="text" name="chatroom" id="chatroom" value="${chatroom}" hidden>
+            <input type="number" name="chatroom" id="chatroom" value="${chatroom}" hidden>
 
             <input type="submit" value="send" formmethod="post">
 
-            <%--<input type="submit" value="X" formmethod="<%request.getRequestDispatcher("/generalchat").forward(request, response);%>">--%>
         </form>
 
         <c:forEach items="${messages}" var="message">

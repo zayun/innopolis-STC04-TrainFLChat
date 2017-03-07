@@ -50,22 +50,22 @@
             <td><c:out value="${user.getLogin()}"></c:out></td>
             <td><c:out value="${user.getUserType()}"></c:out></td>
             <td><c:out value="${user.isBlocked()}"></c:out>
-                <form action="/chat/admin/edituser" method="post">
-                    <input type="text" name="userID" id="userID" value="${user.getUserID()}" hidden>
+                <form action="/adm/edituserblock" method="post">
+                    <input type="text" name="userId" id="userId" value="${user.getUserID()}" hidden>
                     <input type="text" name="block" id="block" value="${user.isBlocked()}"} hidden>
                     <input type="submit" value="change" formmethod="post">
                 </form>
             </td>
             <td>
-                <form action="/chat/admin/edituser" method="post">
-                    <input type="text" name="userID" id="userID" value="${user.getUserID()}" hidden>
+                <form action="/adm/editusertype" method="post">
+                    <input type="text" name="userId" id="userId" value="${user.getUserID()}" hidden>
                     <input type="text" name="usertype" id="usertype" value="${user.getUserType()}"}>
                     <input type="submit" value="change" formmethod="post">
                 </form>
             </td>
             <td>
-                <form action="/chat/admin/edittnotifylist" method="get">
-                    <input type="text" name="userID" id="userID" value="${user.getUserID()}" hidden>
+                <form action="/adm/notifylist" method="get">
+                    <input type="text" name="userId" id="userId" value="${user.getUserID()}" hidden>
                     <input type="submit" value=">>notify>>" formmethod="get">
                 </form>
             </td>
@@ -74,8 +74,8 @@
 
 </table>
 </div>
-<form action="/chat/rooms/generalchat" method="post">
-    <input type="submit" value="exit" formmethod="post">
+<form action="/generalchat" method="GET">
+    <input type="submit" value="exit" formmethod="get">
 </form>
 </body>
 </html>

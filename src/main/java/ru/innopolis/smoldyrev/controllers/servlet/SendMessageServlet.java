@@ -1,4 +1,4 @@
-package ru.innopolis.smoldyrev.controllers;
+package ru.innopolis.smoldyrev.controllers.servlet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -23,6 +23,7 @@ import java.io.IOException;
  * Created by smoldyrev on 25.02.17.
  * Отправка сообщения
  */
+
 public class SendMessageServlet extends HttpServlet {
 
     private static Logger logger = Logger.getLogger(SendMessageServlet.class);

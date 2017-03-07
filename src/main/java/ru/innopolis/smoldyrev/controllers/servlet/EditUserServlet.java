@@ -1,10 +1,11 @@
-package ru.innopolis.smoldyrev.controllers;
+package ru.innopolis.smoldyrev.controllers.servlet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import ru.innopolis.smoldyrev.common.utilities.ErrorForwarder;
 import ru.innopolis.smoldyrev.common.exceptions.UserNotFoundException;
 import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;
+import ru.innopolis.smoldyrev.controllers.servlet.GeneralChatServlet;
 import ru.innopolis.smoldyrev.models.pojo.User;
 import org.apache.log4j.Logger;
 import ru.innopolis.smoldyrev.service.UserService;

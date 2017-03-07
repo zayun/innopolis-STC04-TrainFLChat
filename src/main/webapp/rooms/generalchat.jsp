@@ -40,21 +40,21 @@
 <h1>Welcome to FLChat, dear <%=request.getSession().getAttribute("sessionLogin")%>
 </h1>
 <div class="gen">
-    <a href="/chat/rooms/privateoffice?id=<%=request.getSession().getAttribute("sessionId")%>">Личный кабинет</a>
+    <a href="/privateoffice?userId=<%=request.getSession().getAttribute("sessionUserId")%>">Личный кабинет</a>
     <%if ("admin".equals(request.getSession().getAttribute("sessionUserType"))) {
-        out.print("<a href=\"/chat/admin/adminoffice\">Админка</a>");
+        out.print("<a href=\"/adm/adminoffice\">Админка</a>");
     }%>
 
 </div>
 <div class="userlist">
     <table border="0" cellpadding="1">
         <tr>
-            <form action="/chat/rooms/privatechatroom" target="_self" method="post">
+            <form action="/privatechatroom" target="_self" method="get">
 
-                <label for="chatroomin">Go to room #:</label>
-                <input type="number" name="chatroomin" id="chatroomin" value="" placeholder="#">
+                <label for="chatroom">Go to room #:</label>
+                <input type="number" name="chatroom" id="chatroom" value="" placeholder="#">
 
-                <input type="submit" value="privat" formmethod="post">
+                <input type="submit" value="privat" formmethod="get">
             </form>
 
         </tr>
@@ -74,14 +74,14 @@
 <div class="chat">
     <table border="0" cellpadding="1">
 
-        <form action="/chat/sendmessage" method="post">
+        <form action="/sendmessage" method="post">
 
             <%--<label for="userFrom">From:</label>--%>
-            <input type="text" name="userFrom" id="userFrom" value="<%=request.getSession().getAttribute("sessionId")%>"
+            <input type="text" name="userFrom" id="userFrom" value="<%=request.getSession().getAttribute("sessionUserId")%>"
                    readonly placeholder="userFrom" hidden>
 
-            <label for="userTo">To:</label>
-            <input type="number" name="userTo" id="userTo" value="${userTo}" placeholder="userTo">
+            <label for="toUserId">To:</label>
+            <input type="number" name="toUserId" id="toUserId" value="${toUserId}" placeholder="userTo">
 
             <label for="textMessage">Text:</label>
             <input type="text" name="textMessage" id="textMessage" value="${textMessage}" placeholder="textMessage">
@@ -98,7 +98,8 @@
                 <td><c:out value="${message.getToUser().getLogin()}"></c:out></td>
                 <td><c:out value="${message.getBodyText()}"></c:out></td>
                 <td>
-                    <form action="/chat/deletemsg" method="post">
+                    <form action="/delmessage" method="post">
+                        <input type="number" name="chatroom" id="chatroom" value="${message.getChatRoom()}" hidden>
                     <input type="text" name="msgid" id="msgid" value="${message.getId()}" hidden>
                     <input type="submit" value="X" formmethod="post">
                     </form>

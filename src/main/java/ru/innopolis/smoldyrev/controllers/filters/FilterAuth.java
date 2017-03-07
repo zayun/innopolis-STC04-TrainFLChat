@@ -3,6 +3,7 @@ package ru.innopolis.smoldyrev.controllers.filters;
 import org.apache.log4j.Logger;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -13,6 +14,12 @@ import java.io.IOException;
  * проверяет id пользователя
  * записанный при авторизации
  */
+@WebFilter(filterName = "FilterAuth",
+        urlPatterns = {"/generalchat",
+                "/privateoffice",
+                "/privatechatroom",
+                "/sendmessage",
+                "/deletemessage"})
 public class FilterAuth implements Filter {
 
     private static Logger logger = Logger.getLogger(FilterAuth.class);
@@ -27,15 +34,15 @@ public class FilterAuth implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        if (httpRequest.getSession().getAttribute("sessionId") != null) {
+        if (httpRequest.getSession().getAttribute("sessionUserId") != null) {
             logger.trace("Authentificator is true");
             chain.doFilter(request, response);
         } else {
             logger.trace("Authentificator is false, go to auth");
             request.setAttribute("msg", "Сначала авторизируйтесь");
-//            request.getRequestDispatcher("/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/login").forward(request, response);
         }
-        chain.doFilter(request, response);
+
     }
 
     @Override

@@ -16,11 +16,18 @@ import ru.innopolis.smoldyrev.models.pojo.User;
 import ru.innopolis.smoldyrev.service.NotifyService;
 import ru.innopolis.smoldyrev.service.UserService;
 
+
+/**
+ * Created by smoldyrev on 23.02.17.
+ * Сервлет авторизации пользователей
+ * проверяет соответсвие пользователя и пароля
+ * и поле blocked должнобыть false
+ */
 @Controller
-@SessionAttributes({"sessionId", "sessionId"})
+@SessionAttributes({"sessionUserId", "sessionUserType","sessionLogin"})
 public class AuthorizationController {
 
-    private static Logger logger = Logger.getLogger(AuthorizationServlet.class);
+    private static Logger logger = Logger.getLogger(AuthorizationController.class);
 
     static {
         DOMConfigurator.configure("log4j.xml");
@@ -56,10 +63,9 @@ public class AuthorizationController {
 
                 logger.trace(login + "/id=" + user.getUserID() + " authorize successful");
 
-                model.addAttribute("userID", user.getUserID());
-                model.addAttribute("userSession", user.getUserType());
-
-                if ("admin".equals(user.getUserType())) new NotifyThread("admLog").run();
+                model.addAttribute("sessionUserId", user.getUserID());
+                model.addAttribute("sessionUserType", user.getUserType());
+                model.addAttribute("sessionLogin", user.getLogin());
 
                 return "redirect:" + "/generalchat";
             } else {

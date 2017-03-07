@@ -3,6 +3,7 @@ package ru.innopolis.smoldyrev.controllers.filters;
 import org.apache.log4j.Logger;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -13,6 +14,8 @@ import java.io.IOException;
  * проверяет права полученный при авторизации из
  * @see ru.innopolis.smoldyrev.controllers.listeners.SessionListener
  */
+@WebFilter(filterName = "FilterAdmin",
+        urlPatterns = {"/adm/*","/delmessage"})
 public class FilterAdmin implements Filter {
 
     private static Logger logger = Logger.getLogger(FilterAdmin.class);
@@ -35,7 +38,7 @@ public class FilterAdmin implements Filter {
         } else {
             String msg = "Нехватает прав для посещения этого ресурса!";
             httpRequest.setAttribute("msg", msg);
-            httpRequest.getRequestDispatcher("/login.jsp").forward(httpRequest, httpResponse);
+            httpRequest.getRequestDispatcher("/error.jsp").forward(httpRequest, httpResponse);
         }
     }
 
