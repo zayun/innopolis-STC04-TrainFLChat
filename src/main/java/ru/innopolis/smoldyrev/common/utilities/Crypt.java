@@ -1,5 +1,7 @@
 package ru.innopolis.smoldyrev.common.utilities;
 
+import org.apache.log4j.Logger;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -7,14 +9,16 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Created by smoldyrev on 09.03.17.
  */
-public class Crypto {
+public class Crypt {
 
-    public static String md5Custom(String st, String algorithm) {
+    private static Logger logger = Logger.getLogger(Crypt.class);
+
+    private static String md5(String st) {
         MessageDigest messageDigest = null;
         byte[] digest = new byte[0];
 
         try {
-            messageDigest = MessageDigest.getInstance(algorithm);
+            messageDigest = MessageDigest.getInstance("MD5");
             messageDigest.reset();
             messageDigest.update(st.getBytes());
             digest = messageDigest.digest();
@@ -28,7 +32,10 @@ public class Crypto {
         while( md5Hex.length() < 32 ){
             md5Hex = "0" + md5Hex;
         }
-
         return md5Hex;
+    }
+
+    public static String getCriptedPassword(String password, String salt) {
+        return Crypt.md5(salt+password);
     }
 }

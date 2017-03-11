@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import ru.innopolis.smoldyrev.common.exceptions.MessageDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.UserDaoException;
 import ru.innopolis.smoldyrev.models.connector.DatabaseManager;
+import ru.innopolis.smoldyrev.models.dao.interfaces.IMessageDAO;
 import ru.innopolis.smoldyrev.models.pojo.Message;
 import ru.innopolis.smoldyrev.models.pojo.User;
 import org.apache.log4j.Logger;
@@ -20,7 +21,7 @@ import java.util.List;
  * Created by smoldyrev on 25.02.17.
  */
 @Repository
-public class MessageDAO {
+public class MessageDAO implements IMessageDAO{
 
     private static Logger logger = Logger.getLogger(MessageDAO.class);
 

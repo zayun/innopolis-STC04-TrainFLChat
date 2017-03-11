@@ -4,15 +4,15 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import ru.innopolis.smoldyrev.common.exceptions.UserNotFoundException;
 import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;
-import ru.innopolis.smoldyrev.common.utilities.ErrorForwarder;
-import ru.innopolis.smoldyrev.controllers.servlet.AdminkaServlet;
 import ru.innopolis.smoldyrev.models.pojo.User;
-import ru.innopolis.smoldyrev.service.UserService;
+import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
 import java.util.List;
 
@@ -24,22 +24,23 @@ public class AdminkaController {
 
     private static Logger logger = Logger.getLogger(AdminkaController.class);
 
+
+    private IUserService userService;
+
     @Autowired
-    private UserService userService;
+    private void setUserService(IUserService userService) {
+        this.userService = userService;
+    }
 
-    /**Заполняем список пользователей программы
-     * и выводим jsp с этим списком*/
+    /**
+     * Заполняем список пользователей программы
+     * и выводим jsp с этим списком
+     */
     @RequestMapping(value = "/adm/adminoffice", method = RequestMethod.GET)
-    public String showAdmPage(Model model) {
+    public String showAdmPage(Model model) throws UserServiceException {
 
-        try {
-            List<User> users = userService.getAll();
-            model.addAttribute("users", users);
-        } catch (UserServiceException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Ошибка при получении доступа к таблице пользователей");
-            return "error";
-        }
+        List<User> users = userService.getAll();
+        model.addAttribute("users", users);
         return "admin/adminoffice";
     }
 
@@ -50,28 +51,18 @@ public class AdminkaController {
     @RequestMapping(value = "/adm/edituserblock", method = RequestMethod.POST)
     public String editUser(Model model,
                            @RequestParam(name = "userId") String userId,
-                           @RequestParam(name = "block") Boolean block) {
+                           @RequestParam(name = "block") Boolean block) throws UserServiceException, UserNotFoundException {
 
-        try {
-            User user = userService.getUserById(Integer.parseInt(userId));
+        User user = userService.getUserById(Integer.parseInt(userId));
 
-            if (block != null) {
-                user.setBlocked(!user.isBlocked());
-            }
-
-            user = userService.update(user);
-            logger.trace("update " + user.getUserID() + " is ok");
-
-            return "redirect:" + "/adm/adminoffice";
-        } catch (UserServiceException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Ошибка при получении доступа к таблице пользователей");
-            return "error";
-        } catch (UserNotFoundException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Не найден обновляемый пользователь");
-            return "error";
+        if (block != null) {
+            user.setBlocked(!user.isBlocked());
         }
+
+        user = userService.update(user);
+        logger.trace("update " + user.getUserID() + " is ok");
+
+        return "redirect:" + "/adm/adminoffice";
     }
 
     /**
@@ -81,27 +72,25 @@ public class AdminkaController {
     @RequestMapping(value = "/adm/editusertype", method = RequestMethod.POST)
     public String editUser(Model model,
                            @RequestParam(name = "userId") String userId,
-                           @RequestParam(name = "usertype") String usertype) {
+                           @RequestParam(name = "usertype") String usertype) throws UserServiceException, UserNotFoundException {
 
-        try {
-            User user = userService.getUserById(Integer.parseInt(userId));
-            if (usertype != null) {
-                user.setUserType(usertype);
-            }
-
-            user = userService.update(user);
-            logger.trace("update " + user.getUserID() + " is ok");
-
-            return "redirect:" + "/adm/adminoffice";
-
-        } catch (UserServiceException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Ошибка при получении доступа к таблице пользователей");
-            return "error";
-        } catch (UserNotFoundException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Не найден обновляемый пользователь");
-            return "error";
+        User user = userService.getUserById(Integer.parseInt(userId));
+        if (usertype != null) {
+            user.setUserType(usertype);
         }
+
+        user = userService.update(user);
+        logger.trace("update " + user.getUserID() + " is ok");
+
+        return "redirect:" + "/adm/adminoffice";
+    }
+
+    @ExceptionHandler({UserServiceException.class,
+                        UserNotFoundException.class})
+    public ModelAndView handleServiceException(Exception e) {
+        logger.error(e);
+        ModelAndView modelAndView = new ModelAndView("error");
+        modelAndView.addObject("msg", "Проблема с сервисом, извините");
+        return modelAndView;
     }
 }

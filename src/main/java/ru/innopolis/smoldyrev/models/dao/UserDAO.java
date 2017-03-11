@@ -3,6 +3,7 @@ package ru.innopolis.smoldyrev.models.dao;
 import org.springframework.stereotype.Repository;
 import ru.innopolis.smoldyrev.common.exceptions.UserDaoException;
 import ru.innopolis.smoldyrev.models.connector.DatabaseManager;
+import ru.innopolis.smoldyrev.models.dao.interfaces.IUserDAO;
 import ru.innopolis.smoldyrev.models.pojo.Person;
 import ru.innopolis.smoldyrev.models.pojo.User;
 import org.apache.log4j.Logger;
@@ -15,7 +16,7 @@ import java.util.List;
  * Created by smoldyrev on 23.02.17.
  */
 @Repository
-public class UserDAO {
+public class UserDAO implements IUserDAO{
 
     private static Logger logger = Logger.getLogger(UserDAO.class);
 

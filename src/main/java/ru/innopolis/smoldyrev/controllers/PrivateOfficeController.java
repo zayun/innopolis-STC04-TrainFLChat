@@ -2,17 +2,16 @@ package ru.innopolis.smoldyrev.controllers;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import ru.innopolis.smoldyrev.common.exceptions.*;
-import ru.innopolis.smoldyrev.common.utilities.ErrorForwarder;
 import ru.innopolis.smoldyrev.models.pojo.LangOwner;
 import ru.innopolis.smoldyrev.models.pojo.User;
-import ru.innopolis.smoldyrev.service.LanguageService;
-import ru.innopolis.smoldyrev.service.PersonService;
-import ru.innopolis.smoldyrev.service.UserService;
+import ru.innopolis.smoldyrev.service.interfaces.ILanguageService;
+import ru.innopolis.smoldyrev.service.interfaces.IPersonService;
+import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
 import java.sql.Date;
 import java.util.List;
@@ -26,14 +25,26 @@ public class PrivateOfficeController {
 
     private static Logger logger = Logger.getLogger(PrivateOfficeController.class);
 
-    @Autowired
-    private UserService userService;
+    private IUserService userService;
+
+    private IPersonService personService;
+
+    private ILanguageService languageService;
 
     @Autowired
-    private PersonService personService;
+    private void setUserService(IUserService userService) {
+        this.userService = userService;
+    }
 
     @Autowired
-    private LanguageService languageService;
+    private void setPersonService(IPersonService personService) {
+        this.personService = personService;
+    }
+
+    @Autowired
+    private void setLanguageService(ILanguageService languageService) {
+        this.languageService = languageService;
+    }
 
     /**
      * Открытие формы личного кабинета
@@ -45,19 +56,12 @@ public class PrivateOfficeController {
     @RequestMapping(value = "/privateoffice", method = RequestMethod.GET)
     public String showPrivateOfficePage(Model model,
                                        @ModelAttribute("sessionUserId") String sessionUserId,
-                                       @RequestParam(name = "userId") String userId) {
+                                       @RequestParam(name = "userId") String userId) throws InvalidRoleException, UserServiceException, UserNotFoundException, LanguageServiceException {
 
         if (!userId.equals(sessionUserId)) {
-            try {
-                throw new InvalidRoleException();
-            } catch (InvalidRoleException e) {
-                logger.error(e);
-                model.addAttribute("msg", "Вам не положенобыть здесь");
-                return "error";
-            }
+                throw new InvalidRoleException("У вас нет прав на посещение этой страницы!");
         }
 
-        try {
             User user = userService.getUserById(Integer.parseInt(userId));
             List<LangOwner> languages = languageService.getLanguagesOnPerson(user.getPerson().getId());
 
@@ -65,19 +69,6 @@ public class PrivateOfficeController {
             model.addAttribute("languages", languages);
 
             return "/rooms/privateoffice";
-        } catch (UserServiceException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Ошибка при получении доступа к таблице пользователей");
-            return "error";
-        } catch (UserNotFoundException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Не найден пользователь");
-            return "error";
-        } catch (LanguageServiceException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Проблемы с получением языков");
-            return "error";
-        }
     }
 
 
@@ -97,9 +88,8 @@ public class PrivateOfficeController {
                               @RequestParam(name = "birthday") Date birthday,
                               @RequestParam(name = "email") String email,
                               @RequestParam(name = "phoneNumber") String phoneNumber,
-                              @RequestParam(name = "male") Boolean isMale) {
+                              @RequestParam(name = "male") Boolean isMale) throws PersonServiceException, UserServiceException, UserNotFoundException {
 
-        try {
             User user = userService.getUserById(id);
             user.setLogin(login);
             user.setPassword(password);
@@ -114,18 +104,17 @@ public class PrivateOfficeController {
             userService.update(user);
 
             return "redirect:/generalchat";
-        } catch (UserServiceException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Ошибка при получении доступа к таблице пользователей");
-            return "error";
-        } catch (UserNotFoundException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Не найден пользователь");
-            return "error";
-        } catch (PersonServiceException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Не получена запись физического лица");
-            return "error";
-        }
+    }
+
+    @ExceptionHandler({UserServiceException.class,
+            PersonServiceException.class,
+            LanguageServiceException.class,
+            InvalidRoleException.class,
+            UserNotFoundException.class})
+    public ModelAndView handleServiceException(Exception e) {
+        logger.error(e);
+        ModelAndView modelAndView = new ModelAndView("error");
+        modelAndView.addObject("msg",e.getMessage());
+        return modelAndView;
     }
 }

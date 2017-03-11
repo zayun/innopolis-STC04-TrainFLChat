@@ -1,17 +1,17 @@
 package ru.innopolis.smoldyrev.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import ru.innopolis.smoldyrev.common.exceptions.PersonDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.UserDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.UserNotFoundException;
 import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;
-import ru.innopolis.smoldyrev.models.dao.PersonDAO;
-import ru.innopolis.smoldyrev.models.dao.UserDAO;
+import ru.innopolis.smoldyrev.common.utilities.Crypt;
+import ru.innopolis.smoldyrev.models.dao.interfaces.IPersonDAO;
+import ru.innopolis.smoldyrev.models.dao.interfaces.IUserDAO;
 import ru.innopolis.smoldyrev.models.pojo.User;
 import org.apache.log4j.Logger;
+import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
 import java.util.List;
 
@@ -20,28 +20,45 @@ import java.util.List;
  * Сервис работы с пользователями
  */
 @Service
-public class UserService {
+public class UserService implements IUserService {
 
     private static Logger logger = Logger.getLogger(UserService.class);
+    private IUserDAO userDAO;
+    private IPersonDAO personDAO;
 
     @Autowired
-    private UserDAO userDAO;
+    private void setUserDAO(IUserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
     @Autowired
-    private PersonDAO personDAO;
+    private void setPersonDAO(IPersonDAO personDAO) {
+        this.personDAO = personDAO;
+    }
 
     public User authorize(String login, String password) throws UserServiceException {
+
         try {
-            return (userDAO.getUserByLoginAndPassword(login, password));
+            Thread.sleep(1000);
+            String cryptPassword =
+                    Crypt.getCriptedPassword(login, password);
+
+            return (userDAO.getUserByLoginAndPassword(login, cryptPassword));
+
         } catch (UserDaoException e) {
             logger.error(e);
-            throw new UserServiceException();
+            throw new UserServiceException("UserService trouble!");
+        } catch (InterruptedException e) {
+            logger.error(e);
+            throw new UserServiceException("UserService trouble!");
         }
     }
 
     public boolean registration(User user) throws UserServiceException {
 
         try {
+            user.setPassword(Crypt.getCriptedPassword(user.getLogin(), user.getPassword()));
+
             personDAO.create(user.getPerson());
             return (userDAO.create(user));
         } catch (UserDaoException e) {
@@ -55,7 +72,7 @@ public class UserService {
 
     public User getUserById(int id) throws UserServiceException, UserNotFoundException {
         try {
-            User user= userDAO.getEntityById(id);
+            User user = userDAO.getEntityById(id);
 
             if (user == null)
                 throw new UserNotFoundException();
@@ -63,7 +80,7 @@ public class UserService {
             return user;
         } catch (UserDaoException e) {
             logger.error(e);
-            throw new UserServiceException();
+            throw new UserServiceException("");
         } catch (UserNotFoundException e) {
             logger.error(e);
             throw new UserNotFoundException();
@@ -80,6 +97,9 @@ public class UserService {
     }
 
     public User update(User user) throws UserServiceException, UserNotFoundException {
+
+        user.setPassword(Crypt.getCriptedPassword(user.getLogin(), user.getPassword()));
+
         try {
             user = userDAO.update(user);
 

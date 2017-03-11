@@ -4,16 +4,12 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import ru.innopolis.smoldyrev.common.exceptions.MessageServiceException;
-import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;
-import ru.innopolis.smoldyrev.common.utilities.ErrorForwarder;
+import ru.innopolis.smoldyrev.common.exceptions.PersonServiceException;
 import ru.innopolis.smoldyrev.models.pojo.Message;
-import ru.innopolis.smoldyrev.models.pojo.User;
-import ru.innopolis.smoldyrev.service.MessageService;
+import ru.innopolis.smoldyrev.service.interfaces.IMessageService;
 
 import java.util.List;
 
@@ -26,8 +22,12 @@ public class PrivateChatroomController {
 
     private static Logger logger = Logger.getLogger(PrivateChatroomController.class);
 
+    private IMessageService messageService;
+
     @Autowired
-    private MessageService messageService;
+    private void setMessageService(IMessageService messageService) {
+        this.messageService = messageService;
+    }
 
     /**
      * Открываем чат комнату
@@ -38,21 +38,23 @@ public class PrivateChatroomController {
     @RequestMapping(value = "/privatechatroom", method = RequestMethod.GET)
     public String showGenPage(Model model,
                               @ModelAttribute("sessionUserId") String userId,
-                              @RequestParam(name = "chatroom") int chatroom) {
+                              @RequestParam(name = "chatroom") int chatroom) throws MessageServiceException {
 
         List<Message> messages = null;
-        try {
             messages = messageService.getAllInRoom(chatroom);
 
             model.addAttribute("messages", messages);
             model.addAttribute("chatroom", chatroom);
 
             return "/rooms/privatechatroom";
-        } catch (MessageServiceException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Ошибка получения сообщений");
-            return "error";
-        }
+    }
+
+    @ExceptionHandler(MessageServiceException.class)
+    public ModelAndView handleMessageServiceException(Exception e) {
+        logger.error(e);
+        ModelAndView modelAndView = new ModelAndView("error");
+        modelAndView.addObject("msg",e.getMessage());
+        return modelAndView;
     }
 }
 

@@ -1,4 +1,4 @@
-package ru.innopolis.smoldyrev.service;
+package ru.innopolis.smoldyrev.service.interfaces;
 
 import ru.innopolis.smoldyrev.common.exceptions.UserNotFoundException;
 import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;

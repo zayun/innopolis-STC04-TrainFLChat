@@ -4,9 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.innopolis.smoldyrev.common.exceptions.MessageDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.MessageServiceException;
-import ru.innopolis.smoldyrev.models.dao.MessageDAO;
+import ru.innopolis.smoldyrev.models.dao.interfaces.IMessageDAO;
 import ru.innopolis.smoldyrev.models.pojo.Message;
 import org.apache.log4j.Logger;
+import ru.innopolis.smoldyrev.service.interfaces.IMessageService;
 
 import java.util.List;
 
@@ -15,12 +16,17 @@ import java.util.List;
  * Сервис работы с сообщениями
  */
 @Service
-public class MessageService {
+public class MessageService implements IMessageService {
 
     private static Logger logger = Logger.getLogger(MessageService.class);
 
+
+    private IMessageDAO messageDAO;
+
     @Autowired
-    private MessageDAO messageDAO;
+    private void setMessageDAO(IMessageDAO messageDAO) {
+        this.messageDAO = messageDAO;
+    }
 
     public boolean sendMessage(Message message) throws MessageServiceException {
 

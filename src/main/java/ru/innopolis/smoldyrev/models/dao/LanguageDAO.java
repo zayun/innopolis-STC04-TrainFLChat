@@ -3,6 +3,7 @@ package ru.innopolis.smoldyrev.models.dao;
 import org.springframework.stereotype.Repository;
 import ru.innopolis.smoldyrev.common.exceptions.LanguageDaoException;
 import ru.innopolis.smoldyrev.models.connector.DatabaseManager;
+import ru.innopolis.smoldyrev.models.dao.interfaces.ILanguageDAO;
 import ru.innopolis.smoldyrev.models.pojo.LangOwner;
 import ru.innopolis.smoldyrev.models.pojo.Language;
 import ru.innopolis.smoldyrev.models.pojo.Person;
@@ -18,7 +19,7 @@ import java.util.List;
  * Created by smoldyrev on 24.02.17.
  */
 @Repository
-public class LanguageDAO {
+public class LanguageDAO implements ILanguageDAO{
 
     private static Logger logger = Logger.getLogger(LanguageDAO.class);
 

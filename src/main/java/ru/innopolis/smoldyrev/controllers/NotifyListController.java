@@ -4,15 +4,18 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import ru.innopolis.smoldyrev.common.exceptions.MessageServiceException;
 import ru.innopolis.smoldyrev.common.exceptions.NotifyServiceException;
 import ru.innopolis.smoldyrev.common.exceptions.UserNotFoundException;
 import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;
 import ru.innopolis.smoldyrev.models.pojo.Notifyer;
-import ru.innopolis.smoldyrev.service.NotifyService;
-import ru.innopolis.smoldyrev.service.UserService;
+import ru.innopolis.smoldyrev.service.interfaces.INotifyService;
+import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
 import java.util.List;
 
@@ -24,31 +27,32 @@ public class NotifyListController {
 
     private static Logger logger = Logger.getLogger(NotifyListController.class);
 
-    @Autowired
-    private UserService userService;
+    private IUserService userService;
+
+    private INotifyService notifyService;
 
     @Autowired
-    private NotifyService notifyService;
+    private void setUserService(IUserService userService) {
+        this.userService = userService;
+    }
+
+    @Autowired
+    private void setNotifyService(INotifyService notifyService) {
+        this.notifyService = notifyService;
+    }
 
     /**
      * Открываем список оповещений для этого пользователя
      */
     @RequestMapping(value = "/adm/notifylist", method = RequestMethod.GET)
     public String showNotifyListPage(Model model,
-                                     @RequestParam(name = "userId") int userId) {
+                                     @RequestParam(name = "userId") int userId) throws NotifyServiceException {
 
-        try {
-            List<Notifyer> notifyerList = notifyService.getAllByUser(userId);
-            model.addAttribute("notifyers", notifyerList);
-            model.addAttribute("userId", userId);
+        List<Notifyer> notifyerList = notifyService.getAllByUser(userId);
+        model.addAttribute("notifyers", notifyerList);
+        model.addAttribute("userId", userId);
 
-            return "/admin/notifyerlist";
-
-        } catch (NotifyServiceException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Ошибка при получении списка оповещени");
-            return "error";
-        }
+        return "/admin/notifyerlist";
     }
 
     /**
@@ -57,26 +61,13 @@ public class NotifyListController {
     @RequestMapping(value = "/adm/addnotify", method = RequestMethod.POST)
     public String addNotify(Model model,
                             @RequestParam(name = "userId") int userId,
-                            @RequestParam(name = "notType") String notType) {
+                            @RequestParam(name = "notType") String notType) throws NotifyServiceException, UserServiceException, UserNotFoundException {
 
-        try {
-            Notifyer notifyer = new Notifyer();
-            notifyer.setNotType(notType);
-            notifyer.setUser(userService.getUserById(userId));
-            notifyService.create(notifyer);
-        } catch (UserServiceException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Ошибка при получении доступа к таблице пользователей");
-            return "error";
-        } catch (UserNotFoundException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Не найден пользователь");
-            return "error";
-        } catch (NotifyServiceException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Ошибка при получении списка оповещений");
-            return "error";
-        }
+        Notifyer notifyer = new Notifyer();
+        notifyer.setNotType(notType);
+        notifyer.setUser(userService.getUserById(userId));
+        notifyService.create(notifyer);
+
         model.addAttribute("userId", userId);
         return "redirect:" + "/adm/notifylist";
     }
@@ -87,14 +78,9 @@ public class NotifyListController {
     @RequestMapping(value = "/adm/delnotify", method = RequestMethod.POST)
     public String delNotify(Model model,
                             @RequestParam(name = "notId") int notId,
-                            @RequestParam(name = "userId") int userId) {
-        try {
-            notifyService.delete(notId);
-        } catch (NotifyServiceException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Ошибка при получении списка оповещений");
-            return "error";
-        }
+                            @RequestParam(name = "userId") int userId) throws NotifyServiceException {
+        notifyService.delete(notId);
+
         model.addAttribute("userId", userId);
         return "redirect:" + "/adm/notifylist";
     }
@@ -106,20 +92,23 @@ public class NotifyListController {
     public String editNotify(Model model,
                              @RequestParam(name = "notId") int notId,
                              @RequestParam(name = "notType") String notType,
-                             @RequestParam(name = "userId") int userId) {
+                             @RequestParam(name = "userId") int userId) throws NotifyServiceException {
 
-        try {
-            Notifyer notifyer = notifyService.getNotifyById(notId);
-            notifyer.setNotType(notType);
-            notifyService.update(notifyer);
-        } catch (NotifyServiceException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Ошибка при получении списка оповещений");
-            return "error";
-        }
+        Notifyer notifyer = notifyService.getNotifyById(notId);
+        notifyer.setNotType(notType);
+        notifyService.update(notifyer);
 
         model.addAttribute("userId", userId);
         return "redirect:" + "/adm/notifylist";
+    }
+
+    @ExceptionHandler({NotifyServiceException.class,
+            UserServiceException.class})
+    public ModelAndView handleServiceException(Exception e) {
+        logger.error(e);
+        ModelAndView modelAndView = new ModelAndView("error");
+        modelAndView.addObject("msg",e.getMessage());
+        return modelAndView;
     }
 
 }

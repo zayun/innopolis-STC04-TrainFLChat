@@ -1,4 +1,3 @@
-
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -36,16 +35,24 @@
             <a class="navbar-brand" href="#">WebSiteName</a>
         </div>
         <ul class="nav navbar-nav">
+
+            <c:if test="${pageContext.session.getAttribute('sessionUserType') == 'admin'}">
+                <li><a href="/adm/adminoffice">ADMINKA</a></li>
+            </c:if>
             <li class="active"><a href="/generalchat">Home</a></li>
             <%--<li><a href="#">Page 1</a></li>--%>
             <li><a href="/privateoffice?userId=<%=request.getSession().getAttribute("sessionUserId")%>">
-                <%=request.getSession().getAttribute("sessionLogin")%></a></li>
+                <%=request.getSession().getAttribute("sessionLogin")%>
+            </a></li>
             <li><a href="/logout">Logout</a></li>
+
         </ul>
     </div>
 </nav>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script><%@include file='/resources/bootstrap/js/bootstrap.min.js'%></script>
+<script>
+    <%@include file='/resources/bootstrap/js/bootstrap.min.js' %>
+</script>
 </body>
 </html>
 

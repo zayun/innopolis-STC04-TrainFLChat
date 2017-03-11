@@ -1,4 +1,4 @@
-package ru.innopolis.smoldyrev.service;
+package ru.innopolis.smoldyrev.service.interfaces;
 
 import ru.innopolis.smoldyrev.common.exceptions.MessageServiceException;
 import ru.innopolis.smoldyrev.models.pojo.Message;

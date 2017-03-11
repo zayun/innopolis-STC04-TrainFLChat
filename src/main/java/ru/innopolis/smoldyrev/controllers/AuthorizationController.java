@@ -5,16 +5,13 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.ModelAndView;
 import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;
-import ru.innopolis.smoldyrev.common.utilities.NotifyThread;
-import ru.innopolis.smoldyrev.controllers.servlet.AuthorizationServlet;
 import ru.innopolis.smoldyrev.models.pojo.User;
-import ru.innopolis.smoldyrev.service.NotifyService;
-import ru.innopolis.smoldyrev.service.UserService;
+import ru.innopolis.smoldyrev.service.interfaces.INotifyService;
+import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
 
 /**
@@ -33,11 +30,13 @@ public class AuthorizationController {
         DOMConfigurator.configure("log4j.xml");
     }
 
-    @Autowired
-    private UserService userService;
+
+    private IUserService userService;
 
     @Autowired
-    private NotifyService notifyService;
+    private void setUserService(IUserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String showLoginPage(Model model) {
@@ -54,9 +53,8 @@ public class AuthorizationController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(Model model,
                         @RequestParam(name = "login") String login,
-                        @RequestParam(name = "password") String password) {
+                        @RequestParam(name = "password") String password) throws UserServiceException {
 
-        try {
             User user = userService.authorize(login, password);
 
             if (user != null && !user.isBlocked()) {
@@ -74,20 +72,23 @@ public class AuthorizationController {
                 model.addAttribute("msg", msg);
                 return "login";
             }
-        } catch (UserServiceException e) {
-            logger.error(e);
-        }
-        return "login";
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public String login(Model model) {
+    public String login(Model model,
+                        SessionStatus status) {
 
-        model.addAttribute("sessionUserId", null);
-        model.addAttribute("sessionUserType", "");
-        model.addAttribute("sessionLogin", "");
+        status.setComplete();
 
         return "login";
+    }
+
+    @ExceptionHandler(UserServiceException.class)
+    public ModelAndView handleUserServiceException(Exception e) {
+        logger.error(e);
+        ModelAndView modelAndView = new ModelAndView("error");
+        modelAndView.addObject("msg",e.getMessage());
+        return modelAndView;
     }
 
 }

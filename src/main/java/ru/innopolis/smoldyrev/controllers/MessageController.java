@@ -5,13 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.innopolis.smoldyrev.common.exceptions.MessageServiceException;
-import ru.innopolis.smoldyrev.common.exceptions.UserNotFoundException;
-import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;
+import org.springframework.web.servlet.ModelAndView;
+import ru.innopolis.smoldyrev.common.exceptions.*;
 import ru.innopolis.smoldyrev.models.pojo.Message;
 import ru.innopolis.smoldyrev.models.pojo.User;
-import ru.innopolis.smoldyrev.service.MessageService;
-import ru.innopolis.smoldyrev.service.UserService;
+import ru.innopolis.smoldyrev.service.interfaces.IMessageService;
+import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
 /**
  * Created by smoldyrev on 07.03.17.
@@ -23,11 +22,19 @@ public class MessageController {
 
     private static Logger logger = Logger.getLogger(MessageController.class);
 
-    @Autowired
-    private UserService userService;
+    private IUserService userService;
+
+    private IMessageService messageService;
 
     @Autowired
-    private MessageService messageService;
+    private void setUserService(IUserService userService) {
+        this.userService = userService;
+    }
+
+    @Autowired
+    private void setMessageService(IMessageService messageService) {
+        this.messageService = messageService;
+    }
 
     /**
      * Отправка сообщения
@@ -41,63 +48,53 @@ public class MessageController {
                               @ModelAttribute("sessionUserId") String fromUserId,
                               @RequestParam(name = "toUserId") String toUserId,
                               @RequestParam(name = "textMessage") String textMessage,
-                              @RequestParam(name = "chatroom") int chatroom) {
+                              @RequestParam(name = "chatroom") int chatroom) throws UserServiceException, UserNotFoundException, MessageServiceException {
 
 
-        try {
+        toUserId = "".equals(toUserId) ? "999" : toUserId;
+        User userFrom = userService.getUserById(Integer.parseInt(fromUserId));
+        User userTo = userService.getUserById(Integer.parseInt(toUserId));
 
-            toUserId = "".equals(toUserId)?"999":toUserId;
-            User userFrom = userService.getUserById(Integer.parseInt(fromUserId));
-            User userTo = userService.getUserById(Integer.parseInt(toUserId));
+        if (userFrom == null || userTo == null) {
+            throw new UserNotFoundException();
+        }
 
-            if (userFrom == null || userTo == null) {
-                throw new UserNotFoundException();
-            }
+        Message message = new Message();
+        message.setFromUser(userFrom);
+        message.setToUser(userTo);
+        message.setBodyText(textMessage);
+        message.setChatRoom(chatroom);
 
-            Message message = new Message();
-            message.setFromUser(userFrom);
-            message.setToUser(userTo);
-            message.setBodyText(textMessage);
-            message.setChatRoom(chatroom);
+        messageService.sendMessage(message);
 
-            messageService.sendMessage(message);
-
-            model.addAttribute("chatroom", chatroom);
-            if (chatroom == 0) {
-                return "redirect:"+"/generalchat";
-            } else {
-                return "redirect:"+"/privatechatroom";
-            }
-
-        } catch (UserServiceException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Ошибка при получении доступа к таблице пользователей");
-            return "error";
-        } catch (UserNotFoundException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Отправка сообщения не удалась, не найден пользователь");
-            return "error";
-        } catch (MessageServiceException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Ошибка при отправке сообщения");
-            return "error";
+        model.addAttribute("chatroom", chatroom);
+        if (chatroom == 0) {
+            return "redirect:" + "/generalchat";
+        } else {
+            return "redirect:" + "/privatechatroom";
         }
     }
 
-    /**Получаем msgid - id сообщения в БД
-     * отправляем запрос на удаление сообщения по id*/
+    /**
+     * Получаем msgid - id сообщения в БД
+     * отправляем запрос на удаление сообщения по id
+     */
     @RequestMapping(value = "/delmessage", method = RequestMethod.POST)
     public String delMessage(Model model,
-                              @RequestParam(name = "msgid") int msgid,
-                             @RequestParam(name = "chatroom") int chatroom) {
-        try {
-            messageService.deleteMessage(msgid);
-            model.addAttribute("chatroom", chatroom);
-            return (chatroom==0)?"redirect:/generalchat":"redirect:/privatchatroom";
-        } catch (MessageServiceException e) {
-            logger.error(e);
-            model.addAttribute("msg", "Ошибка удаления сообщения");
-            return "error";
-        }
+                             @RequestParam(name = "msgid") int msgid,
+                             @RequestParam(name = "chatroom") int chatroom) throws MessageServiceException {
+        messageService.deleteMessage(msgid);
+        model.addAttribute("chatroom", chatroom);
+        return (chatroom == 0) ? "redirect:/generalchat" : "redirect:/privatchatroom";
+    }
+
+    @ExceptionHandler({UserServiceException.class,
+            MessageServiceException.class,
+            UserNotFoundException.class})
+    public ModelAndView handleServiceException(Exception e) {
+        logger.error(e);
+        ModelAndView modelAndView = new ModelAndView("error");
+        modelAndView.addObject("msg",e.getMessage());
+        return modelAndView;
     }
 }

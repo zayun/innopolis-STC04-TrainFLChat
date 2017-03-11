@@ -5,6 +5,7 @@
   Time: 21:30
   To change this template use File | Settings | File Templates.
 --%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c"
            uri="http://java.sun.com/jsp/jstl/core" %>
@@ -37,6 +38,7 @@
     </style>
 </head>
 <body>
+<div><%@include file='navbar.jsp'%></div>
 <h1>Welcome to FLChat, dear <%=request.getSession().getAttribute("sessionLogin")%>
 </h1>
 <div class="gen">
@@ -44,7 +46,7 @@
     <%if ("admin".equals(request.getSession().getAttribute("sessionUserType"))) {
         out.print("<a href=\"/adm/adminoffice\">Админка</a>");
     }%>
-
+    <a href="/logout">logout</a>
 </div>
 <div class="userlist">
     <table border="0" cellpadding="1">
