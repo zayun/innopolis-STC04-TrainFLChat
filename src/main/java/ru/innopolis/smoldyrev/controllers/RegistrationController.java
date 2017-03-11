@@ -33,7 +33,7 @@ public class RegistrationController {
     }
 
     /**
-     * Запись дынных внесенных на форму registration.jsp в БД
+     * Запись данных внесенных на форму registration.jsp в БД
      * при любом исходе редирект на login.jsp
      * с сообщением о результате
      */

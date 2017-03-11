@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.innopolis.smoldyrev.common.exceptions.MessageServiceException;
 import ru.innopolis.smoldyrev.common.exceptions.UserNotFoundException;
 import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;
-import ru.innopolis.smoldyrev.common.utilities.ErrorForwarder;
 import ru.innopolis.smoldyrev.models.pojo.Message;
 import ru.innopolis.smoldyrev.models.pojo.User;
 import ru.innopolis.smoldyrev.service.MessageService;

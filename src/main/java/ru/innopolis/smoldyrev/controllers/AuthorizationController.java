@@ -24,7 +24,7 @@ import ru.innopolis.smoldyrev.service.UserService;
  * и поле blocked должнобыть false
  */
 @Controller
-@SessionAttributes({"sessionUserId", "sessionUserType","sessionLogin"})
+@SessionAttributes({"sessionUserId", "sessionUserType", "sessionLogin"})
 public class AuthorizationController {
 
     private static Logger logger = Logger.getLogger(AuthorizationController.class);
@@ -77,6 +77,16 @@ public class AuthorizationController {
         } catch (UserServiceException e) {
             logger.error(e);
         }
+        return "login";
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String login(Model model) {
+
+        model.addAttribute("sessionUserId", null);
+        model.addAttribute("sessionUserType", "");
+        model.addAttribute("sessionLogin", "");
+
         return "login";
     }
 
