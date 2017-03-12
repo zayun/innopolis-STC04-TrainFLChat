@@ -56,7 +56,7 @@ public class PrivateOfficeController {
     @RequestMapping(value = "/privateoffice", method = RequestMethod.GET)
     public String showPrivateOfficePage(Model model,
                                        @ModelAttribute("sessionUserId") String sessionUserId,
-                                       @RequestParam(name = "userId") String userId) throws InvalidRoleException, UserServiceException, UserNotFoundException, LanguageServiceException {
+                                       @RequestParam(name = "userId") String userId) throws Exception {
 
         if (!userId.equals(sessionUserId)) {
                 throw new InvalidRoleException("У вас нет прав на посещение этой страницы!");
@@ -88,7 +88,7 @@ public class PrivateOfficeController {
                               @RequestParam(name = "birthday") Date birthday,
                               @RequestParam(name = "email") String email,
                               @RequestParam(name = "phoneNumber") String phoneNumber,
-                              @RequestParam(name = "male") Boolean isMale) throws PersonServiceException, UserServiceException, UserNotFoundException {
+                              @RequestParam(name = "male") Boolean isMale) throws Exception {
 
             User user = userService.getUserById(id);
             user.setLogin(login);
@@ -110,7 +110,7 @@ public class PrivateOfficeController {
             PersonServiceException.class,
             LanguageServiceException.class,
             InvalidRoleException.class,
-            UserNotFoundException.class})
+            UserNotFoundException.class,Exception.class})
     public ModelAndView handleServiceException(Exception e) {
         logger.error(e);
         ModelAndView modelAndView = new ModelAndView("error");

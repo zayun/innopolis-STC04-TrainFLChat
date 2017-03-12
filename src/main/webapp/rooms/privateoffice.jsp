@@ -13,6 +13,10 @@
     <title>Личный кабинет</title>
 </head>
 <body>
+
+<div>
+    <%@include file='/rooms/navbar.jsp' %>
+</div>
 <h1>Добро пожаловать в личный кабинет, ${firstName}</h1>
 
 <form action="/privateoffice" method="post">
@@ -61,7 +65,7 @@
         </td>
 
         <tr>
-            <td><label for="male">Male?</label><%--надо разобраться не пишется в базу тру, всегда фолс--%>
+            <td><label for="male">Male?</label>
                 <input type="text" name="male" id="male" value="${user.person.male}" placeholder="male">
         </tr>
         </td>

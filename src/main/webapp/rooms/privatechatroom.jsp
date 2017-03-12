@@ -12,66 +12,40 @@
 <head>
     <title>Private chat room</title>
     <style>
-        .chat {
-            overflow: scroll;
-            width: 1000px; /* Ширина блока */
-            height: 300px; /* Высота блока */
-            background-color: #fc0; /* Цвет фона слоя */
-            padding: 5px; /* Поля вокруг текста */
-            float: left; /* Обтекание по правому краю */
-            width: 1000px; /* Ширина слоя */
-        }
-
-        .users {
-            background-color: #c0c0c0; /* Цвет фона слоя */
-            padding: 5px; /* Поля вокруг текста */
-            width: 300px; /* Ширина слоя */
-            float: left; /* Обтекание по правому краю */
-        }
-
-        .gen {
-            clear: left; /* Отмена обтекания */
-        }
+        <%@include file='/resources/bootstrap/css/bootstrap.css'%>
     </style>
+    <style>
+        <%@include file='/resources/bootstrap/css/common.css'%>
+    </style>
+
 </head>
 <body>
-<h1>Private chatroom#${chatroom}</h1>
-<form action="/generalchat" method="get">
-    <input type="submit" value="exit" formmethod="get">
-</form>
-
-<div class="chat">
-    <table border="0" cellpadding="1">
-
-        <form action="/sendmessage" method="post">
-
-            <input type="text" name="userFrom" id="userFrom" value="<%=request.getSession().getAttribute("sessionId")%>"
-                   readonly placeholder="userFrom" hidden>
-
-            <label for="toUserId">To:</label>
-            <input type="number" name="toUserId" id="toUserId" value="${toUserId}" placeholder="userTo">
-
-            <label for="textMessage">Text:</label>
-            <input type="text" name="textMessage" id="textMessage" value="${textMessage}" placeholder="textMessage">
-
-            <input type="number" name="chatroom" id="chatroom" value="${chatroom}" hidden>
-
-            <input type="submit" value="send" formmethod="post">
-
-        </form>
-
-        <c:forEach items="${messages}" var="message">
-
-            <tr>
-                <td><c:out value="${message.getStrDate()}"></c:out></td>
-                <td><c:out value="${message.getFromUser().getLogin()}"></c:out></td>
-                <td><c:out value="${message.getToUser().getLogin()}"></c:out></td>
-                <td><c:out value="${message.getBodyText()}"></c:out></td>
-            </tr>
-        </c:forEach>
-
-    </table>
+<div>
+    <%@include file='/rooms/navbar.jsp' %>
 </div>
+<h1>Private chatroom#${chatroom}</h1>
 
+
+<div class="container">
+    <form class="form-inline" action="/sendmessage" method="post">
+        <input type="number" name="chatroom" id="chatroom" value="${chatroom}" readonly hidden>
+        <input type="number" name="toUserId" id="toUserId" value="${toUserId}" placeholder="userTo">
+        <input name="textMessage" id="textMessage" type="text" placeholder="Type your message here...">
+
+        <button formmethod="post" class="btn btn-primary btn-sm" id="btn-chat">
+            Send
+        </button>
+
+    </form>
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="chatGroup">
+                    <%@include file='messagebox2.jsp' %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

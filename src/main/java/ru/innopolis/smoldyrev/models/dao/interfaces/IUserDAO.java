@@ -1,6 +1,7 @@
 package ru.innopolis.smoldyrev.models.dao.interfaces;
 
 import ru.innopolis.smoldyrev.common.exceptions.UserDaoException;
+import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;
 import ru.innopolis.smoldyrev.models.pojo.User;
 
 import java.util.List;
@@ -13,6 +14,8 @@ public interface IUserDAO {
     User getUserByLoginAndPassword(String login, String password) throws UserDaoException;
 
     List<User> getAll() throws UserDaoException;
+
+    List<User> getAllInConverse(int converse) throws UserDaoException;
 
     User update(User entity) throws UserDaoException;
 

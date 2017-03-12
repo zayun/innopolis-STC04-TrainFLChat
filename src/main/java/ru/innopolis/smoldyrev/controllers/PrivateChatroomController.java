@@ -8,9 +8,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.innopolis.smoldyrev.common.exceptions.MessageServiceException;
 import ru.innopolis.smoldyrev.common.exceptions.PersonServiceException;
-import ru.innopolis.smoldyrev.models.pojo.Message;
+import ru.innopolis.smoldyrev.models.dao.interfaces.IConverseDAO;
+import ru.innopolis.smoldyrev.models.pojo.*;
+import ru.innopolis.smoldyrev.service.interfaces.IConverseService;
 import ru.innopolis.smoldyrev.service.interfaces.IMessageService;
+import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,37 +31,112 @@ public class PrivateChatroomController {
 
     private IMessageService messageService;
 
+    private IUserService userService;
+
+    private IConverseService converseService;
+
+
+    @Autowired
+    public void setUserService(IUserService userService) {
+        this.userService = userService;
+    }
+
     @Autowired
     private void setMessageService(IMessageService messageService) {
         this.messageService = messageService;
     }
 
+    @Autowired
+    public void setConverseService(IConverseService converseService) {
+        this.converseService = converseService;
+    }
+
     /**
      * Открываем чат комнату
      * загружаем все сообщения chatroom
-     * загружаем всех пользователей
      * открываем форму
      */
     @RequestMapping(value = "/privatechatroom", method = RequestMethod.GET)
     public String showGenPage(Model model,
                               @ModelAttribute("sessionUserId") String userId,
-                              @RequestParam(name = "chatroom") int chatroom) throws MessageServiceException {
+                              @RequestParam(name = "chatroom") int chatroom) throws Exception {
 
         List<Message> messages = null;
-            messages = messageService.getAllInRoom(chatroom);
+        messages = messageService.getAllInRoom(chatroom);
 
-            model.addAttribute("messages", messages);
-            model.addAttribute("chatroom", chatroom);
+        model.addAttribute("messages", messages);
+        model.addAttribute("chatroom", chatroom);
 
-            return "/rooms/privatechatroom";
+        return "/rooms/privatechatroom";
     }
 
-    @ExceptionHandler(MessageServiceException.class)
+    @ExceptionHandler({MessageServiceException.class, Exception.class})
     public ModelAndView handleMessageServiceException(Exception e) {
         logger.error(e);
         ModelAndView modelAndView = new ModelAndView("error");
-        modelAndView.addObject("msg",e.getMessage());
+        modelAndView.addObject("msg", e.getMessage());
         return modelAndView;
+    }
+
+    /**
+     * Создаем беседу
+     * загружаем все сообщения chatroom
+     * открываем форму
+     */
+    @RequestMapping(value = "/createconverse", method = RequestMethod.GET)
+    public String openConverse(Model model,
+                              @ModelAttribute("sessionUserId") String userId,
+                              @RequestParam(name = "chatroom") int chatroom,
+                               @RequestParam(name = "converse")int converse) throws Exception {
+
+        converse = converseService.createConversation(chatroom, LocalDateTime.now());
+        model.addAttribute("chatroom", chatroom);
+        model.addAttribute("converse", converse);
+        model.addAttribute("start_date", LocalDateTime.now());
+
+        model.addAttribute("users", userService.getAllInConverse(converse));
+
+        return "/rooms/createconverse";
+    }
+
+
+    /**
+     * Создаем беседу
+     * загружаем все сообщения chatroom
+     * открываем форму
+     */
+    @RequestMapping(value = "/checkconversation", method = RequestMethod.GET)
+    public String checkConversation(Model model) throws Exception {
+
+        List<Conversation> conversations = converseService.getActiveConversation(LocalDateTime.now());
+        System.out.println("/////////////"+conversations.size());
+        model.addAttribute("conversations", converseService.getActiveConversation(LocalDateTime.now()));
+
+        return "/rooms/checkconversation";
+    }
+
+    /**
+     * Создаем беседу
+     * загружаем все сообщения chatroom
+     * открываем форму
+     */
+    @RequestMapping(value = "/addconversemember", method = RequestMethod.POST)
+    public String addConverseMember(Model model,
+                                 @RequestParam("userId") int userId,
+                                     @RequestParam("converse") int converse,
+                                    @RequestParam("chatroom") int chatroom) throws Exception {
+
+
+        model.addAttribute("userId", userId);
+        model.addAttribute("converse", converse);
+        model.addAttribute("chatroom", chatroom);
+
+
+        if (converseService.addConverseMember(converse,userId)) {
+            return "redirect:/createconverse";
+        }
+
+        return "redirect:/createconverse";
     }
 }
 

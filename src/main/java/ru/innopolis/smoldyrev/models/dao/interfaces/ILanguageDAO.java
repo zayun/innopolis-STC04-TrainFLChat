@@ -12,4 +12,6 @@ public interface ILanguageDAO {
 
     List<LangOwner> getLanguagesOnPerson(int personId) throws LanguageDaoException;
 
+    boolean createLangOwner(LangOwner entity) throws LanguageDaoException;
+
 }

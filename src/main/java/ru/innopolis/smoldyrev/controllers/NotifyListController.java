@@ -46,7 +46,7 @@ public class NotifyListController {
      */
     @RequestMapping(value = "/adm/notifylist", method = RequestMethod.GET)
     public String showNotifyListPage(Model model,
-                                     @RequestParam(name = "userId") int userId) throws NotifyServiceException {
+                                     @RequestParam(name = "userId") int userId) throws Exception {
 
         List<Notifyer> notifyerList = notifyService.getAllByUser(userId);
         model.addAttribute("notifyers", notifyerList);
@@ -61,7 +61,7 @@ public class NotifyListController {
     @RequestMapping(value = "/adm/addnotify", method = RequestMethod.POST)
     public String addNotify(Model model,
                             @RequestParam(name = "userId") int userId,
-                            @RequestParam(name = "notType") String notType) throws NotifyServiceException, UserServiceException, UserNotFoundException {
+                            @RequestParam(name = "notType") String notType) throws Exception {
 
         Notifyer notifyer = new Notifyer();
         notifyer.setNotType(notType);
@@ -78,7 +78,7 @@ public class NotifyListController {
     @RequestMapping(value = "/adm/delnotify", method = RequestMethod.POST)
     public String delNotify(Model model,
                             @RequestParam(name = "notId") int notId,
-                            @RequestParam(name = "userId") int userId) throws NotifyServiceException {
+                            @RequestParam(name = "userId") int userId) throws Exception {
         notifyService.delete(notId);
 
         model.addAttribute("userId", userId);
@@ -92,7 +92,7 @@ public class NotifyListController {
     public String editNotify(Model model,
                              @RequestParam(name = "notId") int notId,
                              @RequestParam(name = "notType") String notType,
-                             @RequestParam(name = "userId") int userId) throws NotifyServiceException {
+                             @RequestParam(name = "userId") int userId) throws Exception {
 
         Notifyer notifyer = notifyService.getNotifyById(notId);
         notifyer.setNotType(notType);
@@ -103,7 +103,7 @@ public class NotifyListController {
     }
 
     @ExceptionHandler({NotifyServiceException.class,
-            UserServiceException.class})
+            UserServiceException.class,Exception.class})
     public ModelAndView handleServiceException(Exception e) {
         logger.error(e);
         ModelAndView modelAndView = new ModelAndView("error");

@@ -53,12 +53,14 @@ public class RegistrationController {
                         @RequestParam(name = "birthday") String birthday,
                         @RequestParam(name = "email") String email,
                         @RequestParam(name = "phoneNumber") String phoneNumber,
-                        @RequestParam(name = "male") Boolean male) throws UserServiceException {
+                        @RequestParam(name = "male", required = false) Boolean male) throws Exception {
 
         Date date = new Date(1L);
         if (!"".equals(birthday)) {
             date = Date.valueOf(birthday);
         }
+
+        if (male==null) male=false;
         Person person = new Person(
                 0,
                 firstName,
@@ -82,7 +84,7 @@ public class RegistrationController {
 
     }
 
-    @ExceptionHandler(UserServiceException.class)
+    @ExceptionHandler({UserServiceException.class,Exception.class})
     public ModelAndView handleUserServiceException(Exception e) {
         logger.error(e);
         ModelAndView modelAndView = new ModelAndView("error");

@@ -96,6 +96,15 @@ public class UserService implements IUserService {
         }
     }
 
+    public List<User> getAllInConverse(int converse) throws UserServiceException{
+        try {
+            return userDAO.getAllInConverse(converse);
+        } catch (UserDaoException e) {
+            logger.error(e);
+            throw new UserServiceException();
+        }
+    }
+
     public User update(User user) throws UserServiceException, UserNotFoundException {
 
         user.setPassword(Crypt.getCriptedPassword(user.getLogin(), user.getPassword()));

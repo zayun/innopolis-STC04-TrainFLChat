@@ -13,6 +13,9 @@
     <title>Title</title>
 </head>
 <body>
+<div>
+    <%@include file='/rooms/navbar.jsp' %>
+</div>
 <form action="/adm/addnotify" method="post">
     <%--<input type="text" name="notId" id="notId" value="0" hidden>--%>
         <input type="text" name="userId" id="userId" value="${userId}"} hidden>

@@ -45,7 +45,8 @@ public class GeneralChatController {
      */
     @RequestMapping(value = "/generalchat", method = RequestMethod.GET)
     public String showGenPage(Model model,
-                              @ModelAttribute("sessionUserId") String userId) throws MessageServiceException, UserServiceException {
+                              @ModelAttribute("sessionUserId") String userId,
+                              @RequestParam(name = "toUserId", required = false) String toUserId) throws Exception {
 
 
         List<Message> messages = messageService.getAllInRoom(0);
@@ -53,6 +54,7 @@ public class GeneralChatController {
 
         model.addAttribute("messages", messages);
         model.addAttribute("users", users);
+        model.addAttribute("toUserId", toUserId);
 
         model.addAttribute("userFrom", userId);
         model.addAttribute("chatRoom", 0);
@@ -61,7 +63,7 @@ public class GeneralChatController {
     }
 
     @ExceptionHandler({UserServiceException.class,
-            MessageServiceException.class})
+            MessageServiceException.class,Exception.class})
     public ModelAndView handleServiceException(Exception e) {
         logger.error(e);
         ModelAndView modelAndView = new ModelAndView("error");

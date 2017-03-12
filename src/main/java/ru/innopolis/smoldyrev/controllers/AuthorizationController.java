@@ -53,7 +53,7 @@ public class AuthorizationController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(Model model,
                         @RequestParam(name = "login") String login,
-                        @RequestParam(name = "password") String password) throws UserServiceException {
+                        @RequestParam(name = "password") String password) throws Exception {
 
             User user = userService.authorize(login, password);
 
@@ -83,7 +83,7 @@ public class AuthorizationController {
         return "login";
     }
 
-    @ExceptionHandler(UserServiceException.class)
+    @ExceptionHandler({UserServiceException.class,Exception.class})
     public ModelAndView handleUserServiceException(Exception e) {
         logger.error(e);
         ModelAndView modelAndView = new ModelAndView("error");

@@ -35,6 +35,9 @@
     </style>
 </head>
 <body>
+<div>
+    <%@include file='/rooms/navbar.jsp' %>
+</div>
 <h1>Adminka</h1>
 <div class="userlist">
 <table border="1" cellpadding="1">

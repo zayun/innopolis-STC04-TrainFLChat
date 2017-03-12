@@ -2,6 +2,8 @@ package ru.innopolis.smoldyrev.models.dao.interfaces;
 
 import ru.innopolis.smoldyrev.common.exceptions.MessageDaoException;
 import ru.innopolis.smoldyrev.models.pojo.Message;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**

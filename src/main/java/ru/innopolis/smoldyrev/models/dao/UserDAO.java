@@ -56,6 +56,28 @@ public class UserDAO implements IUserDAO{
             "  ON \"d_Users\".\"personID\" = \"d_Persons\".\"personID\"\n" +
             "ORDER BY \"login\"";
 
+    private static final String SQL_SELECT_ALL_USERS_IN_CONVERSE = "SELECT\n" +
+            "\"userID\" AS id,\n" +
+            "           \"login\" AS login,\n" +
+            "            \"pwd\" AS pwd,\n" +
+            "            \"Main\".\"d_Persons\".\"personID\" AS pid,\n" +
+            "            \"blocked\" AS blocked,\n" +
+            "            \"usertype\" AS usertype,\n" +
+            "            \"FirstName\" AS firstName,\n" +
+            "            \"LastName\" AS lastName,\n" +
+            "            \"birthDay\" AS birthday,\n" +
+            "            \"email\" AS email,\n" +
+            "            \"phoneNumber\" AS phoneNumber,\n" +
+            "            \"male\" AS isMale,\n" +
+            "            \"r_converse_members\".\"id\"\n" +
+            "            FROM \"Main\".\"d_Users\"\n" +
+            "            LEFT JOIN \"Main\".\"d_Persons\"\n" +
+            "             ON \"d_Users\".\"personID\" = \"d_Persons\".\"personID\"\n" +
+            "             LEFT JOIN \"Main\".\"r_converse_members\"\n" +
+            "             ON \"d_Users\".\"userID\" = \"r_converse_members\".\"user\"\n" +
+            "             where \"r_converse_members\".converse = ?" +
+            "            ORDER BY \"login\"";
+
     private static final String SQL_FIND_USER_ID = "SELECT\n" +
             "  \"userID\" AS id,\n" +
             "  \"login\" AS login,\n" +
@@ -124,6 +146,36 @@ public class UserDAO implements IUserDAO{
 
         try (Statement statement = DatabaseManager.getStatement()) {
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_USERS);
+            while (resultSet.next()) {
+                Person person = new Person(
+                        resultSet.getInt("pid"),
+                        resultSet.getString("firstName"),
+                        resultSet.getString("lastName"),
+                        resultSet.getString("email"),
+                        resultSet.getString("phoneNumber"),
+                        resultSet.getDate("birthday"),
+                        resultSet.getBoolean("isMale"));
+                users.add(new User(
+                        resultSet.getInt("id"),
+                        resultSet.getString("usertype"),
+                        resultSet.getString("login"),
+                        resultSet.getString("pwd"),
+                        person,
+                        resultSet.getBoolean("blocked")));
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+            throw new UserDaoException();
+        }
+        return users;
+    }
+
+    public List<User> getAllInConverse(int converse) throws UserDaoException {
+        List<User> users = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_SELECT_ALL_USERS_IN_CONVERSE)) {
+            preparedStatement.setInt(1, converse);
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Person person = new Person(
                         resultSet.getInt("pid"),

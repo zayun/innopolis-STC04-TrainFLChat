@@ -8,10 +8,8 @@ import ru.innopolis.smoldyrev.models.dao.interfaces.IMessageDAO;
 import ru.innopolis.smoldyrev.models.pojo.Message;
 import ru.innopolis.smoldyrev.models.pojo.User;
 import org.apache.log4j.Logger;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -21,7 +19,7 @@ import java.util.List;
  * Created by smoldyrev on 25.02.17.
  */
 @Repository
-public class MessageDAO implements IMessageDAO{
+public class MessageDAO implements IMessageDAO {
 
     private static Logger logger = Logger.getLogger(MessageDAO.class);
 
@@ -33,15 +31,16 @@ public class MessageDAO implements IMessageDAO{
 
     private static final String SQL_INSERT_MESSAGE = "INSERT INTO \"Main\".\"r_Messages\"" +
             "(\"FromUserID\", \"ToUserID\", \"BodyText\", chatroom) " +
-            "VALUES (?, ?, ?, ?)" ;
+            "VALUES (?, ?, ?, ?)";
 
     private static final String SQL_DELETE_MESSAGE = "DELETE FROM \"Main\".\"r_Messages\"\n" +
-            "\tWHERE id = ?" ;
+            "\tWHERE id = ?";
+
 
     public List<Message> getAll() throws MessageDaoException {
         List<Message> messages = new ArrayList<>();
 
-        try (Statement statement = DatabaseManager.getStatement()){
+        try (Statement statement = DatabaseManager.getStatement()) {
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_MESSAGES);
             while (resultSet.next()) {
 
@@ -68,7 +67,7 @@ public class MessageDAO implements IMessageDAO{
     public List<Message> getAllInRoom(int chatRoom) throws MessageDaoException {
         List<Message> messages = new ArrayList<>();
 
-        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_SELECT_MESSAGES_IN_CR)){
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_SELECT_MESSAGES_IN_CR)) {
             preparedStatement.setInt(1, chatRoom);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -95,7 +94,7 @@ public class MessageDAO implements IMessageDAO{
 
     public boolean delete(Integer id) throws MessageDaoException {
 
-        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_DELETE_MESSAGE)){
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_DELETE_MESSAGE)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
             return true;
@@ -107,7 +106,7 @@ public class MessageDAO implements IMessageDAO{
 
     public boolean create(Message entity) throws MessageDaoException {
 
-        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_INSERT_MESSAGE)){
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_INSERT_MESSAGE)) {
             preparedStatement.setInt(1, entity.getFromUser().getUserID());
             preparedStatement.setInt(2, entity.getToUser().getUserID());
             preparedStatement.setString(3, entity.getBodyText());
@@ -120,6 +119,7 @@ public class MessageDAO implements IMessageDAO{
             throw new MessageDaoException();
         }
     }
+
 
     private User getUser(int id) {
         UserDAO userDAO = new UserDAO();

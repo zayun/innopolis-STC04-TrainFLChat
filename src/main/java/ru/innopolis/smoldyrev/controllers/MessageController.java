@@ -12,6 +12,8 @@ import ru.innopolis.smoldyrev.models.pojo.User;
 import ru.innopolis.smoldyrev.service.interfaces.IMessageService;
 import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
+import java.time.LocalDateTime;
+
 /**
  * Created by smoldyrev on 07.03.17.
  */
@@ -60,6 +62,7 @@ public class MessageController {
         }
 
         Message message = new Message();
+        message.setDate(LocalDateTime.now());
         message.setFromUser(userFrom);
         message.setToUser(userTo);
         message.setBodyText(textMessage);
@@ -82,15 +85,15 @@ public class MessageController {
     @RequestMapping(value = "/delmessage", method = RequestMethod.POST)
     public String delMessage(Model model,
                              @RequestParam(name = "msgid") int msgid,
-                             @RequestParam(name = "chatroom") int chatroom) throws MessageServiceException {
+                             @RequestParam(name = "chatroom") int chatroom) throws Exception {
         messageService.deleteMessage(msgid);
         model.addAttribute("chatroom", chatroom);
-        return (chatroom == 0) ? "redirect:/generalchat" : "redirect:/privatchatroom";
+        return (chatroom == 0) ? "redirect:/generalchat" : "redirect:/privatechatroom";
     }
 
     @ExceptionHandler({UserServiceException.class,
             MessageServiceException.class,
-            UserNotFoundException.class})
+            UserNotFoundException.class,Exception.class})
     public ModelAndView handleServiceException(Exception e) {
         logger.error(e);
         ModelAndView modelAndView = new ModelAndView("error");

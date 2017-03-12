@@ -51,7 +51,7 @@ public class AdminkaController {
     @RequestMapping(value = "/adm/edituserblock", method = RequestMethod.POST)
     public String editUser(Model model,
                            @RequestParam(name = "userId") String userId,
-                           @RequestParam(name = "block") Boolean block) throws UserServiceException, UserNotFoundException {
+                           @RequestParam(name = "block") Boolean block) throws Exception {
 
         User user = userService.getUserById(Integer.parseInt(userId));
 
@@ -72,7 +72,7 @@ public class AdminkaController {
     @RequestMapping(value = "/adm/editusertype", method = RequestMethod.POST)
     public String editUser(Model model,
                            @RequestParam(name = "userId") String userId,
-                           @RequestParam(name = "usertype") String usertype) throws UserServiceException, UserNotFoundException {
+                           @RequestParam(name = "usertype") String usertype) throws Exception {
 
         User user = userService.getUserById(Integer.parseInt(userId));
         if (usertype != null) {
@@ -86,7 +86,7 @@ public class AdminkaController {
     }
 
     @ExceptionHandler({UserServiceException.class,
-                        UserNotFoundException.class})
+                        UserNotFoundException.class,Exception.class})
     public ModelAndView handleServiceException(Exception e) {
         logger.error(e);
         ModelAndView modelAndView = new ModelAndView("error");

@@ -19,6 +19,8 @@ public interface IUserService {
 
     List<User> getAll() throws UserServiceException;
 
+    List<User> getAllInConverse(int converse) throws UserServiceException;
+
     User update(User user) throws UserServiceException, UserNotFoundException;
 
 
