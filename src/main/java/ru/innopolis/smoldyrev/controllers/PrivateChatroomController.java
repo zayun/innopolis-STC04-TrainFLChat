@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import ru.innopolis.smoldyrev.common.exceptions.ChatroomIsBusyException;
 import ru.innopolis.smoldyrev.common.exceptions.MessageServiceException;
 import ru.innopolis.smoldyrev.common.exceptions.PersonServiceException;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IConverseDAO;
@@ -25,6 +26,7 @@ import java.util.List;
  * Created by smoldyrev on 07.03.17.
  */
 @Controller
+@SessionAttributes({"sessionUserId", "sessionUserType", "sessionLogin"})
 public class PrivateChatroomController {
 
     private static Logger logger = Logger.getLogger(PrivateChatroomController.class);
@@ -61,16 +63,23 @@ public class PrivateChatroomController {
                               @ModelAttribute("sessionUserId") String userId,
                               @RequestParam(name = "chatroom") int chatroom) throws Exception {
 
-        List<Message> messages = null;
-        messages = messageService.getAllInRoom(chatroom);
+        if (converseService.checkConverseMember(chatroom, Integer.parseInt(userId))) {
 
-        model.addAttribute("messages", messages);
-        model.addAttribute("chatroom", chatroom);
+            List<Message> messages = null;
+            messages = messageService.getAllInRoom(chatroom);
 
-        return "/rooms/privatechatroom";
+            model.addAttribute("messages", messages);
+            model.addAttribute("chatroom", chatroom);
+
+            return "/rooms/privatechatroom";
+        } else {
+            throw new ChatroomIsBusyException("Room #" + chatroom + " is busy\nYou're not a member!");
+        }
+
+
     }
 
-    @ExceptionHandler({MessageServiceException.class, Exception.class})
+    @ExceptionHandler({MessageServiceException.class, ChatroomIsBusyException.class, Exception.class})
     public ModelAndView handleMessageServiceException(Exception e) {
         logger.error(e);
         ModelAndView modelAndView = new ModelAndView("error");
@@ -80,14 +89,13 @@ public class PrivateChatroomController {
 
     /**
      * Создаем беседу
-     * загружаем все сообщения chatroom
      * открываем форму
      */
     @RequestMapping(value = "/createconverse", method = RequestMethod.GET)
     public String openConverse(Model model,
-                              @ModelAttribute("sessionUserId") String userId,
-                              @RequestParam(name = "chatroom") int chatroom,
-                               @RequestParam(name = "converse")int converse) throws Exception {
+                               @ModelAttribute("sessionUserId") String userId,
+                               @RequestParam(name = "chatroom") int chatroom,
+                               @RequestParam(name = "converse") int converse) throws Exception {
 
         converse = converseService.createConversation(chatroom, LocalDateTime.now());
         model.addAttribute("chatroom", chatroom);
@@ -97,33 +105,29 @@ public class PrivateChatroomController {
         model.addAttribute("users", userService.getAllInConverse(converse));
 
         return "/rooms/createconverse";
+
     }
 
 
     /**
-     * Создаем беседу
-     * загружаем все сообщения chatroom
-     * открываем форму
+     * Открываем форму просмотра бесед
      */
     @RequestMapping(value = "/checkconversation", method = RequestMethod.GET)
     public String checkConversation(Model model) throws Exception {
 
         List<Conversation> conversations = converseService.getActiveConversation(LocalDateTime.now());
-        System.out.println("/////////////"+conversations.size());
         model.addAttribute("conversations", converseService.getActiveConversation(LocalDateTime.now()));
 
         return "/rooms/checkconversation";
     }
 
     /**
-     * Создаем беседу
-     * загружаем все сообщения chatroom
-     * открываем форму
+     * Добавляем члена беседы
      */
     @RequestMapping(value = "/addconversemember", method = RequestMethod.POST)
     public String addConverseMember(Model model,
-                                 @RequestParam("userId") int userId,
-                                     @RequestParam("converse") int converse,
+                                    @RequestParam("userId") int userId,
+                                    @RequestParam("converse") int converse,
                                     @RequestParam("chatroom") int chatroom) throws Exception {
 
 
@@ -132,7 +136,7 @@ public class PrivateChatroomController {
         model.addAttribute("chatroom", chatroom);
 
 
-        if (converseService.addConverseMember(converse,userId)) {
+        if (converseService.addConverseMember(converse, userId)) {
             return "redirect:/createconverse";
         }
 

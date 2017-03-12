@@ -3,6 +3,8 @@ package ru.innopolis.smoldyrev.service;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.innopolis.smoldyrev.common.exceptions.ConverseDaoException;
+import ru.innopolis.smoldyrev.common.exceptions.ConverseServiceException;
 import ru.innopolis.smoldyrev.common.exceptions.MessageDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.MessageServiceException;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IConverseDAO;
@@ -29,31 +31,41 @@ public class ConverseService implements IConverseService {
         this.converseDAO = converseDAO;
     }
 
-    public int createConversation(int chatroom, LocalDateTime dateTime) throws MessageServiceException {
+    public int createConversation(int chatroom, LocalDateTime dateTime) throws ConverseServiceException {
         try {
             return converseDAO.getConversation(chatroom, dateTime);
-        } catch (MessageDaoException e) {
+        } catch (ConverseDaoException e) {
             logger.error(e);
-            throw new MessageServiceException();
+            throw new ConverseServiceException();
         }
     }
 
-    public boolean addConverseMember(int userId, int converse) throws MessageServiceException {
+    public boolean addConverseMember(int userId, int converse) throws ConverseServiceException {
         try {
             return converseDAO.addConverseMember(userId, converse);
-        } catch (MessageDaoException e) {
+        } catch (ConverseDaoException e) {
             logger.error(e);
-            throw new MessageServiceException();
+            throw new ConverseServiceException();
         }
     }
 
-    public List<Conversation> getActiveConversation(LocalDateTime dateTime) throws MessageServiceException {
+    public List<Conversation> getActiveConversation(LocalDateTime dateTime) throws ConverseServiceException {
         try {
             return converseDAO.getActiveConversation(dateTime);
-        } catch (MessageDaoException e) {
+        } catch (ConverseDaoException e) {
             logger.error(e);
-            throw new MessageServiceException();
+            throw new ConverseServiceException();
         }
 
+    }
+
+    @Override
+    public boolean checkConverseMember(int chatroom, int userId) throws ConverseServiceException {
+        try {
+            return converseDAO.checkUserInChatroom(chatroom, userId);
+        } catch (ConverseDaoException e) {
+            logger.error(e);
+            throw new ConverseServiceException();
+        }
     }
 }

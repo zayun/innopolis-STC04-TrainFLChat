@@ -2,6 +2,7 @@ package ru.innopolis.smoldyrev.models.dao;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
+import ru.innopolis.smoldyrev.common.exceptions.ConverseDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.MessageDaoException;
 import ru.innopolis.smoldyrev.models.connector.DatabaseManager;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IConverseDAO;
@@ -38,9 +39,16 @@ public class ConverseDAO implements IConverseDAO {
     private static final String SQL_GET_ALL_ACTIVE = "SELECT id, chatroom, start_time, end_time, grade_converse\n" +
             "\tFROM \"Main\".r_conversation WHERE end_time > ?";
 
+    private static final String SQL_USER_IN_CHATROOM = "SELECT *\n" +
+            "\tFROM \"Main\".r_converse_members as mem\n" +
+            "    LEFT JOIN \"Main\".r_conversation as conv\n" +
+            "    ON mem.converse = conv.id\n" +
+            "    where conv.chatroom=?  AND mem.user = ?";
+
+
 
     @Override
-    public int getConversation(int chatroom, LocalDateTime date) throws MessageDaoException {
+    public int getConversation(int chatroom, LocalDateTime date) throws ConverseDaoException {
 
         try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_CHECK_CONVERSATION)) {
 
@@ -65,12 +73,12 @@ public class ConverseDAO implements IConverseDAO {
             return converseId;
         } catch (SQLException e) {
             logger.error(e);
-            throw new MessageDaoException();
+            throw new ConverseDaoException();
         }
     }
 
     @Override
-    public boolean addConverseMember(int userId, int converse) throws MessageDaoException {
+    public boolean addConverseMember(int userId, int converse) throws ConverseDaoException {
         try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_ADD_CONVERSE_MEMBER)) {
             preparedStatement.setInt(1, userId);
             preparedStatement.setInt(2, converse);
@@ -79,12 +87,12 @@ public class ConverseDAO implements IConverseDAO {
             return true;
         } catch (SQLException e) {
             logger.error(e);
-            throw new MessageDaoException();
+            throw new ConverseDaoException();
         }
     }
 
     @Override
-    public List<Conversation> getActiveConversation(LocalDateTime dateTime) throws MessageDaoException {
+    public List<Conversation> getActiveConversation(LocalDateTime dateTime) throws ConverseDaoException {
         List<Conversation> conversations = new ArrayList<>();
         try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_GET_ALL_ACTIVE)) {
             preparedStatement.setTimestamp(1, Timestamp.valueOf(dateTime));
@@ -100,7 +108,22 @@ public class ConverseDAO implements IConverseDAO {
             return conversations;
         } catch (SQLException e) {
             logger.error(e);
-            throw new MessageDaoException();
+            throw new ConverseDaoException();
+        }
+    }
+
+    @Override
+    public boolean checkUserInChatroom(int chatroom, int userId) throws ConverseDaoException {
+
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_USER_IN_CHATROOM)) {
+
+            preparedStatement.setInt(1, chatroom);
+            preparedStatement.setInt(2, userId);
+
+            return preparedStatement.executeQuery().next();
+        } catch (SQLException e) {
+            logger.error(e);
+            throw new ConverseDaoException();
         }
     }
 
