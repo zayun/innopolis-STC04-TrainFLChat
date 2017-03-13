@@ -42,7 +42,7 @@ public class UserService implements IUserService {
             Thread.sleep(1000);
             String cryptPassword =
                     Crypt.getCriptedPassword(login, password);
-
+            System.out.println("//////////////"+password+cryptPassword);
             return (userDAO.getUserByLoginAndPassword(login, cryptPassword));
 
         } catch (UserDaoException e) {

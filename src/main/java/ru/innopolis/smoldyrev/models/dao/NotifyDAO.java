@@ -25,37 +25,37 @@ public class NotifyDAO implements INotifyDAO{
     private static Logger logger = Logger.getLogger(NotifyDAO.class);
 
     private static final String SQL_SELECT_BY_TYPE = "SELECT *\n" +
-            "FROM \"Main\".\"r_Notifyer\" as nt\n" +
-            "    LEFT JOIN \"Main\".\"d_Users\" as us ON nt.\"userId\" = us.\"userID\"\n" +
-            "    LEFT JOIN \"Main\".\"d_Persons\" as ps ON us.\"personID\" = ps.\"personID\"\n" +
-            "                WHERE \"notType\" = ?";
+            "FROM main.r_notifyer as nt\n" +
+            "    LEFT JOIN main.d_users as us ON nt.user_id = us.user_id\n" +
+            "    LEFT JOIN main.d_persons as ps ON us.person_id = ps.person_id\n" +
+            "                WHERE not_type = ?";
 
     private static final String SQL_SELECT_ALL_NOTIFY = "SELECT *\n" +
-            "\tFROM \"Main\".\"r_Notifyer\" as nt\n" +
-            "    LEFT JOIN \"Main\".\"d_Users\" as us ON nt.\"userId\" = us.\"userID\"\n" +
-            "    LEFT JOIN \"Main\".\"d_Persons\" as ps ON us.\"personID\" = ps.\"personID\"";
+            "\tFROM main.r_notifyer as nt\n" +
+            "    LEFT JOIN main.d_users as us ON nt.user_id = us.user_id\n" +
+            "    LEFT JOIN main.d_persons as ps ON us.person_id = ps.person_id";
 
     private static final String SQL_SELECT_BY_USER = "SELECT * \n" +
-            "FROM \"Main\".\"r_Notifyer\" as nt\n" +
-            "    LEFT JOIN \"Main\".\"d_Users\" as us ON nt.\"userId\" = us.\"userID\"\n" +
-            "    LEFT JOIN \"Main\".\"d_Persons\" as ps ON us.\"personID\" = ps.\"personID\"\n" +
-            "WHERE \"userId\" = ?";
+            "FROM main.r_notifyer as nt\n" +
+            "    LEFT JOIN main.d_users as us ON nt.user_id = us.user_id\n" +
+            "    LEFT JOIN main.d_persons as ps ON us.person_id = ps.person_id\n" +
+            "WHERE us.user_id = ?";
 
-    private static final String SQL_UPDATE_NOTIFY = "UPDATE \"Main\".\"r_Notifyer\"\n" +
-            "\tSET \"notType\"=?\n" +
+    private static final String SQL_UPDATE_NOTIFY = "UPDATE main.r_notifyer\n" +
+            "\tSET not_type=?\n" +
             "\tWHERE id=?";
 
     private static final String SQL_SELECT_BY_ID = "SELECT *\n" +
-            "FROM \"Main\".\"r_Notifyer\" as nt\n" +
-            "    LEFT JOIN \"Main\".\"d_Users\" as us ON nt.\"userId\" = us.\"userID\"\n" +
-            "    LEFT JOIN \"Main\".\"d_Persons\" as ps ON us.\"personID\" = ps.\"personID\"\n" +
+            "FROM main.r_notifyer as nt\n" +
+            "    LEFT JOIN main.d_users as us ON nt.user_id = us.user_id\n" +
+            "    LEFT JOIN main.d_persons as ps ON us.person_id = ps.person_id\n" +
             "    WHERE id = ?";
 
-    private static final String SQL_INSERT_NOTIFY = "INSERT INTO \"Main\".\"r_Notifyer\"(\n" +
-            "\t\"userId\", \"notType\")\n" +
+    private static final String SQL_INSERT_NOTIFY = "INSERT INTO main.r_notifyer(\n" +
+            "\tuser_id, not_type)\n" +
             "\tVALUES (?, ?) RETURNING id;";
 
-    private static final String SQL_DELETE_NOTIFY = "DELETE FROM \"Main\".\"r_Notifyer\"\n" +
+    private static final String SQL_DELETE_NOTIFY = "DELETE FROM main.r_notifyer\n" +
             "\tWHERE id = ?";
 
     public List<Notifyer> getAll() throws NotifyDaoException {
@@ -69,7 +69,7 @@ public class NotifyDAO implements INotifyDAO{
                 notifyers.add(new Notifyer(
                         resultSet.getInt("id"),
                         getUser(resultSet),
-                        resultSet.getString("notType")));
+                        resultSet.getString("no_type")));
             }
         } catch (SQLException e) {
             logger.error(e);
@@ -102,7 +102,7 @@ public class NotifyDAO implements INotifyDAO{
             while (resultSet.next()) {
 
                 notifyer = new Notifyer(resultSet.getInt("id"),
-                        getUser(resultSet), resultSet.getString("notType"));
+                        getUser(resultSet), resultSet.getString("not_type"));
             }
         } catch (SQLException e) {
             logger.error(e);
@@ -150,7 +150,7 @@ public class NotifyDAO implements INotifyDAO{
             while (resultSet.next()) {
 
                 notifyers.add(new Notifyer(resultSet.getInt("id"),
-                        getUser(resultSet), resultSet.getString("notType")));
+                        getUser(resultSet), resultSet.getString("not_type")));
             }
 
         } catch (SQLException e) {
@@ -170,7 +170,7 @@ public class NotifyDAO implements INotifyDAO{
             while (resultSet.next()) {
 
                 notifyers.add(new Notifyer(resultSet.getInt("id"),
-                        getUser(resultSet), resultSet.getString("notType")));
+                        getUser(resultSet), resultSet.getString("not_type")));
             }
 
         } catch (SQLException e) {
@@ -183,15 +183,15 @@ public class NotifyDAO implements INotifyDAO{
     private User getUser(ResultSet resultSet) {
         User user = null;
         try {
-            Person person = new Person(resultSet.getInt("personID"),
-                    resultSet.getString("FirstName"),
-                    resultSet.getString("LastName"),
+            Person person = new Person(resultSet.getInt("person_id"),
+                    resultSet.getString("first_name"),
+                    resultSet.getString("last_name"),
                     resultSet.getString("email"),
-                    resultSet.getString("phoneNumber"),
-                    resultSet.getDate("birthDay"),
+                    resultSet.getString("phone_number"),
+                    resultSet.getDate("birthday"),
                     resultSet.getBoolean("male"));
 
-            user = new User(resultSet.getInt("userID"),
+            user = new User(resultSet.getInt("user_id"),
                     resultSet.getString("usertype"),
                     resultSet.getString("login"),
                     resultSet.getString("pwd"),

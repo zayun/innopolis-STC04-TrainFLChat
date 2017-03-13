@@ -23,17 +23,17 @@ public class MessageDAO implements IMessageDAO {
 
     private static Logger logger = Logger.getLogger(MessageDAO.class);
 
-    private static final String SQL_SELECT_ALL_MESSAGES = "SELECT * FROM \"Main\".\"r_Messages\"" +
-            "  ORDER BY \"DateTime\" DESC";
+    private static final String SQL_SELECT_ALL_MESSAGES = "SELECT * FROM main.r_messages" +
+            "  ORDER BY date_time DESC";
 
-    private static final String SQL_SELECT_MESSAGES_IN_CR = "SELECT * FROM \"Main\".\"r_Messages\" " +
-            "WHERE chatroom = ? ORDER BY \"DateTime\" DESC";
+    private static final String SQL_SELECT_MESSAGES_IN_CR = "SELECT * FROM main.r_messages " +
+            "WHERE chatroom = ? ORDER BY date_time DESC";
 
-    private static final String SQL_INSERT_MESSAGE = "INSERT INTO \"Main\".\"r_Messages\"" +
-            "(\"FromUserID\", \"ToUserID\", \"BodyText\", chatroom) " +
+    private static final String SQL_INSERT_MESSAGE = "INSERT INTO main.r_messages" +
+            "(from_user, to_user, body_text, chatroom) " +
             "VALUES (?, ?, ?, ?)";
 
-    private static final String SQL_DELETE_MESSAGE = "DELETE FROM \"Main\".\"r_Messages\"\n" +
+    private static final String SQL_DELETE_MESSAGE = "DELETE FROM main.r_messages\n" +
             "\tWHERE id = ?";
 
 
@@ -44,16 +44,16 @@ public class MessageDAO implements IMessageDAO {
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_MESSAGES);
             while (resultSet.next()) {
 
-                User userFrom = getUser(resultSet.getInt("FromUserID"));
-                User userTo = getUser(resultSet.getInt("ToUserID"));
+                User userFrom = getUser(resultSet.getInt("from_user"));
+                User userTo = getUser(resultSet.getInt("to_user"));
                 messages.add(new Message(
                         resultSet.getInt("id"),
                         LocalDateTime.ofInstant(
-                                resultSet.getTimestamp("DateTime").toInstant(), ZoneId.systemDefault()),
+                                resultSet.getTimestamp("date_time").toInstant(), ZoneId.systemDefault()),
                         userFrom,
                         userTo,
-                        resultSet.getString("BodyText"),
-                        resultSet.getBoolean("isRead"),
+                        resultSet.getString("body_text"),
+                        resultSet.getBoolean("is_read"),
                         resultSet.getInt("chatroom")));
             }
         } catch (SQLException e) {
@@ -72,16 +72,16 @@ public class MessageDAO implements IMessageDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
 
-                User userFrom = getUser(resultSet.getInt("FromUserID"));
-                User userTo = getUser(resultSet.getInt("ToUserID"));
+                User userFrom = getUser(resultSet.getInt("from_user"));
+                User userTo = getUser(resultSet.getInt("to_user"));
                 messages.add(new Message(
                         resultSet.getInt("id"),
                         LocalDateTime.ofInstant(
-                                resultSet.getTimestamp("DateTime").toInstant(), ZoneId.systemDefault()),
+                                resultSet.getTimestamp("date_time").toInstant(), ZoneId.systemDefault()),
                         userFrom,
                         userTo,
-                        resultSet.getString("BodyText"),
-                        resultSet.getBoolean("isRead"),
+                        resultSet.getString("body_text"),
+                        resultSet.getBoolean("is_read"),
                         resultSet.getInt("chatroom")));
             }
 

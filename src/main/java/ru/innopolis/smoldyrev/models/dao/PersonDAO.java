@@ -19,15 +19,15 @@ public class PersonDAO implements IPersonDAO{
 
     private static Logger logger = Logger.getLogger(PersonDAO.class);
 
-    private static final String SQL_SELECT_ALL_PERSON = "SELECT * FROM \"Main\".\"d_Persons\"";
+    private static final String SQL_SELECT_ALL_PERSON = "SELECT * FROM main.d_persons";
 
-    private static final String SQL_INSERT_PERSON = "INSERT INTO \"Main\".\"d_Persons\"(\n" +
-            "\t\"FirstName\", \"LastName\", \"birthDay\", email, \"phoneNumber\", male)\n" +
-            "\tVALUES (?, ?, ?, ?, ?, ?) RETURNING \"personID\";";
+    private static final String SQL_INSERT_PERSON = "INSERT INTO main.d_persons(\n" +
+            "\tfirst_name, last_name, birthday, email, phone_number, male)\n" +
+            "\tVALUES (?, ?, ?, ?, ?, ?) RETURNING person_id;";
 
-    private static final String SQL_UPDATE_PERSON = "UPDATE \"Main\".\"d_Persons\"\n" +
-            "\tSET \"FirstName\"=?, \"LastName\"=?, \"birthDay\"=?, email=?, \"phoneNumber\"=?, male=?\n" +
-            "\tWHERE \"d_Persons\".\"personID\"=?;";
+    private static final String SQL_UPDATE_PERSON = "UPDATE main.d_persons\n" +
+            "\tSET first_name=?, last_name=?, birthday=?, email=?, phone_number=?, male=?\n" +
+            "\tWHERE d_persons.person_id=?;";
 
     public List<Person> getAll() throws PersonDaoException {
 
@@ -38,10 +38,10 @@ public class PersonDAO implements IPersonDAO{
             if (resultSet.next()) {
                 persones.add(new Person(
                         resultSet.getInt("personID"),
-                        resultSet.getString("FirstName"),
-                        resultSet.getString("LastName"),
+                        resultSet.getString("first_name"),
+                        resultSet.getString("last_name"),
                         resultSet.getString("email"),
-                        resultSet.getString("phoneNumber"),
+                        resultSet.getString("phone_number"),
                         resultSet.getDate("birthday"),
                         resultSet.getBoolean("male")));
             } else {
@@ -99,7 +99,7 @@ public class PersonDAO implements IPersonDAO{
 
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                entity.setId(rs.getInt("personID"));
+                entity.setId(rs.getInt("person_id"));
             }
             logger.debug(entity.getId() + "/" + entity.getFirstName() + "/ person was insert");
             return true;

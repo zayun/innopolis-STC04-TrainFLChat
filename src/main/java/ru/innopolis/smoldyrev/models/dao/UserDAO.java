@@ -12,97 +12,94 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by smoldyrev on 23.02.17.
- */
 @Repository
 public class UserDAO implements IUserDAO{
 
     private static Logger logger = Logger.getLogger(UserDAO.class);
 
     private static final String SQL_FIND_USER_LP = "SELECT\n" +
-            "  \"userID\" AS id,\n" +
-            "  \"login\" AS login,\n" +
-            "  \"pwd\" AS pwd,\n" +
-            "  \"Main\".\"d_Persons\".\"personID\" AS pid,\n" +
-            "  \"blocked\" AS blocked,\n" +
-            "  \"usertype\" AS usertype,\n" +
-            "  \"FirstName\" AS firstName,\n" +
-            "  \"LastName\" AS lastName,\n" +
-            "  \"birthDay\" AS birthday,\n" +
-            "  \"email\" AS email,\n" +
-            "  \"phoneNumber\" AS phoneNumber,\n" +
-            "  \"male\" AS isMale\n" +
-            "FROM \"Main\".\"d_Users\"\n" +
-            "LEFT JOIN \"Main\".\"d_Persons\"\n" +
-            "  ON \"d_Users\".\"personID\" = \"d_Persons\".\"personID\"\n" +
-            "WHERE \"d_Users\".\"login\"=? AND \"d_Users\".\"pwd\"=?";
+            "  user_id AS id,\n" +
+            "  login AS login,\n" +
+            "  pwd AS pwd,\n" +
+            "  main.d_persons.person_id AS pid,\n" +
+            "  blocked AS blocked,\n" +
+            "  usertype AS usertype,\n" +
+            "  first_name AS first_name,\n" +
+            "  last_name AS last_name,\n" +
+            "  birthday AS birthday,\n" +
+            "  email AS email,\n" +
+            "  phone_number AS phone_number,\n" +
+            "  male AS male\n" +
+            "FROM main.d_users\n" +
+            "LEFT JOIN main.d_persons\n" +
+            "  ON d_users.person_id = d_persons.person_id\n" +
+            "WHERE d_users.login=? AND d_users.pwd=?";
 
     private static final String SQL_SELECT_ALL_USERS = "SELECT\n" +
-            "  \"userID\" AS id,\n" +
-            "  \"login\" AS login,\n" +
-            "  \"pwd\" AS pwd,\n" +
-            "  \"Main\".\"d_Persons\".\"personID\" AS pid,\n" +
-            "  \"blocked\" AS blocked,\n" +
-            "  \"usertype\" AS usertype,\n" +
-            "  \"FirstName\" AS firstName,\n" +
-            "  \"LastName\" AS lastName,\n" +
-            "  \"birthDay\" AS birthday,\n" +
-            "  \"email\" AS email,\n" +
-            "  \"phoneNumber\" AS phoneNumber,\n" +
-            "  \"male\" AS isMale\n" +
-            "FROM \"Main\".\"d_Users\"\n" +
-            "LEFT JOIN \"Main\".\"d_Persons\"\n" +
-            "  ON \"d_Users\".\"personID\" = \"d_Persons\".\"personID\"\n" +
-            "ORDER BY \"login\"";
+            "  user_id AS id,\n" +
+            "  login AS login,\n" +
+            "  pwd AS pwd,\n" +
+            "  main.d_persons.person_id AS pid,\n" +
+            "  blocked AS blocked,\n" +
+            "  usertype AS usertype,\n" +
+            "  first_name AS first_name,\n" +
+            "  last_name AS last_name,\n" +
+            "  birthday AS birthday,\n" +
+            "  email AS email,\n" +
+            "  phone_number AS phone_number,\n" +
+            "  male AS male\n" +
+            "FROM main.d_users\n" +
+            "LEFT JOIN main.d_persons\n" +
+            "  ON d_users.person_id = d_persons.person_id\n" +
+            "ORDER BY login";
 
     private static final String SQL_SELECT_ALL_USERS_IN_CONVERSE = "SELECT\n" +
-            "\"userID\" AS id,\n" +
-            "           \"login\" AS login,\n" +
-            "            \"pwd\" AS pwd,\n" +
-            "            \"Main\".\"d_Persons\".\"personID\" AS pid,\n" +
-            "            \"blocked\" AS blocked,\n" +
-            "            \"usertype\" AS usertype,\n" +
-            "            \"FirstName\" AS firstName,\n" +
-            "            \"LastName\" AS lastName,\n" +
-            "            \"birthDay\" AS birthday,\n" +
-            "            \"email\" AS email,\n" +
-            "            \"phoneNumber\" AS phoneNumber,\n" +
-            "            \"male\" AS isMale,\n" +
-            "            \"r_converse_members\".\"id\"\n" +
-            "            FROM \"Main\".\"d_Users\"\n" +
-            "            LEFT JOIN \"Main\".\"d_Persons\"\n" +
-            "             ON \"d_Users\".\"personID\" = \"d_Persons\".\"personID\"\n" +
-            "             LEFT JOIN \"Main\".\"r_converse_members\"\n" +
-            "             ON \"d_Users\".\"userID\" = \"r_converse_members\".\"user\"\n" +
-            "             where \"r_converse_members\".converse = ?" +
-            "            ORDER BY \"login\"";
+            "user_id AS id,\n" +
+            "           login AS login,\n" +
+            "            pwd AS pwd,\n" +
+            "            main.d_persons.person_id AS pid,\n" +
+            "            blocked AS blocked,\n" +
+            "            usertype AS usertype,\n" +
+            "            first_name AS first_name,\n" +
+            "            last_name AS last_name,\n" +
+            "            birthday AS birthday,\n" +
+            "            email AS email,\n" +
+            "            phone_number AS phone_number,\n" +
+            "            male AS male,\n" +
+            "            r_converse_members.id\n" +
+            "            FROM main.d_users\n" +
+            "            LEFT JOIN main.d_persons\n" +
+            "             ON d_users.person_id = d_persons.person_id\n" +
+            "             LEFT JOIN main.r_converse_members\n" +
+            "             ON d_users.user_id = r_converse_members.user\n" +
+            "             where r_converse_members.converse = ?" +
+            "            ORDER BY login";
 
     private static final String SQL_FIND_USER_ID = "SELECT\n" +
-            "  \"userID\" AS id,\n" +
-            "  \"login\" AS login,\n" +
-            "  \"pwd\" AS pwd,\n" +
-            "  \"Main\".\"d_Persons\".\"personID\" AS pid,\n" +
-            "  \"blocked\" AS blocked,\n" +
-            "  \"usertype\" AS usertype,\n" +
-            "  \"FirstName\" AS firstName,\n" +
-            "  \"LastName\" AS lastName,\n" +
-            "  \"birthDay\" AS birthday,\n" +
-            "  \"email\" AS email,\n" +
-            "  \"phoneNumber\" AS phoneNumber,\n" +
-            "  \"male\" AS isMale\n" +
-            "FROM \"Main\".\"d_Users\"\n" +
-            "LEFT JOIN \"Main\".\"d_Persons\"\n" +
-            "  ON \"d_Users\".\"personID\" = \"d_Persons\".\"personID\"\n" +
-            "WHERE \"d_Users\".\"userID\"=?";
+            "  user_id AS id,\n" +
+            "  login AS login,\n" +
+            "  pwd AS pwd,\n" +
+            "  main.d_persons.person_id AS pid,\n" +
+            "  blocked AS blocked,\n" +
+            "  usertype AS usertype,\n" +
+            "  first_name AS first_name,\n" +
+            "  last_name AS last_name,\n" +
+            "  birthDay AS birthday,\n" +
+            "  email AS email,\n" +
+            "  phone_number AS phone_number,\n" +
+            "  male AS male\n" +
+            "FROM main.d_users\n" +
+            "LEFT JOIN main.d_persons\n" +
+            "  ON d_users.person_id = d_persons.person_id\n" +
+            "WHERE d_users.user_id=?";
 
-    private static final String SQL_INSERT_USER = "INSERT INTO \"Main\".\"d_Users\"(\n" +
-            "\tlogin, pwd, \"personID\", blocked, usertype)\n" +
-            "\tVALUES (?, ?, ?, ?, ?) RETURNING \"userID\"";
+    private static final String SQL_INSERT_USER = "INSERT INTO main.d_users(\n" +
+            "\tlogin, pwd, person_id, blocked, usertype)\n" +
+            "\tVALUES (?, ?, ?, ?, ?) RETURNING user_id";
 
-    private static final String SQL_UPDATE_USER = "UPDATE \"Main\".\"d_Users\"\n" +
-            "\tSET \"login\"=?, \"pwd\"=?, \"personID\"=?, \"blocked\"=?, \"usertype\"=?\n" +
-            "\tWHERE \"userID\" = ?";
+    private static final String SQL_UPDATE_USER = "UPDATE main.d_users\n" +
+            "\tSET login=?, pwd=?, person_id=?, blocked=?, usertype=?\n" +
+            "\tWHERE user_id = ?";
 
     public User getUserByLoginAndPassword(String login, String password) throws UserDaoException {
 
@@ -115,12 +112,12 @@ public class UserDAO implements IUserDAO{
             if (resultSet.next()) {
                 Person person = new Person(
                         resultSet.getInt("pid"),
-                        resultSet.getString("firstName"),
-                        resultSet.getString("lastName"),
+                        resultSet.getString("first_name"),
+                        resultSet.getString("last_name"),
                         resultSet.getString("email"),
-                        resultSet.getString("phoneNumber"),
+                        resultSet.getString("phone_number"),
                         resultSet.getDate("birthday"),
-                        resultSet.getBoolean("isMale"));
+                        resultSet.getBoolean("male"));
                 user = new User(
                         resultSet.getInt("id"),
                         resultSet.getString("usertype"),
@@ -149,12 +146,12 @@ public class UserDAO implements IUserDAO{
             while (resultSet.next()) {
                 Person person = new Person(
                         resultSet.getInt("pid"),
-                        resultSet.getString("firstName"),
-                        resultSet.getString("lastName"),
+                        resultSet.getString("first_name"),
+                        resultSet.getString("last_name"),
                         resultSet.getString("email"),
-                        resultSet.getString("phoneNumber"),
+                        resultSet.getString("phone_number"),
                         resultSet.getDate("birthday"),
-                        resultSet.getBoolean("isMale"));
+                        resultSet.getBoolean("male"));
                 users.add(new User(
                         resultSet.getInt("id"),
                         resultSet.getString("usertype"),
@@ -179,12 +176,12 @@ public class UserDAO implements IUserDAO{
             while (resultSet.next()) {
                 Person person = new Person(
                         resultSet.getInt("pid"),
-                        resultSet.getString("firstName"),
-                        resultSet.getString("lastName"),
+                        resultSet.getString("first_name"),
+                        resultSet.getString("last_name"),
                         resultSet.getString("email"),
-                        resultSet.getString("phoneNumber"),
+                        resultSet.getString("phone_number"),
                         resultSet.getDate("birthday"),
-                        resultSet.getBoolean("isMale"));
+                        resultSet.getBoolean("male"));
                 users.add(new User(
                         resultSet.getInt("id"),
                         resultSet.getString("usertype"),
@@ -228,12 +225,12 @@ public class UserDAO implements IUserDAO{
             if (resultSet.next()) {
                 Person person = new Person(
                         resultSet.getInt("pid"),
-                        resultSet.getString("firstName"),
-                        resultSet.getString("lastName"),
+                        resultSet.getString("first_name"),
+                        resultSet.getString("last_name"),
                         resultSet.getString("email"),
-                        resultSet.getString("phoneNumber"),
+                        resultSet.getString("phone_number"),
                         resultSet.getDate("birthday"),
-                        resultSet.getBoolean("isMale"));
+                        resultSet.getBoolean("male"));
                 user = new User(
                         resultSet.getInt("id"),
                         resultSet.getString("usertype"),
@@ -262,7 +259,7 @@ public class UserDAO implements IUserDAO{
 
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                entity.setUserID(rs.getInt("userID"));
+                entity.setUserID(rs.getInt("user_id"));
             }
             logger.debug(entity.getUserID() + "/" + entity.getLogin() + "/ user was insert");
             return true;

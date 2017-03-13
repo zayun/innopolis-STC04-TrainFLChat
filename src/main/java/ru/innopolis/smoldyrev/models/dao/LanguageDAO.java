@@ -16,17 +16,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by smoldyrev on 24.02.17.
- */
 @Repository
 public class LanguageDAO implements ILanguageDAO {
 
     private static Logger logger = Logger.getLogger(LanguageDAO.class);
 
-    private static final String SQL_LANG_ON_PERSON = "SELECT * FROM \"Main\".\"r_LangOwner\"\n" +
-            "LEFT JOIN \"Main\".\"d_Languages\" ON \"r_LangOwner\".\"idLang\" = \"d_Languages\".\"ShortName\"\n" +
-            "WHERE \"idPerson\"=?";
+    private static final String SQL_LANG_ON_PERSON = "SELECT * FROM main.r_langowner\n" +
+            "LEFT JOIN main.d_languages ON r_langowner.lang_id = d_languages.short_name\n" +
+            "WHERE person_id=?";
 
     private static final String SQL_INSERT_LANGOWNER = "";
 
@@ -41,8 +38,8 @@ public class LanguageDAO implements ILanguageDAO {
             while (resultSet.next()) {
                 LangOwner langOwner = new LangOwner(person,
                         new Language(
-                                resultSet.getString("ShortName"),
-                                resultSet.getString("FullName"),
+                                resultSet.getString("short_name"),
+                                resultSet.getString("full_name"),
                                 resultSet.getString("dialekt")),
                         resultSet.getInt("level"));
                 langOwners.add(langOwner);

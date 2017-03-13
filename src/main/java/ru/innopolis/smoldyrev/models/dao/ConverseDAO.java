@@ -25,23 +25,23 @@ public class ConverseDAO implements IConverseDAO {
     private static Logger logger = Logger.getLogger(ConverseDAO.class);
 
     private static final String SQL_CHECK_CONVERSATION = "    SELECT id, chatroom, start_time, end_time, grade_converse\n" +
-            "        FROM \"Main\".r_conversation\n" +
+            "        FROM main.r_conversation\n" +
             "        where chatroom=? and start_time < ? and end_time > ?";
 
-    private static final String SQL_CREATE_CONVERSATION = "INSERT INTO \"Main\".r_conversation(\n" +
+    private static final String SQL_CREATE_CONVERSATION = "INSERT INTO main.r_conversation(\n" +
             "\tchatroom, start_time)\n" +
-            "\tVALUES (?, ?) RETURNING \"id\"";
+            "\tVALUES (?, ?) RETURNING id";
 
-    private static final String SQL_ADD_CONVERSE_MEMBER = "INSERT INTO \"Main\".r_converse_members(\n" +
-            "\tconverse, \"user\")\n" +
+    private static final String SQL_ADD_CONVERSE_MEMBER = "INSERT INTO main.r_converse_members(\n" +
+            "\tconverse, user)\n" +
             "\tVALUES (?, ?);";
 
     private static final String SQL_GET_ALL_ACTIVE = "SELECT id, chatroom, start_time, end_time, grade_converse\n" +
-            "\tFROM \"Main\".r_conversation WHERE end_time > ?";
+            "\tFROM main.r_conversation WHERE end_time > ?";
 
     private static final String SQL_USER_IN_CHATROOM = "SELECT *\n" +
-            "\tFROM \"Main\".r_converse_members as mem\n" +
-            "    LEFT JOIN \"Main\".r_conversation as conv\n" +
+            "\tFROM main.r_converse_members as mem\n" +
+            "    LEFT JOIN main.r_conversation as conv\n" +
             "    ON mem.converse = conv.id\n" +
             "    where conv.chatroom=?  AND mem.user = ?";
 

@@ -68,7 +68,7 @@ public class RegistrationController {
                 email,
                 phoneNumber,
                 date,
-                male);
+                (male==null)?false:male);
         User user = new User(
                 0,
                 "user",
