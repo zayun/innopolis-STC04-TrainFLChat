@@ -1,8 +1,12 @@
+<%@ page import="ru.innopolis.smoldyrev.models.pojo.User" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<c:set var="currUserId" value="<%=((User) org.springframework.security.core.context.SecurityContextHolder.getContext()
+        .getAuthentication().getPrincipal()).getUserID()%>"/>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!DOCTYPE html>
@@ -29,6 +33,7 @@
 </head>
 
 <body>
+
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -36,17 +41,19 @@
         </div>
         <ul class="nav navbar-nav">
 
-            <c:if test="${pageContext.session.getAttribute('sessionUserType') == 'ROLE_ADMIN'}">
+            <sec:authorize access="hasRole('ROLE_ADMIN')" var="isAdmin">
                 <li><a href="/adm/adminoffice">ADMINKA</a></li>
-            </c:if>
-            <c:if test="${pageContext.session.getAttribute('sessionUserType') == 'ROLE_ADMIN'}">
+            </sec:authorize>
+            <sec:authorize access="hasRole('ROLE_ADMIN')" var="isAdmin">
                 <li><a href="/checkconversation">active conv.</a></li>
-            </c:if>
+            </sec:authorize>
             <li class="active"><a href="/generalchat">Home</a></li>
-            <li><a href="/privateoffice?userId=<%=request.getSession().getAttribute("sessionUserId")%>">
-                <%=request.getSession().getAttribute("sessionLogin")%>
+            <li><a href="/privateoffice?userId=${currUserId}">
+                <sec:authentication property="principal.username"/>
             </a></li>
-            <li><a href="/logout">Logout</a></li>
+            <sec:authorize access="isAuthenticated()">
+                <li><a href="<c:url value="/j_spring_security_logout"/>">Logout</a></li>
+            </sec:authorize>
 
 
         </ul>

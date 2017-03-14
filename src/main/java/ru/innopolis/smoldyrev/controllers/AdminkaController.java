@@ -2,6 +2,7 @@ package ru.innopolis.smoldyrev.controllers;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,7 @@ import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;
 import ru.innopolis.smoldyrev.models.pojo.User;
 import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 /**
@@ -37,6 +39,7 @@ public class AdminkaController {
      * и выводим jsp с этим списком
      */
     @RequestMapping(value = "/adm/adminoffice", method = RequestMethod.GET)
+    @Secured("ROLE_ADMIN")
     public String showAdmPage(Model model) throws UserServiceException {
 
         List<User> users = userService.getAll();
@@ -49,6 +52,7 @@ public class AdminkaController {
      * isBlocked - блокируем пользователя)
      */
     @RequestMapping(value = "/adm/edituserblock", method = RequestMethod.POST)
+    @Secured("ROLE_ADMIN")
     public String editUser(Model model,
                            @RequestParam(name = "userId") String userId,
                            @RequestParam(name = "block") Boolean block) throws Exception {
@@ -70,6 +74,7 @@ public class AdminkaController {
      * userType - роль для работы (admin/administrator/moder/user)
      */
     @RequestMapping(value = "/adm/editusertype", method = RequestMethod.POST)
+    @Secured("ROLE_ADMIN")
     public String editUser(Model model,
                            @RequestParam(name = "userId") String userId,
                            @RequestParam(name = "usertype") String usertype) throws Exception {
@@ -90,7 +95,7 @@ public class AdminkaController {
     public ModelAndView handleServiceException(Exception e) {
         logger.error(e);
         ModelAndView modelAndView = new ModelAndView("error");
-        modelAndView.addObject("msg", "Проблема с сервисом, извините");
+        modelAndView.addObject("msg", e.getMessage());
         return modelAndView;
     }
 }

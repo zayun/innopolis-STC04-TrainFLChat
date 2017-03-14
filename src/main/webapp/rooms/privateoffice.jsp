@@ -17,7 +17,7 @@
 <div>
     <%@include file='/rooms/navbar.jsp' %>
 </div>
-<h1>Добро пожаловать в личный кабинет, ${firstName}</h1>
+<h1>Добро пожаловать в личный кабинет, ${user.person.firstName}</h1>
 
 <form action="/privateoffice" method="post">
     <table border="0" width="10%" cellpadding="2">
@@ -30,7 +30,8 @@
 
         <tr>
             <td><label for="password">Password:</label>
-                <input type="password" name="password" id="password" value="${user.password}" placeholder="Password">
+                <%--<input type="password" name="password" id="password" value="${user.password}" placeholder="Password" required>--%>
+                <input type="password" name="password" id="password" value="" placeholder="Password" required>
         </tr>
         </td>
 

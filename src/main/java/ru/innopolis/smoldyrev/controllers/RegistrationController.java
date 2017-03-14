@@ -2,6 +2,7 @@ package ru.innopolis.smoldyrev.controllers;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,7 +44,10 @@ public class RegistrationController {
      * Запись данных внесенных на форму registration.jsp в БД
      * при любом исходе редирект на login.jsp
      * с сообщением о результате
+     * @see User
+     * @see Person
      */
+    @Secured("ROLE_ANONYMOUS")
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public String login(Model model,
                         @RequestParam(name = "login") String login,

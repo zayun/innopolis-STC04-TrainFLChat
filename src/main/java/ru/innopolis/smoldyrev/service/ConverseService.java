@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * Created by smoldyrev on 12.03.17.
+ * Сервис работы с сущностями таблиц r_conversation и r_converse_members
  */
 @Service
 public class ConverseService implements IConverseService {

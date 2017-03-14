@@ -2,6 +2,9 @@ package ru.innopolis.smoldyrev.controllers;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -19,7 +22,6 @@ import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 import java.util.List;
 
 @Controller
-@SessionAttributes({"sessionUserId", "sessionUserType", "sessionLogin"})
 public class GeneralChatController {
 
 
@@ -46,31 +48,32 @@ public class GeneralChatController {
      * открываем форму
      */
     @RequestMapping(value = "/generalchat", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     public String showGenPage(Model model,
-                              @ModelAttribute("sessionUserId") String userId,
                               @RequestParam(name = "toUserId", required = false) String toUserId) throws Exception {
 
-        System.out.println("//////////////////////");
-        UserDetails user = (UserDetails)
-                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println(user.getUsername());
+        if (!("guest".equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal()))) {
+            User user = (User)
+                    SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        List<Message> messages = messageService.getAllInRoom(0);
-        List<User> users = userService.getAll();
+            List<Message> messages = messageService.getAllInRoom(0);
+            List<User> users = userService.getAll();
 
-        model.addAttribute("messages", messages);
-        model.addAttribute("users", users);
-        model.addAttribute("toUserId", toUserId);
+            model.addAttribute("messages", messages);
+            model.addAttribute("users", users);
+            model.addAttribute("toUserId", toUserId);
 
-        model.addAttribute("userFrom", userId);
-        model.addAttribute("chatRoom", 0);
+            model.addAttribute("userFrom", user.getUserID());//1403
+            model.addAttribute("chatRoom", 0);
 
-
-        return "rooms/generalchat";
+            return "rooms/generalchat";
+        } else {
+            return "login";
+        }
     }
 
     @ExceptionHandler({UserServiceException.class,
-            MessageServiceException.class,Exception.class})
+            MessageServiceException.class, Exception.class})
     public ModelAndView handleServiceException(Exception e) {
         logger.error(e);
         ModelAndView modelAndView = new ModelAndView("error");

@@ -2,6 +2,8 @@ package ru.innopolis.smoldyrev.controllers;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +22,6 @@ import java.util.List;
  * Created by smoldyrev on 07.03.17.
  */
 @Controller
-@SessionAttributes({"sessionUserId", "sessionUserType", "sessionLogin"})
 public class PrivateOfficeController {
 
     private static Logger logger = Logger.getLogger(PrivateOfficeController.class);
@@ -53,16 +54,18 @@ public class PrivateOfficeController {
      * <p>
      * загружаем данные user, person, langOwner
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     @RequestMapping(value = "/privateoffice", method = RequestMethod.GET)
     public String showPrivateOfficePage(Model model,
-                                       @ModelAttribute("sessionUserId") String sessionUserId,
-                                       @RequestParam(name = "userId") String userId) throws Exception {
+                                       @RequestParam(name = "userId") int userId) throws Exception {
 
-        if (!userId.equals(sessionUserId)) {
+        User user = (User)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (userId!=user.getUserID()) {
                 throw new InvalidRoleException("У вас нет прав на посещение этой страницы!");
         }
 
-            User user = userService.getUserById(Integer.parseInt(userId));
             List<LangOwner> languages = languageService.getLanguagesOnPerson(user.getPerson().getId());
 
             model.addAttribute("user", user);
@@ -77,9 +80,9 @@ public class PrivateOfficeController {
      * если все прошло удачно - редирект на основную форму
      * если ошибка при update - редирект на error.jsp
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     @RequestMapping(value = "/privateoffice", method = RequestMethod.POST)
     public String saveNewInfo(Model model,
-                              @ModelAttribute("sessionUserId") String sessionUserId,
                               @RequestParam(name = "id") int id,
                               @RequestParam(name = "login") String login,
                               @RequestParam(name = "password") String password,

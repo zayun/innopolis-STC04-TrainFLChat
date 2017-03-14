@@ -1,7 +1,10 @@
 package ru.innopolis.smoldyrev.common.exceptions;
 
 /**
- * Created by smoldyrev on 12.03.17.
+ * Ошибка доступа к беседе
+ * если пользователя нет в списке
+ * участников беседы
+ * @see ru.innopolis.smoldyrev.models.pojo.ConverseMember
  */
 public class ChatroomIsBusyException extends Exception {
     public ChatroomIsBusyException(String message) {

@@ -2,8 +2,12 @@ package ru.innopolis.smoldyrev.common.exceptions;
 
 
 /**
- * Created by smoldyrev on 26.02.17.
+ * Ошибка доступа
+ * Неправильная роль
+ * в связи с переходом на SpringSecurity
+ * объявлен @Deprecated
  */
+@Deprecated
 public class InvalidRoleException extends Exception {
     public InvalidRoleException(String message) {
 

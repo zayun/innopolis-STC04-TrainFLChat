@@ -2,6 +2,7 @@ package ru.innopolis.smoldyrev.controllers;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -38,8 +39,10 @@ public class LanguageController {
 
 
     /**
-     * Добавляем язык для этого пользователя
+     * Добавляем язык для пользователя
+     * @param userId - пользователь
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     @RequestMapping(value = "/addlanguage", method = RequestMethod.POST)
     public String addLanguage(Model model,
                               @ModelAttribute("sessionUserId") int userId,
@@ -50,7 +53,7 @@ public class LanguageController {
         userService.getUserById(userId);
         LangOwner langOwner = new LangOwner();
         langOwner.setPerson(userService.getUserById(userId).getPerson());
-        langOwner.setLanguage(new Language("langId","langId","langID"));  //заплатка
+        langOwner.setLanguage(new Language("langId","langId","langID"));  //заглушка
         langOwner.setLevel(level);
 
         model.addAttribute("langOwner", langOwner);

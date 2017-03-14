@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * Created by smoldyrev on 27.02.17.
- * Сервис работы с сущностями таблиц d_Languages и r_LangOwners
+ * Сервис работы с сущностями таблиц d_languages и r_langowner
  */
 @Service
 public class LanguageService implements ILanguageService {

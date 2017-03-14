@@ -2,6 +2,8 @@ package ru.innopolis.smoldyrev.controllers;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +28,6 @@ import java.util.List;
  * Created by smoldyrev on 07.03.17.
  */
 @Controller
-@SessionAttributes({"sessionUserId", "sessionUserType", "sessionLogin"})
 public class PrivateChatroomController {
 
     private static Logger logger = Logger.getLogger(PrivateChatroomController.class);
@@ -58,12 +59,14 @@ public class PrivateChatroomController {
      * загружаем все сообщения chatroom
      * открываем форму
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     @RequestMapping(value = "/privatechatroom", method = RequestMethod.GET)
     public String showGenPage(Model model,
-                              @ModelAttribute("sessionUserId") String userId,
                               @RequestParam(name = "chatroom") int chatroom) throws Exception {
 
-        if (converseService.checkConverseMember(chatroom, Integer.parseInt(userId))) {
+        User user = (User)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (converseService.checkConverseMember(chatroom, user.getUserID())) {
 
             List<Message> messages = null;
             messages = messageService.getAllInRoom(chatroom);
@@ -90,10 +93,12 @@ public class PrivateChatroomController {
     /**
      * Создаем беседу
      * открываем форму
+     * @param chatroom -номер комнаты
+     * @param converse - номер беседы
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     @RequestMapping(value = "/createconverse", method = RequestMethod.GET)
     public String openConverse(Model model,
-                               @ModelAttribute("sessionUserId") String userId,
                                @RequestParam(name = "chatroom") int chatroom,
                                @RequestParam(name = "converse") int converse) throws Exception {
 
@@ -112,6 +117,7 @@ public class PrivateChatroomController {
     /**
      * Открываем форму просмотра бесед
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     @RequestMapping(value = "/checkconversation", method = RequestMethod.GET)
     public String checkConversation(Model model) throws Exception {
 
@@ -122,7 +128,11 @@ public class PrivateChatroomController {
 
     /**
      * Добавляем члена беседы
+     * @param userId - добавляемый юзер
+     * @param chatroom -номер комнаты
+     * @param converse - номер беседы
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     @RequestMapping(value = "/addconversemember", method = RequestMethod.POST)
     public String addConverseMember(Model model,
                                     @RequestParam("userId") int userId,

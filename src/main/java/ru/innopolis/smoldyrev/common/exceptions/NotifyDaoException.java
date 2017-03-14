@@ -1,7 +1,8 @@
 package ru.innopolis.smoldyrev.common.exceptions;
 
 /**
- * Created by smoldyrev on 02.03.17.
+ * Ошибка DAO
+ * @see ru.innopolis.smoldyrev.models.dao.NotifyDAO
  */
 public class NotifyDaoException extends Exception {
     public NotifyDaoException(String message) {

@@ -2,6 +2,9 @@ package ru.innopolis.smoldyrev.controllers;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +21,6 @@ import java.time.LocalDateTime;
  * Created by smoldyrev on 07.03.17.
  */
 @Controller
-@SessionAttributes("sessionUserId")
 public class MessageController {
 
 
@@ -45,16 +47,19 @@ public class MessageController {
      * на privatechatroom если chatroom!=0
      * на generalchat если chatroom==0;
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     @RequestMapping(value = "/sendmessage", method = RequestMethod.POST)
     public String sendMessage(Model model,
-                              @ModelAttribute("sessionUserId") String fromUserId,
                               @RequestParam(name = "toUserId") String toUserId,
                               @RequestParam(name = "textMessage") String textMessage,
                               @RequestParam(name = "chatroom") int chatroom) throws UserServiceException, UserNotFoundException, MessageServiceException {
 
+        User user = (User)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println(user.getLogin());
 
         toUserId = "".equals(toUserId) ? "999" : toUserId;
-        User userFrom = userService.getUserById(Integer.parseInt(fromUserId));
+        User userFrom = userService.getUserById(user.getUserID());
         User userTo = userService.getUserById(Integer.parseInt(toUserId));
 
         if (userFrom == null || userTo == null) {
@@ -82,6 +87,7 @@ public class MessageController {
      * Получаем msgid - id сообщения в БД
      * отправляем запрос на удаление сообщения по id
      */
+    @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/delmessage", method = RequestMethod.POST)
     public String delMessage(Model model,
                              @RequestParam(name = "msgid") int msgid,

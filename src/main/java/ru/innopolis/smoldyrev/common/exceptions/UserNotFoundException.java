@@ -1,7 +1,8 @@
 package ru.innopolis.smoldyrev.common.exceptions;
 
 /**
- * Created by smoldyrev on 02.03.17.
+ * Ошибка доступа
+ * Не найден пользователь
  */
 public class UserNotFoundException extends Exception {
     public UserNotFoundException(String message) {

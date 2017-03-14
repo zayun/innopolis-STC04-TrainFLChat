@@ -11,7 +11,7 @@ import ru.innopolis.smoldyrev.service.interfaces.IPersonService;
 
 /**
  * Created by smoldyrev on 27.02.17.
- * Сервис по работе с сущностями таблицы d_Persones
+ * Сервис по работе с сущностями таблицы d_persones
  */
 @Service
 public class PersonService implements IPersonService {

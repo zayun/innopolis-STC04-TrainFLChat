@@ -7,12 +7,16 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Created by smoldyrev on 09.03.17.
+ * Класс для кастомного шифрования паролей
+ * объявлен @Deprecated  в связи с переходомна SpringSecurity
  */
+@Deprecated
 public class Crypt {
 
     private static Logger logger = Logger.getLogger(Crypt.class);
 
+    /**
+     * @param st строка шифруемого пароля*/
     private static String md5(String st) {
         MessageDigest messageDigest = null;
         byte[] digest = new byte[0];
@@ -35,6 +39,9 @@ public class Crypt {
         return md5Hex;
     }
 
+    /**Возвращает зашифрованный пароль
+     * @param password - пароль
+     * @param salt - соль для шифрования пароля*/
     public static String getCriptedPassword(String password, String salt) {
         return Crypt.md5(salt+password);
     }

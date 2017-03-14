@@ -1,7 +1,8 @@
 package ru.innopolis.smoldyrev.common.exceptions;
 
 /**
- * Created by smoldyrev on 02.03.17.
+ * Ошибка сервиса
+ * @see ru.innopolis.smoldyrev.service.PersonService
  */
 public class PersonServiceException extends Exception {
     public PersonServiceException(String message) {

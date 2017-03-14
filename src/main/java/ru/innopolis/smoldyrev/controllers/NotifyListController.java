@@ -2,6 +2,7 @@ package ru.innopolis.smoldyrev.controllers;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,7 +44,9 @@ public class NotifyListController {
 
     /**
      * Открываем список оповещений для этого пользователя
+     * @param userId - пользователь
      */
+    @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/adm/notifylist", method = RequestMethod.GET)
     public String showNotifyListPage(Model model,
                                      @RequestParam(name = "userId") int userId) throws Exception {
@@ -57,7 +60,10 @@ public class NotifyListController {
 
     /**
      * Добавляем оповещение для этого пользователя
+     * @param notType -тип оповещения
+     * @param userId - пользователь
      */
+    @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/adm/addnotify", method = RequestMethod.POST)
     public String addNotify(Model model,
                             @RequestParam(name = "userId") int userId,
@@ -74,7 +80,10 @@ public class NotifyListController {
 
     /**
      * Удаляем оповещение по ИД
+     * @param notId - айдишник оповещения
+     * @param userId - пользователь
      */
+    @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/adm/delnotify", method = RequestMethod.POST)
     public String delNotify(Model model,
                             @RequestParam(name = "notId") int notId,
@@ -87,7 +96,11 @@ public class NotifyListController {
 
     /**
      * Редактируем оповещение
+     * @param notId - айдишник оповещения
+     * @param notType -тип оповещения
+     * @param userId - пользователь
      */
+    @Secured("ROLE_ADMIN")
     @RequestMapping(value = "/adm/editnotify", method = RequestMethod.POST)
     public String editNotify(Model model,
                              @RequestParam(name = "notId") int notId,

@@ -1,7 +1,8 @@
 package ru.innopolis.smoldyrev.common.exceptions;
 
 /**
- * Created by smoldyrev on 12.03.17.
+ * Ошибка сервиса
+ * @see ru.innopolis.smoldyrev.service.ConverseService
  */
 public class ConverseServiceException extends Exception{
     public ConverseServiceException(String message) {

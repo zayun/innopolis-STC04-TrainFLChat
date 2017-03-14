@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 /**
- * Created by smoldyrev on 07.03.17.
+ * Поток отправки почты
  */
 public class NotifyThread implements Runnable {
 

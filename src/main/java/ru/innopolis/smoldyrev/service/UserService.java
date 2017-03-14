@@ -39,6 +39,8 @@ public class UserService implements IUserService {
         this.personDAO = personDAO;
     }
 
+    /**Проверка пользователя в БД
+     * @throws UserServiceException при любых проблемах*/
     public User authorize(String login, String password) throws UserServiceException {
 
         try {
@@ -55,6 +57,11 @@ public class UserService implements IUserService {
         }
     }
 
+    /**Создает в базе нового
+     * пользователя
+     * @see User
+     * @see Person
+     * @throws UserServiceException при любых проблемах*/
     public boolean registration(User user) throws UserServiceException {
 
         try {
@@ -70,6 +77,8 @@ public class UserService implements IUserService {
         }
     }
 
+    /**Получить пользователя по id
+     * @throws UserServiceException при любых проблемах*/
     public User getUserById(int id) throws UserServiceException, UserNotFoundException {
         try {
             User user = userDAO.getEntityById(id);
@@ -87,6 +96,8 @@ public class UserService implements IUserService {
         }
     }
 
+    /**Получить всех пользователей
+     * @throws UserServiceException при любых проблемах*/
     public List<User> getAll() throws UserServiceException {
         try {
             return userDAO.getAll();
@@ -96,6 +107,10 @@ public class UserService implements IUserService {
         }
     }
 
+    /**Получить всех пользователей
+     * в беседе
+     * @see ru.innopolis.smoldyrev.models.pojo.Conversation
+     * @throws UserServiceException при любых проблемах*/
     public List<User> getAllInConverse(int converse) throws UserServiceException{
         try {
             return userDAO.getAllInConverse(converse);
@@ -105,9 +120,11 @@ public class UserService implements IUserService {
         }
     }
 
+    /**Обновить данные
+     * @throws UserServiceException при любых проблемах*/
     public User update(User user) throws UserServiceException, UserNotFoundException {
 
-        user.setPassword(Crypt.getCriptedPassword(user.getLogin(), user.getPassword()));
+        user.setPassword(bcryptEncoder.encode(user.getPassword()));
 
         try {
             user = userDAO.update(user);

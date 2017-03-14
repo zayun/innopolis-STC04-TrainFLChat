@@ -6,6 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<c:set var="currUserId" value="<%=((User) org.springframework.security.core.context.SecurityContextHolder.getContext()
+        .getAuthentication().getPrincipal()).getUserID()%>"/>
 <html>
 <head>
 
@@ -31,14 +33,15 @@
                                 <c:out value="${message.getStrDate()}"></c:out>
                             </p>
 
-                            <c:if test="${pageContext.session.getAttribute('sessionUserType') == 'ROLE_ADMIN'}">
+                            <sec:authorize access="hasRole('ROLE_ADMIN')" var="isAdmin">
                                 <form action="/delmessage" method="post">
                                     <input type="number" name="chatroom" id="chatroom" value="${message.getChatRoom()}"
                                            hidden>
                                     <input type="text" name="msgid" id="msgid" value="${message.getId()}" hidden>
                                     <input type="submit" class="btn btn-danger btn-xs" value="del" formmethod="post">
                                 </form>
-                            </c:if>
+                            </sec:authorize>
+
 
                         </small>
                     </div>
@@ -61,25 +64,25 @@
                                 <c:out value="${message.getStrDate()}"></c:out>
                             </p>
 
-                            <c:if test="${pageContext.session.getAttribute('sessionUserType') == 'ROLE_ADMIN'}">
+                            <sec:authorize access="hasRole('ROLE_ADMIN')" var="isAdmin">
                                 <form action="/delmessage" method="post">
                                     <input type="number" name="chatroom" id="chatroom" value="${message.getChatRoom()}"
                                            hidden>
                                     <input type="text" name="msgid" id="msgid" value="${message.getId()}" hidden>
                                     <input type="submit" class="btn btn-danger btn-xs" value="del" formmethod="post">
                                 </form>
-                            </c:if>
+                            </sec:authorize>
                         </small>
                         <strong class="pull-right primary-font">
                             <c:out
-                                value="${message.getToUser().getLogin()}"></c:out></strong>
+                                    value="${message.getToUser().getLogin()}"></c:out></strong>
                     </div>
                     <p>
-                        <c:if test="${pageContext.session.getAttribute('sessionUserId') == message.getToUser().getUserID()}">
+                        <c:if test="${currUserId == message.getToUser().getUserID()}">
                             <b><c:out value="${message.getBodyText()}"></c:out>
                             </b>
                         </c:if>
-                        <c:if test="${pageContext.session.getAttribute('sessionUserId') != message.getToUser().getUserID()}">
+                        <c:if test="${currUserId != message.getToUser().getUserID()}">
                             <c:out value="${message.getBodyText()}"></c:out>
                         </c:if>
                     </p>

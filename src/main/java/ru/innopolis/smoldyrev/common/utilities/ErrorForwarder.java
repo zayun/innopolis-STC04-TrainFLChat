@@ -8,8 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Created by smoldyrev on 02.03.17.
+ * Общий обработчик ошибок
+ * @Deprecated в связи с переходом на SpringSecurity
  */
+@Deprecated
 public class ErrorForwarder {
 
     private static Logger logger = Logger.getLogger(ErrorForwarder.class);

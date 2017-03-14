@@ -44,7 +44,8 @@
 <div>
     <%@include file='navbar.jsp' %>
 </div>
-<h1>Welcome to FLChat, dear <%=request.getSession().getAttribute("sessionLogin")%>
+<h1>Welcome to FLChat, dear <%=((User) org.springframework.security.core.context.SecurityContextHolder.getContext()
+        .getAuthentication().getPrincipal()).getLogin()%>
 </h1>
 
 

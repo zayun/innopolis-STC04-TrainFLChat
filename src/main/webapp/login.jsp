@@ -30,17 +30,17 @@
 </head>
 
 <body>
-
 <div class="container">
-
-    <form method="POST" action="/login" class="form-signin">
+    <c:url value="/j_spring_security_check" var="loginUrl"/>
+    <form method="POST" action="${loginUrl}" class="form-signin">
         <h2 class="form-heading">Log in</h2>
 
         <div class="form-group ${error != null ? 'has-error' : ''}">
+
             <span>${msg}</span>
-            <input name="login" type="text" class="form-control" placeholder="login"
+            <input name="j_username" type="text" class="form-control" placeholder="login"
                    autofocus="true"/>
-            <input name="password" type="password" class="form-control" placeholder="Password"/>
+            <input name="j_password" type="password" class="form-control" placeholder="Password"/>
             <span>${error}</span>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 
@@ -50,16 +50,16 @@
     </form>
 
 </div>
-<div class="container">
-<div>
-    <c:url value="/j_spring_security_check" var="loginUrl"/>
-    <form action="${loginUrl}" method="post">
-        <input type="text" name="j_username" placeholder="Login" value="">
-        <input type="password"name="j_password" placeholder="Password" required value="">
-        <button type="submit">Войти</button>
-    </form>
-</div>
-</div>
+<%--<div class="container">--%>
+<%--<div>--%>
+    <%--<c:url value="/j_spring_security_check" var="loginUrl"/>--%>
+    <%--<form action="${loginUrl}" method="post">--%>
+        <%--<input type="text" name="j_username" placeholder="Login" value="">--%>
+        <%--<input type="password"name="j_password" placeholder="Password" required value="">--%>
+        <%--<button type="submit">Войти</button>--%>
+    <%--</form>--%>
+<%--</div>--%>
+<%--</div>--%>
 
 
 <!-- /container -->
