@@ -36,10 +36,10 @@
         </div>
         <ul class="nav navbar-nav">
 
-            <c:if test="${pageContext.session.getAttribute('sessionUserType') == 'admin'}">
+            <c:if test="${pageContext.session.getAttribute('sessionUserType') == 'ROLE_ADMIN'}">
                 <li><a href="/adm/adminoffice">ADMINKA</a></li>
             </c:if>
-            <c:if test="${pageContext.session.getAttribute('sessionUserType') == 'admin'}">
+            <c:if test="${pageContext.session.getAttribute('sessionUserType') == 'ROLE_ADMIN'}">
                 <li><a href="/checkconversation">active conv.</a></li>
             </c:if>
             <li class="active"><a href="/generalchat">Home</a></li>

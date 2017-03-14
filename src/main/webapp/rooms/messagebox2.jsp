@@ -31,7 +31,7 @@
                                 <c:out value="${message.getStrDate()}"></c:out>
                             </p>
 
-                            <c:if test="${pageContext.session.getAttribute('sessionUserType') == 'admin'}">
+                            <c:if test="${pageContext.session.getAttribute('sessionUserType') == 'ROLE_ADMIN'}">
                                 <form action="/delmessage" method="post">
                                     <input type="number" name="chatroom" id="chatroom" value="${message.getChatRoom()}"
                                            hidden>
@@ -61,7 +61,7 @@
                                 <c:out value="${message.getStrDate()}"></c:out>
                             </p>
 
-                            <c:if test="${pageContext.session.getAttribute('sessionUserType') == 'admin'}">
+                            <c:if test="${pageContext.session.getAttribute('sessionUserType') == 'ROLE_ADMIN'}">
                                 <form action="/delmessage" method="post">
                                     <input type="number" name="chatroom" id="chatroom" value="${message.getChatRoom()}"
                                            hidden>

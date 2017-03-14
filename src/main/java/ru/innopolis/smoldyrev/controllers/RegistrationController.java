@@ -71,7 +71,7 @@ public class RegistrationController {
                 (male==null)?false:male);
         User user = new User(
                 0,
-                "user",
+                "ROLE_USER",
                 login,
                 password,
                 person,

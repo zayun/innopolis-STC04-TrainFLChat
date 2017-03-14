@@ -17,6 +17,8 @@ public interface IUserDAO {
 
     List<User> getAllInConverse(int converse) throws UserDaoException;
 
+    User getUserByLogin(String login) throws UserDaoException;
+
     User update(User entity) throws UserDaoException;
 
     User getEntityById(Integer id) throws UserDaoException;

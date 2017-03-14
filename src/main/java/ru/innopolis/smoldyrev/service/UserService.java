@@ -1,6 +1,7 @@
 package ru.innopolis.smoldyrev.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.innopolis.smoldyrev.common.exceptions.PersonDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.UserDaoException;
@@ -9,6 +10,7 @@ import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;
 import ru.innopolis.smoldyrev.common.utilities.Crypt;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IPersonDAO;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IUserDAO;
+import ru.innopolis.smoldyrev.models.pojo.Person;
 import ru.innopolis.smoldyrev.models.pojo.User;
 import org.apache.log4j.Logger;
 import ru.innopolis.smoldyrev.service.interfaces.IUserService;
@@ -25,6 +27,7 @@ public class UserService implements IUserService {
     private static Logger logger = Logger.getLogger(UserService.class);
     private IUserDAO userDAO;
     private IPersonDAO personDAO;
+    private BCryptPasswordEncoder bcryptEncoder;
 
     @Autowired
     private void setUserDAO(IUserDAO userDAO) {
@@ -39,12 +42,10 @@ public class UserService implements IUserService {
     public User authorize(String login, String password) throws UserServiceException {
 
         try {
-            Thread.sleep(1000);
-            String cryptPassword =
-                    Crypt.getCriptedPassword(login, password);
-            System.out.println("//////////////"+password+cryptPassword);
-            return (userDAO.getUserByLoginAndPassword(login, cryptPassword));
-
+            Thread.sleep(100);
+            if (bcryptEncoder.matches(password,bcryptEncoder.encode(password))) {
+                return (userDAO.getUserByLogin(login));
+            } else return null;
         } catch (UserDaoException e) {
             logger.error(e);
             throw new UserServiceException("UserService trouble!");
@@ -57,8 +58,7 @@ public class UserService implements IUserService {
     public boolean registration(User user) throws UserServiceException {
 
         try {
-            user.setPassword(Crypt.getCriptedPassword(user.getLogin(), user.getPassword()));
-
+            user.setPassword(bcryptEncoder.encode(user.getPassword()));
             personDAO.create(user.getPerson());
             return (userDAO.create(user));
         } catch (UserDaoException e) {
@@ -123,5 +123,10 @@ public class UserService implements IUserService {
             logger.error(e);
             throw new UserNotFoundException();
         }
+    }
+
+    @Autowired
+    public void setBcryptEncoder(BCryptPasswordEncoder bcryptEncoder) {
+        this.bcryptEncoder = bcryptEncoder;
     }
 }

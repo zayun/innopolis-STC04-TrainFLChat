@@ -1,5 +1,8 @@
 package ru.innopolis.smoldyrev.models.dao;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 import ru.innopolis.smoldyrev.common.exceptions.UserDaoException;
 import ru.innopolis.smoldyrev.models.connector.DatabaseManager;
@@ -13,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class UserDAO implements IUserDAO{
+public class UserDAO implements IUserDAO, UserDetailsService{
 
     private static Logger logger = Logger.getLogger(UserDAO.class);
 
@@ -35,6 +38,24 @@ public class UserDAO implements IUserDAO{
             "  ON d_users.person_id = d_persons.person_id\n" +
             "WHERE d_users.login=? AND d_users.pwd=?";
 
+    private static final String SQL_FIND_USER_BY_LOGIN = "SELECT\n" +
+            "  user_id AS id,\n" +
+            "  login AS login,\n" +
+            "  pwd AS pwd,\n" +
+            "  main.d_persons.person_id AS pid,\n" +
+            "  blocked AS blocked,\n" +
+            "  usertype AS usertype,\n" +
+            "  first_name AS first_name,\n" +
+            "  last_name AS last_name,\n" +
+            "  birthday AS birthday,\n" +
+            "  email AS email,\n" +
+            "  phone_number AS phone_number,\n" +
+            "  male AS male\n" +
+            "FROM main.d_users\n" +
+            "LEFT JOIN main.d_persons\n" +
+            "  ON d_users.person_id = d_persons.person_id\n" +
+            "WHERE d_users.login=?";
+
     private static final String SQL_SELECT_ALL_USERS = "SELECT\n" +
             "  user_id AS id,\n" +
             "  login AS login,\n" +
@@ -54,7 +75,7 @@ public class UserDAO implements IUserDAO{
             "ORDER BY login";
 
     private static final String SQL_SELECT_ALL_USERS_IN_CONVERSE = "SELECT\n" +
-            "user_id AS id,\n" +
+            "d_users.user_id AS id,\n" +
             "           login AS login,\n" +
             "            pwd AS pwd,\n" +
             "            main.d_persons.person_id AS pid,\n" +
@@ -71,7 +92,7 @@ public class UserDAO implements IUserDAO{
             "            LEFT JOIN main.d_persons\n" +
             "             ON d_users.person_id = d_persons.person_id\n" +
             "             LEFT JOIN main.r_converse_members\n" +
-            "             ON d_users.user_id = r_converse_members.user\n" +
+            "             ON d_users.user_id = r_converse_members.user_id\n" +
             "             where r_converse_members.converse = ?" +
             "            ORDER BY login";
 
@@ -137,6 +158,49 @@ public class UserDAO implements IUserDAO{
         }
         return user;
     }
+
+    /**Получение пользователя для проверки авторизации
+     * SpringSecurity
+     * @param login - логин пользователя
+     * @throws UserDaoException
+     * */
+    public User getUserByLogin(String login) throws UserDaoException {
+
+        User user = null;
+
+        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_FIND_USER_BY_LOGIN)) {
+            preparedStatement.setString(1, login);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                Person person = new Person(
+                        resultSet.getInt("pid"),
+                        resultSet.getString("first_name"),
+                        resultSet.getString("last_name"),
+                        resultSet.getString("email"),
+                        resultSet.getString("phone_number"),
+                        resultSet.getDate("birthday"),
+                        resultSet.getBoolean("male"));
+                System.out.println();
+                user = new User(
+                        resultSet.getInt("id"),
+                        resultSet.getString("usertype"),
+                        resultSet.getString("login"),
+                        resultSet.getString("pwd"),
+                        person,
+                        resultSet.getBoolean("blocked"));
+            } else {
+                logger.debug(login+" not found");
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+            throw new UserDaoException();
+        } catch (NullPointerException e) {
+            logger.error(e);
+            throw new UserDaoException();
+        }
+        return user;
+    }
+
 
     public List<User> getAll() throws UserDaoException {
         List<User> users = new ArrayList<>();
@@ -268,4 +332,18 @@ public class UserDAO implements IUserDAO{
             throw new UserDaoException();
         }
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        UserDetails user = null;
+        try {
+            user = getUserByLogin(username);
+        } catch (UserDaoException e) {
+            logger.error(e);
+        }
+
+        return user;
+    }
 }
+

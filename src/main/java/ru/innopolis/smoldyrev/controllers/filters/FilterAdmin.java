@@ -14,8 +14,8 @@ import java.io.IOException;
  * проверяет права полученный при авторизации из
  * @see ru.innopolis.smoldyrev.controllers.listeners.SessionListener
  */
-@WebFilter(filterName = "FilterAdmin",
-        urlPatterns = {"/adm/*","/delmessage"})
+//@WebFilter(filterName = "FilterAdmin",
+//        urlPatterns = {"/adm/*","/delmessage"})
 public class FilterAdmin implements Filter {
 
     private static Logger logger = Logger.getLogger(FilterAdmin.class);

@@ -32,9 +32,7 @@ public class ConverseDAO implements IConverseDAO {
             "\tchatroom, start_time)\n" +
             "\tVALUES (?, ?) RETURNING id";
 
-    private static final String SQL_ADD_CONVERSE_MEMBER = "INSERT INTO main.r_converse_members(\n" +
-            "\tconverse, user)\n" +
-            "\tVALUES (?, ?);";
+    private static final String SQL_ADD_CONVERSE_MEMBER = "INSERT INTO main.r_converse_members(converse, user_id)VALUES (?, ?);";
 
     private static final String SQL_GET_ALL_ACTIVE = "SELECT id, chatroom, start_time, end_time, grade_converse\n" +
             "\tFROM main.r_conversation WHERE end_time > ?";
@@ -43,7 +41,7 @@ public class ConverseDAO implements IConverseDAO {
             "\tFROM main.r_converse_members as mem\n" +
             "    LEFT JOIN main.r_conversation as conv\n" +
             "    ON mem.converse = conv.id\n" +
-            "    where conv.chatroom=?  AND mem.user = ?";
+            "    where conv.chatroom=?  AND mem.user_id  = ?";
 
 
 

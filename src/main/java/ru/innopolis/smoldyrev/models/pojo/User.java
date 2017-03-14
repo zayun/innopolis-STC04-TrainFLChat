@@ -1,12 +1,20 @@
 package ru.innopolis.smoldyrev.models.pojo;
 
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import ru.innopolis.smoldyrev.service.interfaces.GrantedAuthorityImpl;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * Created by smoldyrev on 16.02.17.
  * Класс сущности, хранимой в таблице d_Users
  * реализованы геттеры и сеттеры всех полей
+ * реализован UserDetails для SpringSecurity
  */
-public class User {
+public class User implements UserDetails{
 
     private Integer userID;
     private String userType;
@@ -15,9 +23,7 @@ public class User {
     private Person person;
     private boolean blocked;
 
-    /**Дефолтный конструктор
-     * требуется для JAXB
-     *
+    /**Конструктор
      * @param userID
      * @param userType
      * @param login
@@ -66,10 +72,6 @@ public class User {
         this.login = login;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public void setPassword(String passwd) {
         this.password = passwd;
     }
@@ -80,5 +82,41 @@ public class User {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthorityImpl> gr = new ArrayList<>();
+        gr.add(new GrantedAuthorityImpl(userType));
+        return gr;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return login;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return !blocked;
     }
 }

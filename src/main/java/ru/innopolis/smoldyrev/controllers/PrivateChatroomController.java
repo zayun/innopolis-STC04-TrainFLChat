@@ -115,7 +115,6 @@ public class PrivateChatroomController {
     @RequestMapping(value = "/checkconversation", method = RequestMethod.GET)
     public String checkConversation(Model model) throws Exception {
 
-        List<Conversation> conversations = converseService.getActiveConversation(LocalDateTime.now());
         model.addAttribute("conversations", converseService.getActiveConversation(LocalDateTime.now()));
 
         return "/rooms/checkconversation";

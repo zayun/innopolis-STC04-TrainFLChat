@@ -2,6 +2,8 @@ package ru.innopolis.smoldyrev.controllers;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +50,10 @@ public class GeneralChatController {
                               @ModelAttribute("sessionUserId") String userId,
                               @RequestParam(name = "toUserId", required = false) String toUserId) throws Exception {
 
+        System.out.println("//////////////////////");
+        UserDetails user = (UserDetails)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println(user.getUsername());
 
         List<Message> messages = messageService.getAllInRoom(0);
         List<User> users = userService.getAll();
@@ -58,6 +64,7 @@ public class GeneralChatController {
 
         model.addAttribute("userFrom", userId);
         model.addAttribute("chatRoom", 0);
+
 
         return "rooms/generalchat";
     }

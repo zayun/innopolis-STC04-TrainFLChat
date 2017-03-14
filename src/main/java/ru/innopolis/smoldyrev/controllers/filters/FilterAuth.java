@@ -14,12 +14,12 @@ import java.io.IOException;
  * проверяет id пользователя
  * записанный при авторизации
  */
-@WebFilter(filterName = "FilterAuth",
-        urlPatterns = {"/generalchat",
-                "/privateoffice",
-                "/privatechatroom",
-                "/sendmessage",
-                "/deletemessage"})
+//@WebFilter(filterName = "FilterAuth",
+//        urlPatterns = {"/generalchat",
+//                "/privateoffice",
+//                "/privatechatroom",
+//                "/sendmessage",
+//                "/deletemessage"})
 public class FilterAuth implements Filter {
 
     private static Logger logger = Logger.getLogger(FilterAuth.class);

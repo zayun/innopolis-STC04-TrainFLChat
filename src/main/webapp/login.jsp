@@ -50,6 +50,18 @@
     </form>
 
 </div>
+<div class="container">
+<div>
+    <c:url value="/j_spring_security_check" var="loginUrl"/>
+    <form action="${loginUrl}" method="post">
+        <input type="text" name="j_username" placeholder="Login" value="">
+        <input type="password"name="j_password" placeholder="Password" required value="">
+        <button type="submit">Войти</button>
+    </form>
+</div>
+</div>
+
+
 <!-- /container -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script><%@include file='/resources/bootstrap/js/bootstrap.min.js'%></script>
