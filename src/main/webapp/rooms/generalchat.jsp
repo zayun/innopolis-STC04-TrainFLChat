@@ -5,6 +5,7 @@
   Time: 21:30
   To change this template use File | Settings | File Templates.
 --%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c"
            uri="http://java.sun.com/jsp/jstl/core" %>
@@ -13,96 +14,70 @@
     <title>Общий чат</title>
 
     <style>
-        .chat {
+        <%@include file='/resources/bootstrap/css/bootstrap.css'%>
+    </style>
+    <style>
+        <%@include file='/resources/bootstrap/css/common.css'%>
+    </style>
+
+    <style>
+        .chatGroup {
             overflow: scroll;
-            width: 800px; /* Ширина блока */
-            height: 300px; /* Высота блока */
-            background-color: #fbefbc; /* Цвет фона слоя */
+            /*width: 800px; !* Ширина блока *!*/
+            width: 75%;
+            height: 400px; /* Высота блока */
             padding: 5px; /* Поля вокруг текста */
             float: left; /* Обтекание по правому краю */
         }
 
         .userlist {
             overflow: scroll;
-            background-color: #c0c0c0; /* Цвет фона слоя */
-            padding: 5px;
-            height: 300px; /* Поля вокруг текста */
-            width: 400px; /* Ширина слоя */
-            float: left; /* Обтекание по правому краю */
-        }
+            padding: 25px;
+            width: 20%; /* Ширина слоя */
+            /*height: 420px; !* Поля вокруг текста *!*/
 
-        .gen {
-            clear: left; /* Отмена обтекания */
+            float: left; /* Обтекание по правому краю */
         }
     </style>
 </head>
 <body>
+<div>
+    <%@include file='navbar.jsp' %>
+</div>
 <h1>Welcome to FLChat, dear <%=request.getSession().getAttribute("sessionLogin")%>
 </h1>
-<div class="gen">
-    <a href="/chat/rooms/privateoffice?id=<%=request.getSession().getAttribute("sessionId")%>">Личный кабинет</a>
-    <a href="/chat/admin/adminoffice">Админка</a>
-</div>
-<div class="userlist">
-    <table border="0" cellpadding="1">
-        <tr>
-            <form action="/chat/rooms/privatechatroom" method="post">
 
-                <label for="chatroomin">Go to room #:</label>
-                <input type="number" name="chatroomin" id="chatroomin" value="" placeholder="#">
 
-                <input type="submit" value="privat" formmethod="post">
-            </form>
+<div class="container">
+    <form class="form-inline" action="/sendmessage" method="post">
+        <input type="number" name="chatroom" id="chatroom" value="0" readonly hidden>
+        <input type="number" name="toUserId" id="toUserId" value="${toUserId}" placeholder="userTo">
+        <input name="textMessage" id="textMessage" type="text" placeholder="Type your message here...">
 
-        </tr>
-        <c:forEach items="${users}" var="user">
-            <tr>
-                <td><c:out value="${user.getLogin()}"></c:out></td>
+        <button formmethod="post" class="btn btn-primary btn-sm" id="btn-chat">
+            Send
+        </button>
 
-                <td><a href="/chat/sendmessage?messageto=${user.getUserID()}">></a>
-                </td>
-            </tr>
-        </c:forEach>
+    </form>
 
-    </table>
-</div>
-<div class="chat">
-    <table border="0" cellpadding="1">
-
-        <form action="/chat/sendmessage" method="post">
-
-            <%--<label for="userFrom">From:</label>--%>
-            <input type="text" name="userFrom" id="userFrom" value="<%=request.getSession().getAttribute("sessionId")%>"
-                   readonly placeholder="userFrom" hidden>
-
-            <label for="userTo">To:</label>
-            <input type="number" name="userTo" id="userTo" value="${userTo}" placeholder="userTo">
-
-            <label for="textMessage">Text:</label>
-            <input type="text" name="textMessage" id="textMessage" value="${textMessage}" placeholder="textMessage">
-
-            <input type="number" name="chatroom" id="chatroom" value="0" readonly hidden>
-
-            <input type="submit" value="send" formmethod="post">
-        </form>
-
-        <c:forEach items="${messages}" var="message">
-            <tr>
-                <td><c:out value="${message.getFromUser().getLogin()}"></c:out></td>
-                <td><c:out value="${message.getToUser().getLogin()}"></c:out></td>
-                <td><c:out value="${message.getBodyText()}"></c:out></td>
-                    <%--<td><a href="admin/deletemsg?msgid=${message.getId()}">del</a>--%>
-                <td>
-                    <form action="/chat/deletemsg" method="post">
-                        <input type="text" name="msgid" id="msgid" value="${message.getId()}" hidden>
-                        <input type="submit" value="X" formmethod="post">
-                    </form>
-                </td>
-            </tr>
-        </c:forEach>
-
-    </table>
+    <div class="userlist">
+        <div>
+            <%@include file='userlist.jsp' %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="chatGroup">
+                    <%@include file='messagebox2.jsp' %>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+<script>
+    <%@include file='/resources/bootstrap/js/bootstrap.min.js' %>
+</script>
 </body>
 </html>

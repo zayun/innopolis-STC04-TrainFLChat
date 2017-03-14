@@ -13,9 +13,13 @@
     <title>Личный кабинет</title>
 </head>
 <body>
+
+<div>
+    <%@include file='/rooms/navbar.jsp' %>
+</div>
 <h1>Добро пожаловать в личный кабинет, ${firstName}</h1>
 
-<form action="/chat/rooms/privateoffice" method="post">
+<form action="/privateoffice" method="post">
     <table border="0" width="10%" cellpadding="2">
         <input type="text" name="id" id="id" value="${user.userID}" placeholder="id" hidden>
         <tr>
@@ -61,8 +65,8 @@
         </td>
 
         <tr>
-            <td><label for="male">Male?</label><%--надо разобраться не пишется в базу тру, всегда фолс--%>
-                <input type="checkbox" name="male" id="male" value="${user.person.male}" placeholder="male">
+            <td><label for="male">Male?</label>
+                <input type="text" name="male" id="male" value="${user.person.male}" placeholder="male">
         </tr>
         </td>
     </table>
@@ -92,8 +96,8 @@
 
     <input type="submit" value="ОК" formmethod="post">
 </form>
-<form action="/chat/rooms/generalchat" method="post">
-    <input type="submit" value="exit" formmethod="post">
+<form action="/generalchat" method="get">
+    <input type="submit" value="exit" formmethod="get">
 </form>
 
 
