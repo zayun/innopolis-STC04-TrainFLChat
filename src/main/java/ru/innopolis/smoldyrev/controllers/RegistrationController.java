@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +16,7 @@ import ru.innopolis.smoldyrev.models.pojo.Person;
 import ru.innopolis.smoldyrev.models.pojo.User;
 import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
+import javax.validation.Valid;
 import java.sql.Date;
 
 /**
@@ -86,6 +88,21 @@ public class RegistrationController {
             model.addAttribute("msg", "registration " + user.getLogin() + " completed successfully");
             return "login";
 
+    }
+
+    @Secured("ROLE_ANONYMOUS")
+    @RequestMapping(value = "/validregistration", method = RequestMethod.POST)
+    public String processSignup(@Valid User user, BindingResult result) {
+        System.out.println("/////"+user.getLogin()+"/////"+result);
+        if (result.hasErrors()) {
+            return "error";
+        }
+        try {
+            userService.registration(user);
+        } catch (UserServiceException e) {
+            e.printStackTrace();
+        }
+        return "login";
     }
 
     @ExceptionHandler({UserServiceException.class,Exception.class})

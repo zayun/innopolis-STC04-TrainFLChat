@@ -24,26 +24,26 @@
         <input type="text" name="id" id="id" value="${user.userID}" placeholder="id" hidden>
         <tr>
             <td><label for="login">Login:</label>
-                <input type="text" name="login" id="login" value="${user.login}" placeholder="Login">
+                <input type="text" name="login" id="login" value="${user.login}" placeholder="Login" minlength="3" maxlength="20">
         </tr>
         </td>
 
         <tr>
             <td><label for="password">Password:</label>
                 <%--<input type="password" name="password" id="password" value="${user.password}" placeholder="Password" required>--%>
-                <input type="password" name="password" id="password" value="" placeholder="Password" required>
+                <input type="password" name="password" id="password" value="" placeholder="Password" required minlength="6" maxlength="20">
         </tr>
         </td>
 
         <tr>
             <td><label for="firstName">First name:</label>
-                <input type="text" name="firstName" id="firstName" value="${user.person.firstName}" placeholder="FirstName">
+                <input type="text" name="firstName" id="firstName" value="${user.person.firstName}" placeholder="FirstName"maxlength="50">
         </tr>
         </td>
 
         <tr>
             <td><label for="lastName">LastName:</label>
-                <input type="text" name="lastName" id="lastName" value="${user.person.lastName}" placeholder="LastName">
+                <input type="text" name="lastName" id="lastName" value="${user.person.lastName}" placeholder="LastName"maxlength="50">
         </tr>
         </td>
 
@@ -61,7 +61,7 @@
 
         <tr>
             <td><label for="phoneNumber">Phone:</label>
-                <input type="tel" name="phoneNumber" id="phoneNumber" value="${user.person.phoneNumber}" placeholder="number">
+                <input type="tel" name="phoneNumber" id="phoneNumber" value="${user.person.phoneNumber}" placeholder="number"maxlength="10">
         </tr>
         </td>
 

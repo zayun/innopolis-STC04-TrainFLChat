@@ -1,5 +1,6 @@
 package ru.innopolis.smoldyrev.models.pojo;
 
+import javax.validation.constraints.Max;
 import java.sql.Date;
 
 /**
@@ -10,9 +11,13 @@ import java.sql.Date;
 public class Person {
 
     private Integer id;
+    @Max(50)
     private String firstName;
+    @Max(50)
     private String lastName;
+    @Max(50)
     private String email;
+    @Max(10)
     private String phoneNumber;
     private boolean male;
     private Date birthday;

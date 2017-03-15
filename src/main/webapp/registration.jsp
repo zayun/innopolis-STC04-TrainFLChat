@@ -38,21 +38,21 @@
         <h2 class="form-signin-heading">Create your account</h2>
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <input name="login" type="text" class="form-control" placeholder="login"
-                       autofocus="true" required/>
+                       autofocus="true" minlength="3" maxlength="20" required/>
             </div>
 
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <input name="password" type="password" class="form-control" placeholder="Password" required/>
+                <input name="password" type="password" class="form-control" placeholder="Password" minlength="6" maxlength="20" required/>
             </div>
 
         <div class="form-group ${status.error ? 'has-error' : ''}">
             <input name="firstName" type="text" class="form-control" placeholder="firstName"
-                   autofocus="true"/>
+                   autofocus="true" maxlength="50"/>
         </div>
 
         <div class="form-group ${status.error ? 'has-error' : ''}">
             <input name="lastName" type="text" class="form-control" placeholder="lastName"
-                   autofocus="true"/>
+                   autofocus="true" maxlength="50"/>
         </div>
 
         <div class="form-group ${status.error ? 'has-error' : ''}">
@@ -67,7 +67,7 @@
 
         <div class="form-group ${status.error ? 'has-error' : ''}">
             <input name="phoneNumber" type="number" class="form-control" placeholder="Phone"
-                   autofocus="true"/>
+                   autofocus="true" maxlength="10"/>
         </div>
 
         <div class="form-group ${status.error ? 'has-error' : ''}">

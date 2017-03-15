@@ -53,7 +53,7 @@
     <form class="form-inline" action="/sendmessage" method="post">
         <input type="number" name="chatroom" id="chatroom" value="0" readonly hidden>
         <input type="number" name="toUserId" id="toUserId" value="${toUserId}" placeholder="userTo">
-        <input name="textMessage" id="textMessage" type="text" placeholder="Type your message here...">
+        <input name="textMessage" id="textMessage" type="text" placeholder="Type your message here..."maxlength="100">
 
         <button formmethod="post" class="btn btn-primary btn-sm" id="btn-chat">
             Send
