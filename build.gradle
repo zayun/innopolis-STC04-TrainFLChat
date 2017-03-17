@@ -28,5 +28,5 @@ dependencies {
     compile group: 'org.springframework.security', name: 'spring-security-taglibs', version: '4.2.2.RELEASE'
 
     compile 'org.springframework:spring-jdbc:4.3.5.RELEASE'
-
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.8.Final'
 }
