@@ -109,15 +109,4 @@ public class PrivateOfficeController {
             return "redirect:/generalchat";
     }
 
-    @ExceptionHandler({UserServiceException.class,
-            PersonServiceException.class,
-            LanguageServiceException.class,
-            InvalidRoleException.class,
-            UserNotFoundException.class,Exception.class})
-    public ModelAndView handleServiceException(Exception e) {
-        logger.error(e);
-        ModelAndView modelAndView = new ModelAndView("error");
-        modelAndView.addObject("msg",e.getMessage());
-        return modelAndView;
-    }
 }

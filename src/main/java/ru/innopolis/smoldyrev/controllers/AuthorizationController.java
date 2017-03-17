@@ -37,13 +37,4 @@ public class AuthorizationController {
         return "login";
     }
 
-
-    @ExceptionHandler({UserServiceException.class,Exception.class})
-    public ModelAndView handleUserServiceException(Exception e) {
-        logger.error(e);
-        ModelAndView modelAndView = new ModelAndView("error");
-        modelAndView.addObject("msg",e.getMessage());
-        return modelAndView;
-    }
-
 }

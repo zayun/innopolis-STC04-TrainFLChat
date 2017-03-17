@@ -1,4 +1,4 @@
-package ru.innopolis.smoldyrev.controllers;
+package ru.innopolis.smoldyrev.common.support;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;

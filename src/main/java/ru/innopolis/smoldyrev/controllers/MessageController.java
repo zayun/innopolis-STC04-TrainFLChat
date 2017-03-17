@@ -96,14 +96,4 @@ public class MessageController {
         model.addAttribute("chatroom", chatroom);
         return (chatroom == 0) ? "redirect:/generalchat" : "redirect:/privatechatroom";
     }
-
-    @ExceptionHandler({UserServiceException.class,
-            MessageServiceException.class,
-            UserNotFoundException.class,Exception.class})
-    public ModelAndView handleServiceException(Exception e) {
-        logger.error(e);
-        ModelAndView modelAndView = new ModelAndView("error");
-        modelAndView.addObject("msg",e.getMessage());
-        return modelAndView;
-    }
 }

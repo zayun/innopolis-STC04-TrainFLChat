@@ -7,7 +7,7 @@ package ru.innopolis.smoldyrev.common.exceptions;
  * в связи с переходом на SpringSecurity
  * объявлен @Deprecated
  */
-@Deprecated
+
 public class InvalidRoleException extends Exception {
     public InvalidRoleException(String message) {
 

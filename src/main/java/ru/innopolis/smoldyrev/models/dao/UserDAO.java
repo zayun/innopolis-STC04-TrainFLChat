@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class UserDAO implements IUserDAO, UserDetailsService{
+public class UserDAO implements IUserDAO {
 
     private static Logger logger = Logger.getLogger(UserDAO.class);
 
@@ -333,17 +333,5 @@ public class UserDAO implements IUserDAO, UserDetailsService{
         }
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        UserDetails user = null;
-        try {
-            user = getUserByLogin(username);
-        } catch (UserDaoException e) {
-            logger.error(e);
-        }
-
-        return user;
-    }
 }
 

@@ -90,12 +90,4 @@ public class AdminkaController {
         return "redirect:" + "/adm/adminoffice";
     }
 
-    @ExceptionHandler({UserServiceException.class,
-                        UserNotFoundException.class,Exception.class})
-    public ModelAndView handleServiceException(Exception e) {
-        logger.error(e);
-        ModelAndView modelAndView = new ModelAndView("error");
-        modelAndView.addObject("msg", e.getMessage());
-        return modelAndView;
-    }
 }

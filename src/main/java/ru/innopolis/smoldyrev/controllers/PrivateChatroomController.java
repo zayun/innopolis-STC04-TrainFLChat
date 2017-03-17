@@ -82,14 +82,6 @@ public class PrivateChatroomController {
 
     }
 
-    @ExceptionHandler({MessageServiceException.class, ChatroomIsBusyException.class, Exception.class})
-    public ModelAndView handleMessageServiceException(Exception e) {
-        logger.error(e);
-        ModelAndView modelAndView = new ModelAndView("error");
-        modelAndView.addObject("msg", e.getMessage());
-        return modelAndView;
-    }
-
     /**
      * Создаем беседу
      * открываем форму
