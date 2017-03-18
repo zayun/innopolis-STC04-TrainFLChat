@@ -7,13 +7,17 @@ import ru.innopolis.smoldyrev.common.exceptions.LanguageServiceException;
 import ru.innopolis.smoldyrev.common.exceptions.NotifyDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.NotifyServiceException;
 import ru.innopolis.smoldyrev.models.dao.interfaces.ILanguageDAO;
+import ru.innopolis.smoldyrev.models.dao.interfaces.IPersonDAO;
 import ru.innopolis.smoldyrev.models.pojo.LangOwner;
 import org.apache.log4j.Logger;
+import ru.innopolis.smoldyrev.models.pojo.Language;
 import ru.innopolis.smoldyrev.models.pojo.Notifyer;
+import ru.innopolis.smoldyrev.models.pojo.Person;
 import ru.innopolis.smoldyrev.service.interfaces.ILanguageService;
 
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by smoldyrev on 27.02.17.
@@ -24,25 +28,25 @@ public class LanguageService implements ILanguageService {
 
     private static Logger logger = Logger.getLogger(LanguageService.class);
 
-
     private ILanguageDAO languageDAO;
+    private IPersonDAO personDAO;
 
     @Autowired
     public void setLanguageDAO(ILanguageDAO languageDAO) {
         this.languageDAO = languageDAO;
     }
 
-    public List<LangOwner> getLanguagesOnPerson(int personId) throws LanguageServiceException {
-
-        try {
-            return languageDAO.getLanguagesOnPerson(personId);
-        } catch (LanguageDaoException e) {
-            logger.error(e);
-            throw new LanguageServiceException();
-        }
+    @Autowired
+    public void setPersonDAO(IPersonDAO personDAO) {
+        this.personDAO = personDAO;
     }
 
-    public void create (LangOwner langOwner) throws LanguageServiceException {
+    public Set<Language> getLanguagesOnPerson(Integer personId) throws LanguageServiceException {
+        Person person = personDAO.getEntityById(personId).transformToPerson();
+        return person.getLanguages();
+    }
+
+    public void create(LangOwner langOwner) throws LanguageServiceException {
 
         try {
             languageDAO.createLangOwner(langOwner);

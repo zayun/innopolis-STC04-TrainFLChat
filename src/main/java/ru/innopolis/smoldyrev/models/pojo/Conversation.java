@@ -2,6 +2,7 @@ package ru.innopolis.smoldyrev.models.pojo;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * Created by smoldyrev on 16.02.17.
@@ -9,11 +10,14 @@ import java.time.LocalDateTime;
  * реализованы геттеры и сеттеры всех полей
  */
 public class Conversation {
+
     private int id;
     private int chatrooom;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private int gradeConverse;
+
+    Set<User> users;
 
     public Conversation(int id, int chatrooom, LocalDateTime startTime, LocalDateTime endTime, int gradeConverse) {
         this.id = id;
@@ -61,5 +65,13 @@ public class Conversation {
 
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }

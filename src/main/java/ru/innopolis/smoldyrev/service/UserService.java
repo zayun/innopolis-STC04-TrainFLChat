@@ -9,11 +9,13 @@ import ru.innopolis.smoldyrev.common.exceptions.UserNotFoundException;
 import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IPersonDAO;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IUserDAO;
+import ru.innopolis.smoldyrev.models.dto.UserDTO;
 import ru.innopolis.smoldyrev.models.pojo.Person;
 import ru.innopolis.smoldyrev.models.pojo.User;
 import org.apache.log4j.Logger;
 import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,29 +40,14 @@ public class UserService implements IUserService {
         this.personDAO = personDAO;
     }
 
-    /**Проверка пользователя в БД
-     * @throws UserServiceException при любых проблемах*/
-    public User authorize(String login, String password) throws UserServiceException {
-
-        try {
-            Thread.sleep(100);
-            if (bcryptEncoder.matches(password,bcryptEncoder.encode(password))) {
-                return (userDAO.getUserByLogin(login));
-            } else return null;
-        } catch (UserDaoException e) {
-            logger.error(e);
-            throw new UserServiceException("UserService trouble!");
-        } catch (InterruptedException e) {
-            logger.error(e);
-            throw new UserServiceException("UserService trouble!");
-        }
-    }
-
-    /**Создает в базе нового
+    /**
+     * Создает в базе нового
      * пользователя
+     *
+     * @throws UserServiceException при любых проблемах
      * @see User
      * @see Person
-     * @throws UserServiceException при любых проблемах*/
+     */
     public boolean registration(User user) throws UserServiceException {
 
         try {
@@ -76,11 +63,14 @@ public class UserService implements IUserService {
         }
     }
 
-    /**Получить пользователя по id
-     * @throws UserServiceException при любых проблемах*/
+    /**
+     * Получить пользователя по id
+     *
+     * @throws UserServiceException при любых проблемах
+     */
     public User getUserById(int id) throws UserServiceException, UserNotFoundException {
         try {
-            User user = userDAO.getEntityById(id);
+            User user = userDAO.getEntityById(id).transformToUser();
 
             if (user == null)
                 throw new UserNotFoundException();
@@ -95,38 +85,61 @@ public class UserService implements IUserService {
         }
     }
 
-    /**Получить всех пользователей
-     * @throws UserServiceException при любых проблемах*/
+    /**
+     * Получить всех пользователей
+     *
+     * @throws UserServiceException при любых проблемах
+     */
     public List<User> getAll() throws UserServiceException {
         try {
-            return userDAO.getAll();
+            List<User> users = new ArrayList<>();
+
+            for (UserDTO u :
+                    userDAO.getAll()) {
+                users.add(u.transformToUser());
+            }
+            return users;
         } catch (UserDaoException e) {
             logger.error(e);
             throw new UserServiceException();
         }
     }
 
-    /**Получить всех пользователей
+    /**
+     * Получить всех пользователей
      * в беседе
+     *
+     * @throws UserServiceException при любых проблемах
      * @see ru.innopolis.smoldyrev.models.pojo.Conversation
-     * @throws UserServiceException при любых проблемах*/
-    public List<User> getAllInConverse(int converse) throws UserServiceException{
+     */
+    public List<User> getAllInConverse(int converse) throws UserServiceException {
+
         try {
-            return userDAO.getAllInConverse(converse);
+
+            List<User> users = new ArrayList<>();
+
+            for (UserDTO u :
+                    userDAO.getAllInConverse(converse)) {
+                users.add(u.transformToUser());
+            }
+            return users;
         } catch (UserDaoException e) {
             logger.error(e);
             throw new UserServiceException();
         }
     }
 
-    /**Обновить данные
-     * @throws UserServiceException при любых проблемах*/
+    /**
+     * Обновить данные
+     *
+     * @throws UserServiceException при любых проблемах
+     */
     public User update(User user) throws UserServiceException, UserNotFoundException {
 
         user.setPassword(bcryptEncoder.encode(user.getPassword()));
 
         try {
-            user = userDAO.update(user);
+            user = userDAO.update(user).transformToUser();
 
             if (user == null)
                 throw new UserNotFoundException();

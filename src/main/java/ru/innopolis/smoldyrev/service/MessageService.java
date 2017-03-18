@@ -5,13 +5,17 @@ import org.springframework.stereotype.Service;
 import ru.innopolis.smoldyrev.common.exceptions.MessageDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.MessageServiceException;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IMessageDAO;
+import ru.innopolis.smoldyrev.models.dto.MessageDTO;
+import ru.innopolis.smoldyrev.models.dto.UserDTO;
 import ru.innopolis.smoldyrev.models.pojo.Conversation;
 import ru.innopolis.smoldyrev.models.pojo.Message;
 import org.apache.log4j.Logger;
+import ru.innopolis.smoldyrev.models.pojo.User;
 import ru.innopolis.smoldyrev.service.interfaces.IMessageService;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,7 +47,13 @@ public class MessageService implements IMessageService {
 
     public List<Message> getAllInRoom(int chatroom) throws MessageServiceException {
         try {
-            return messageDAO.getAllInRoom(chatroom);
+            List<Message> messages = new ArrayList<>();
+
+            for (MessageDTO m:
+                    messageDAO.getAllInRoom(chatroom)) {
+                messages.add(m.transformToMessage());
+            }
+            return messages;
         } catch (MessageDaoException e) {
             logger.error(e);
             throw new MessageServiceException();

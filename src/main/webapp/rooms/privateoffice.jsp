@@ -83,13 +83,13 @@
 
         <c:forEach items="${languages}" var="lang">
             <tr>
-                <td><c:out value="${lang.getLanguage().getShortName()}"></c:out></td>
-                <td><c:out value="${lang.getLanguage().getFullName()}"></c:out></td>
-                <td><c:out value="${lang.getLanguage().getDialekt()}"></c:out></td>
-                <td><c:out value="${lang.level}"></c:out></td>
+                <td><c:out value="${lang.getShortName()}"></c:out></td>
+                <td><c:out value="${lang.getFullName()}"></c:out></td>
+                <td><c:out value="${lang.getDialekt()}"></c:out></td>
+                <%--<td><c:out value="${lang.level}"></c:out></td>--%>
 
-                <td><a href="/chat/edit?id=${lang.language}">edit</a>
-                    /<a href="/chat/delete?id=${lang.language}">del</a></td>
+                <%--<td><a href="/chat/edit?id=${lang.language}">edit</a>--%>
+                    <%--/<a href="/chat/delete?id=${lang.language}">del</a></td>--%>
             </tr>
         </c:forEach>
 

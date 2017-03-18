@@ -29,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         UserDetails user = null;
         try {
-            user = userDAO.getUserByLogin(username);
+            user = userDAO.getUserByLogin(username).transformToUser();
         } catch (UserDaoException e) {
             logger.error(e);
         }

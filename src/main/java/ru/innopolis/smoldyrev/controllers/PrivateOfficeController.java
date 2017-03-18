@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.innopolis.smoldyrev.common.exceptions.*;
 import ru.innopolis.smoldyrev.models.pojo.LangOwner;
+import ru.innopolis.smoldyrev.models.pojo.Language;
 import ru.innopolis.smoldyrev.models.pojo.User;
 import ru.innopolis.smoldyrev.service.interfaces.ILanguageService;
 import ru.innopolis.smoldyrev.service.interfaces.IPersonService;
@@ -17,6 +18,7 @@ import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by smoldyrev on 07.03.17.
@@ -66,7 +68,7 @@ public class PrivateOfficeController {
                 throw new InvalidRoleException("У вас нет прав на посещение этой страницы!");
         }
 
-            List<LangOwner> languages = languageService.getLanguagesOnPerson(user.getPerson().getId());
+            Set<Language> languages = languageService.getLanguagesOnPerson(user.getPerson().getId());
 
             model.addAttribute("user", user);
             model.addAttribute("languages", languages);

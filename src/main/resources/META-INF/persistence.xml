@@ -5,12 +5,16 @@
                                  http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
              version="1.0">
 
-    <persistence-unit name="STUDENTS" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="LFLChat" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>com.smoldyrev.models.pojo.User</class>
+        <class>ru.innopolis.smoldyrev.models.dto.UserDTO</class>
+        <class>ru.innopolis.smoldyrev.models.dto.PersonDTO</class>
+        <class>ru.innopolis.smoldyrev.models.dto.LanguageDTO</class>
+        <class>ru.innopolis.smoldyrev.models.dto.MessageDTO</class>
+        <class>ru.innopolis.smoldyrev.models.dto.ConversationDTO</class>
         <properties>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
-            <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5433/academ"/>
+            <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5433/LFLChat"/>
             <property name="hibernate.connection.username" value="postgres"/>
             <property name="hibernate.connection.password" value="123456"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>

@@ -2,6 +2,7 @@ package ru.innopolis.smoldyrev.models.pojo;
 
 import javax.validation.constraints.Max;
 import java.sql.Date;
+import java.util.Set;
 
 /**
  * Created by smoldyrev on 16.02.17.
@@ -11,20 +12,17 @@ import java.sql.Date;
 public class Person {
 
     private Integer id;
-    @Max(50)
     private String firstName;
-    @Max(50)
     private String lastName;
-    @Max(50)
     private String email;
-    @Max(10)
     private String phoneNumber;
     private boolean male;
     private Date birthday;
 
-    /**Дефолтный конструктор
-     * требуется для JAXB
-     * */
+    Set<Language> languages;
+
+
+
     public Person() {
 
     }
@@ -94,6 +92,14 @@ public class Person {
 
     public void setBirthday(Date birthDay) {
         this.birthday = birthDay;
+    }
+
+    public Set<Language> getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(Set<Language> languages) {
+        this.languages = languages;
     }
 
 }

@@ -4,10 +4,17 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import ru.innopolis.smoldyrev.common.exceptions.ConverseDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.MessageDaoException;
+import ru.innopolis.smoldyrev.common.exceptions.UserDaoException;
 import ru.innopolis.smoldyrev.models.connector.DatabaseManager;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IConverseDAO;
+import ru.innopolis.smoldyrev.models.dto.ConversationDTO;
+import ru.innopolis.smoldyrev.models.dto.UserDTO;
 import ru.innopolis.smoldyrev.models.pojo.Conversation;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,66 +31,41 @@ public class ConverseDAO implements IConverseDAO {
 
     private static Logger logger = Logger.getLogger(ConverseDAO.class);
 
-    private static final String SQL_CHECK_CONVERSATION = "    SELECT id, chatroom, start_time, end_time, grade_converse\n" +
-            "        FROM main.r_conversation\n" +
-            "        where chatroom=? and start_time < ? and end_time > ?";
-
-    private static final String SQL_CREATE_CONVERSATION = "INSERT INTO main.r_conversation(\n" +
-            "\tchatroom, start_time)\n" +
-            "\tVALUES (?, ?) RETURNING id";
-
-    private static final String SQL_ADD_CONVERSE_MEMBER = "INSERT INTO main.r_converse_members(converse, user_id)VALUES (?, ?);";
-
-    private static final String SQL_GET_ALL_ACTIVE = "SELECT id, chatroom, start_time, end_time, grade_converse\n" +
-            "\tFROM main.r_conversation WHERE end_time > ?";
-
-    private static final String SQL_USER_IN_CHATROOM = "SELECT *\n" +
-            "\tFROM main.r_converse_members as mem\n" +
-            "    LEFT JOIN main.r_conversation as conv\n" +
-            "    ON mem.converse = conv.id\n" +
-            "    where conv.chatroom=?  AND mem.user_id  = ?";
-
-
+    private static final EntityManagerFactory FACTORY =
+            Persistence.createEntityManagerFactory("LFLChat");
 
     @Override
     public int getConversation(int chatroom, LocalDateTime date) throws ConverseDaoException {
 
-        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_CHECK_CONVERSATION)) {
-
-            int converseId = 0;
-
-            preparedStatement.setInt(1, chatroom);
-            preparedStatement.setTimestamp(2, Timestamp.valueOf(date));
-            preparedStatement.setTimestamp(3, Timestamp.valueOf(date));
-            ResultSet rs = preparedStatement.executeQuery();
-            if (!rs.next()) {
-
-                PreparedStatement ps = DatabaseManager.getPrepareStatement(SQL_CREATE_CONVERSATION);
-                ps.setInt(1, chatroom);
-                ps.setTimestamp(2, Timestamp.valueOf(date));
-                rs = ps.executeQuery();
-                if (rs.next()) {
-                    converseId = rs.getInt("id");
-                }
-            } else {
-                converseId = rs.getInt("id");
-            }
-            return converseId;
-        } catch (SQLException e) {
-            logger.error(e);
-            throw new ConverseDaoException();
-        }
+        EntityManager entityManager = FACTORY.createEntityManager();
+        TypedQuery<ConversationDTO> query = entityManager.createQuery(
+                "SELECT converse FROM ConversationDTO converse where converse.chatrooom = :chatroom " +
+                        "and converse.endTime > :date and converse.startTime < :date", ConversationDTO.class);
+        query.setParameter("chatroom", chatroom);
+        query.setParameter("date", date);
+        ConversationDTO conversation = query.getSingleResult();
+        return conversation.getId();
     }
 
     @Override
     public boolean addConverseMember(int userId, int converse) throws ConverseDaoException {
-        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_ADD_CONVERSE_MEMBER)) {
-            preparedStatement.setInt(1, userId);
-            preparedStatement.setInt(2, converse);
-            preparedStatement.executeUpdate();
+        EntityManager entityManager = FACTORY.createEntityManager();
+        entityManager.getTransaction().begin();
+        try {
+            UserDAO udao = new UserDAO();
+            ConverseDAO cdao = new ConverseDAO();
 
+            ConversationDTO conversationDTO = cdao.getEntityById(converse);
+            conversationDTO.addUser(udao.getEntityById(userId));
+            conversationDTO = entityManager.merge(conversationDTO);
+
+//            conversationDTO =
+//                    entityManager.contains(conversationDTO) ? conversationDTO : entityManager.merge(conversationDTO);
+
+            entityManager.getTransaction().commit();
+            entityManager.close();
             return true;
-        } catch (SQLException e) {
+        } catch (UserDaoException e) {
             logger.error(e);
             throw new ConverseDaoException();
         }
@@ -91,39 +73,45 @@ public class ConverseDAO implements IConverseDAO {
 
     @Override
     public List<Conversation> getActiveConversation(LocalDateTime dateTime) throws ConverseDaoException {
-        List<Conversation> conversations = new ArrayList<>();
-        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_GET_ALL_ACTIVE)) {
-            preparedStatement.setTimestamp(1, Timestamp.valueOf(dateTime));
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                conversations.add(new Conversation(
-                        rs.getInt("id"),
-                        rs.getInt("chatroom"),
-                        null,
-                        null,
-                        rs.getInt("grade_converse")));
-            }
-            return conversations;
-        } catch (SQLException e) {
-            logger.error(e);
-            throw new ConverseDaoException();
+
+        EntityManager entityManager = FACTORY.createEntityManager();
+        TypedQuery<ConversationDTO> query = entityManager.createQuery(
+                "SELECT converse FROM ConversationDTO converse where converse.endTime > :date", ConversationDTO.class);
+        query.setParameter("date", dateTime);
+
+        List<ConversationDTO> list = query.getResultList();
+
+        List<Conversation> conversationList = new ArrayList<>(list.size());
+        for (ConversationDTO conv:
+             list) {
+            conversationList.add(conv.transformToConversation());
         }
+        return conversationList;
     }
 
     @Override
     public boolean checkUserInChatroom(int chatroom, int userId) throws ConverseDaoException {
 
-        try (PreparedStatement preparedStatement = DatabaseManager.getPrepareStatement(SQL_USER_IN_CHATROOM)) {
-
-            preparedStatement.setInt(1, chatroom);
-            preparedStatement.setInt(2, userId);
-
-            return preparedStatement.executeQuery().next();
-        } catch (SQLException e) {
-            logger.error(e);
-            throw new ConverseDaoException();
+        EntityManager entityManager = FACTORY.createEntityManager();
+        TypedQuery<ConversationDTO> query = entityManager.createQuery(
+                "SELECT converse FROM ConversationDTO converse where converse.chatrooom = :chatroom ",
+                ConversationDTO.class);
+        query.setParameter("chatroom", chatroom);
+        ConversationDTO conversation = query.getSingleResult();
+        for (UserDTO u:
+             conversation.getUsers()) {
+            if (u.transformToUser().getUserID().equals(userId)) return true;
         }
+        return false;
     }
 
+    @Override
+    public ConversationDTO getEntityById(Integer id) {
+        logger.debug("////////zzz/////"+id);
+        EntityManager entityManager = FACTORY.createEntityManager();
+        TypedQuery<ConversationDTO> query = entityManager.createQuery(
+                "SELECT converse FROM ConversationDTO converse where converse.id = :id", ConversationDTO.class);
+        return query.setParameter("id", id).getSingleResult();
+    }
 
 }

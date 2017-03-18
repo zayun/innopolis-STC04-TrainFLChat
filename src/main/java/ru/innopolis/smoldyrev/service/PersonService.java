@@ -28,7 +28,7 @@ public class PersonService implements IPersonService {
 
     public Person update(Person person) throws PersonServiceException {
         try {
-            person = personDAO.update(person);
+            person = personDAO.update(person).transformToPerson();
             return person;
         } catch (PersonDaoException e) {
             logger.error(e);

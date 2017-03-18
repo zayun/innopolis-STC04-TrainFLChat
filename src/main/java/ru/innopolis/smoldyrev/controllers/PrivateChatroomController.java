@@ -137,7 +137,7 @@ public class PrivateChatroomController {
         model.addAttribute("chatroom", chatroom);
 
 
-        if (converseService.addConverseMember(converse, userId)) {
+        if (converseService.addConverseMember(userId, converse)) {
             return "redirect:/createconverse";
         }
 

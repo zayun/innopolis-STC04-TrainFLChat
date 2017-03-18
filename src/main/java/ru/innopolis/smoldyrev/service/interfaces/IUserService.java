@@ -11,8 +11,6 @@ import java.util.List;
  */
 public interface IUserService {
 
-    User authorize(String login, String password) throws UserServiceException;
-
     boolean registration(User user) throws UserServiceException;
 
     User getUserById(int id) throws UserServiceException, UserNotFoundException;

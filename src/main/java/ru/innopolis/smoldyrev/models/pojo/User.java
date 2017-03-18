@@ -3,6 +3,7 @@ package ru.innopolis.smoldyrev.models.pojo;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.innopolis.smoldyrev.models.dto.UserDTO;
 import ru.innopolis.smoldyrev.service.interfaces.GrantedAuthorityImpl;
 
 import javax.validation.constraints.Max;
@@ -20,18 +21,10 @@ import java.util.Collection;
 public class User implements UserDetails{
 
     private Integer userID;
-
-    @Size(min=2, max=30)
     private String userType;
-
-    @Max(4)
     private String login;
-
-    @Min(60)
     private String password;
-
     private Person person;
-
     private boolean blocked;
 
     /**Конструктор
