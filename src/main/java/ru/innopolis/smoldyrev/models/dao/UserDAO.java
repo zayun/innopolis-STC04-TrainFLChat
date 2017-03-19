@@ -39,8 +39,12 @@ public class UserDAO implements IUserDAO {
         EntityManager entityManager = FACTORY.createEntityManager();
         TypedQuery<UserDTO> query = entityManager.createQuery(
                 "SELECT user FROM UserDTO user where user.login = :login", UserDTO.class);
-        return query.setParameter("login", login).getSingleResult();
-
+        try {
+            UserDTO userDTO = query.setParameter("login", login).getSingleResult();
+            return userDTO;
+        } finally {
+            entityManager.close();
+        }
     }
 
     public List<UserDTO> getAll() throws UserDaoException {
@@ -49,15 +53,18 @@ public class UserDAO implements IUserDAO {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
-        CriteriaQuery<UserDTO> cq = cb.createQuery(UserDTO.class);
-        Root<UserDTO> from = cq.from(UserDTO.class);
+        try {
+            CriteriaQuery<UserDTO> cq = cb.createQuery(UserDTO.class);
+            Root<UserDTO> from = cq.from(UserDTO.class);
 
-        cq.select(from);
-        cq.orderBy(cb.desc(from.get("login")));
-        TypedQuery<UserDTO> q = em.createQuery(cq);
-        List<UserDTO> users = q.getResultList();
-
-        return users;
+            cq.select(from);
+            cq.orderBy(cb.asc(from.get("login")));
+            TypedQuery<UserDTO> q = em.createQuery(cq);
+            List<UserDTO> users = q.getResultList();
+            return users;
+        } finally {
+            em.close();
+        }
     }
 
     public Set<UserDTO> getAllInConverse(int converse) throws UserDaoException {
@@ -65,9 +72,12 @@ public class UserDAO implements IUserDAO {
         EntityManager entityManager = FACTORY.createEntityManager();
         TypedQuery<ConversationDTO> query = entityManager.createQuery(
                 "SELECT converse FROM ConversationDTO converse where converse.id = :id", ConversationDTO.class);
-        ConversationDTO conversation = query.setParameter("id", converse).getSingleResult();
-
-        return conversation.getUsers();
+        try {
+            ConversationDTO conversation = query.setParameter("id", converse).getSingleResult();
+            return conversation.getUsers();
+        } finally {
+            entityManager.close();
+        }
     }
 
     public UserDTO update(User entity) throws UserDaoException {
@@ -75,25 +85,33 @@ public class UserDAO implements IUserDAO {
         EntityManager entityManager = FACTORY.createEntityManager();
         entityManager.getTransaction().begin();
 
-        UserDTO userDTO = getEntityById(entity.getUserID());
-        userDTO.setLogin(entity.getLogin());
-        userDTO.setPassword(entity.getPassword());
-        userDTO.setUserType(entity.getUserType());
-        userDTO.setBlocked(entity.isBlocked());
-        userDTO.setPerson(userDTO.getPerson());
+        try {
 
-        entityManager.merge(userDTO);
-        entityManager.getTransaction().commit();
-        entityManager.close();
-
-        return userDTO;
+            UserDTO userDTO = getEntityById(entity.getUserID());
+            userDTO.setLogin(entity.getLogin());
+            userDTO.setPassword(entity.getPassword());
+            userDTO.setUserType(entity.getUserType());
+            userDTO.setBlocked(entity.isBlocked());
+            userDTO.setPerson(userDTO.getPerson());
+            entityManager.merge(userDTO);
+            entityManager.getTransaction().commit();
+            return userDTO;
+        } finally {
+            entityManager.close();
+        }
     }
 
     public UserDTO getEntityById(Integer user_id) throws UserDaoException {
         EntityManager entityManager = FACTORY.createEntityManager();
         TypedQuery<UserDTO> query = entityManager.createQuery(
                 "SELECT user FROM UserDTO user where user.userID = :user_id", UserDTO.class);
-        return query.setParameter("user_id", user_id).getSingleResult();
+        try {
+            UserDTO userDTO = query.setParameter("user_id", user_id).getSingleResult();
+            userDTO.getPerson().getLanguages();
+            return userDTO;
+        } finally {
+            entityManager.close();
+        }
     }
 
     public boolean create(User entity) throws UserDaoException {
@@ -101,28 +119,31 @@ public class UserDAO implements IUserDAO {
         EntityManager entityManager = FACTORY.createEntityManager();
         entityManager.getTransaction().begin();
 
-        UserDTO userDTO = new UserDTO();
-        PersonDTO personDTO = new PersonDTO();
+        try {
+            UserDTO userDTO = new UserDTO();
+            PersonDTO personDTO = new PersonDTO();
 
-        personDTO.setId(entity.getPerson().getId());
-        personDTO.setFirstName(entity.getPerson().getFirstName());
-        personDTO.setLastName(entity.getPerson().getLastName());
-        personDTO.setEmail(entity.getPerson().getEmail());
-        personDTO.setPhoneNumber(entity.getPerson().getPhoneNumber());
-        personDTO.setMale(entity.getPerson().isMale());
-        personDTO.setBirthday(entity.getPerson().getBirthday());
+            personDTO.setId(entity.getPerson().getId());
+            personDTO.setFirstName(entity.getPerson().getFirstName());
+            personDTO.setLastName(entity.getPerson().getLastName());
+            personDTO.setEmail(entity.getPerson().getEmail());
+            personDTO.setPhoneNumber(entity.getPerson().getPhoneNumber());
+            personDTO.setMale(entity.getPerson().isMale());
+            personDTO.setBirthday(entity.getPerson().getBirthday());
 
-        userDTO.setLogin(entity.getLogin());
-        userDTO.setPassword(entity.getPassword());
-        userDTO.setUserType(entity.getUserType());
-        userDTO.setBlocked(entity.isBlocked());
-        userDTO.setPerson(personDTO);
+            userDTO.setLogin(entity.getLogin());
+            userDTO.setPassword(entity.getPassword());
+            userDTO.setUserType(entity.getUserType());
+            userDTO.setBlocked(entity.isBlocked());
+            userDTO.setPerson(personDTO);
 
-        userDTO = entityManager.merge(userDTO);
-        entityManager.getTransaction().commit();
-        entityManager.close();
+            userDTO = entityManager.merge(userDTO);
+            entityManager.getTransaction().commit();
 
-        return true;
+            return true;
+        }finally {
+            entityManager.close();
+        }
     }
 }
 

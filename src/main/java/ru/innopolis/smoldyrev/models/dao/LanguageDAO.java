@@ -29,7 +29,14 @@ public class LanguageDAO implements ILanguageDAO {
         EntityManager entityManager = FACTORY.createEntityManager();
         TypedQuery<LanguageDTO> query = entityManager.createQuery(
                 "SELECT lang FROM LanguageDTO lang where lang.shortName = :short_name", LanguageDTO.class);
-        return query.setParameter("short_name", short_name).getSingleResult();
+
+        try {
+            LanguageDTO languageDTO = query.setParameter("short_name", short_name).getSingleResult();
+            return languageDTO;
+        } finally {
+            entityManager.close();
+        }
+
     }
 }
 

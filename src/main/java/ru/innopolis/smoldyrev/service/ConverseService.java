@@ -8,11 +8,16 @@ import ru.innopolis.smoldyrev.common.exceptions.ConverseServiceException;
 import ru.innopolis.smoldyrev.common.exceptions.MessageDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.MessageServiceException;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IConverseDAO;
+import ru.innopolis.smoldyrev.models.dto.ConversationDTO;
+import ru.innopolis.smoldyrev.models.dto.DtoTransformer;
+import ru.innopolis.smoldyrev.models.dto.Transformer;
 import ru.innopolis.smoldyrev.models.pojo.Conversation;
 import ru.innopolis.smoldyrev.models.pojo.Message;
+import ru.innopolis.smoldyrev.models.pojo.User;
 import ru.innopolis.smoldyrev.service.interfaces.IConverseService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,7 +57,12 @@ public class ConverseService implements IConverseService {
 
     public List<Conversation> getActiveConversation(LocalDateTime dateTime) throws ConverseServiceException {
         try {
-            return converseDAO.getActiveConversation(dateTime);
+//            List<Conversation> list = new ArrayList<>();
+//            for (ConversationDTO conv:
+//                    converseDAO.getActiveConversation(dateTime)) {
+//                list.add(DtoTransformer.transform(conv));
+//            }
+            return Transformer.conversationEntityToPojo(converseDAO.getActiveConversation(dateTime));
         } catch (ConverseDaoException e) {
             logger.error(e);
             throw new ConverseServiceException();
@@ -68,5 +78,13 @@ public class ConverseService implements IConverseService {
             logger.error(e);
             throw new ConverseServiceException();
         }
+    }
+
+    public Conversation getConversation(Integer converseId) {
+        return Transformer.conversationEntityToPojo(converseDAO.getEntityById(converseId));
+    }
+
+    public Conversation update(Conversation conv) {
+        return Transformer.conversationEntityToPojo(converseDAO.update(conv));
     }
 }

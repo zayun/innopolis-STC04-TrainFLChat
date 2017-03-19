@@ -19,33 +19,22 @@ import java.util.Set;
 @Table(name = "d_persons", schema = "main", catalog = "LFLChat")
 public class PersonDTO {
 
-    @Id
-    @GeneratedValue
-    @Column(name = "person_id")
     private Integer id;
-    @Column(name = "first_name")
     private String firstName;
-    @Column(name = "last_name")
     private String lastName;
-    @Column(name = "email")
     private String email;
-    @Column(name = "phone_number")
     private String phoneNumber;
-    @Column(name = "male")
     private boolean male;
-    @Column(name = "birthday")
-    @Type(type="date")
     private Date birthday;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE } )
-    @JoinTable(name = "r_langowner", schema = "main", joinColumns = {
-            @JoinColumn(name = "person_id", nullable = false, updatable = false)
-    }, inverseJoinColumns = {@JoinColumn(name = "lang_id", nullable = false, updatable = false)})
     private Set<LanguageDTO> languages = new HashSet<>();
+    private Integer version;
 
     public PersonDTO() {
     }
 
+    @Id
+    @GeneratedValue
+    @Column(name = "person_id")
     public Integer getId() {
         return id;
     }
@@ -54,6 +43,7 @@ public class PersonDTO {
         this.id = id;
     }
 
+    @Column(name = "first_name")
     public String getFirstName() {
         return firstName;
     }
@@ -62,6 +52,7 @@ public class PersonDTO {
         this.firstName = firstName;
     }
 
+    @Column(name = "last_name")
     public String getLastName() {
         return lastName;
     }
@@ -70,6 +61,7 @@ public class PersonDTO {
         this.lastName = lastName;
     }
 
+    @Column(name = "email")
     public String getEmail() {
         return email;
     }
@@ -78,6 +70,7 @@ public class PersonDTO {
         this.email = email;
     }
 
+    @Column(name = "phone_number")
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -86,6 +79,7 @@ public class PersonDTO {
         this.phoneNumber = phoneNumber;
     }
 
+    @Column(name = "male")
     public boolean isMale() {
         return male;
     }
@@ -94,6 +88,8 @@ public class PersonDTO {
         this.male = male;
     }
 
+    @Column(name = "birthday")
+    @Type(type="date")
     public Date getBirthday() {
         return birthday;
     }
@@ -102,6 +98,10 @@ public class PersonDTO {
         this.birthday = birthday;
     }
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "r_langowner", schema = "main", joinColumns = {
+            @JoinColumn(name = "person_id", nullable = false, updatable = false)
+    }, inverseJoinColumns = {@JoinColumn(name = "lang_id", nullable = false, updatable = false)})
     public Set<LanguageDTO> getLanguages() {
         return languages;
     }
@@ -114,24 +114,12 @@ public class PersonDTO {
         this.languages.add(language);
     }
 
-    public Person transformToPerson(){
+    @Version
+    public Integer getVersion() {
+        return version;
+    }
 
-        Set<Language> languages = new HashSet<>();
-
-        for (LanguageDTO lang:
-             this.languages) {
-            languages.add(lang.transformToLanguage());
-        }
-        Person person = new Person(
-                id,
-                firstName,
-                lastName,
-                email,
-                phoneNumber,
-                birthday,
-                male);
-        person.setLanguages(languages);
-
-        return person;
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 }

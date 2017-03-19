@@ -1,22 +1,15 @@
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.junit.jupiter.api.Test;
 import ru.innopolis.smoldyrev.common.exceptions.ConverseDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.UserDaoException;
-import ru.innopolis.smoldyrev.common.utilities.HibernateUtil;
 import ru.innopolis.smoldyrev.models.dao.ConverseDAO;
-import ru.innopolis.smoldyrev.models.dao.PersonDAO;
 import ru.innopolis.smoldyrev.models.dao.UserDAO;
 import ru.innopolis.smoldyrev.models.dto.ConversationDTO;
-import ru.innopolis.smoldyrev.models.dto.PersonDTO;
 import ru.innopolis.smoldyrev.models.dto.UserDTO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by smoldyrev on 18.03.17.

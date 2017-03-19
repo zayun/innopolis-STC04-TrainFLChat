@@ -13,28 +13,22 @@ import java.time.LocalDateTime;
 @Table(name = "r_messages", schema = "main", catalog = "LFLChat")
 public class MessageDTO {
 
-    @Id
-    @GeneratedValue
-    @Column(name = "id")
+
     private int id;
-    @Column(name = "date_time")
     private LocalDateTime date;
-    @ManyToOne
-    @JoinColumn(name = "from_user")
     private UserDTO fromUser;
-    @ManyToOne
-    @JoinColumn(name = "to_user")
     private UserDTO toUser;
-    @Column(name = "body_text")
     private String bodyText;
-    @Column(name = "is_read")
     private boolean viewed;
-    @Column(name = "chatroom")
     private int chatRoom;
+    private Integer version;
 
     public MessageDTO() {
     }
 
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
     public int getId() {
         return id;
     }
@@ -43,6 +37,7 @@ public class MessageDTO {
         this.id = id;
     }
 
+    @Column(name = "date_time")
     public LocalDateTime getDate() {
         return date;
     }
@@ -51,6 +46,8 @@ public class MessageDTO {
         this.date = date;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "from_user")
     public UserDTO getFromUser() {
         return fromUser;
     }
@@ -59,6 +56,8 @@ public class MessageDTO {
         this.fromUser = fromUser;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "to_user")
     public UserDTO getToUser() {
         return toUser;
     }
@@ -67,6 +66,7 @@ public class MessageDTO {
         this.toUser = toUser;
     }
 
+    @Column(name = "body_text")
     public String getBodyText() {
         return bodyText;
     }
@@ -75,6 +75,7 @@ public class MessageDTO {
         this.bodyText = bodyText;
     }
 
+    @Column(name = "is_read")
     public boolean isViewed() {
         return viewed;
     }
@@ -83,6 +84,7 @@ public class MessageDTO {
         this.viewed = viewed;
     }
 
+    @Column(name = "chatroom")
     public int getChatRoom() {
         return chatRoom;
     }
@@ -91,7 +93,12 @@ public class MessageDTO {
         this.chatRoom = chatRoom;
     }
 
-    public Message transformToMessage() {
-        return new Message(id,date,fromUser.transformToUser(),toUser.transformToUser(),bodyText,viewed,chatRoom);
+    @Version
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 }

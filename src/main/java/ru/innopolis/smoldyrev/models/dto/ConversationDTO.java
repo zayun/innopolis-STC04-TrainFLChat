@@ -1,7 +1,5 @@
 package ru.innopolis.smoldyrev.models.dto;
 
-import ru.innopolis.smoldyrev.models.pojo.Conversation;
-import ru.innopolis.smoldyrev.models.pojo.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,28 +13,21 @@ import java.util.Set;
 @Table(name = "r_conversation", schema = "main", catalog = "LFLChat")
 public class ConversationDTO {
 
-    @Id
-    @GeneratedValue
-    @Column(name = "id")
-    private int id;
-    @Column(name = "chatroom")
-    private int chatrooom;
-    @Column(name = "start_time")
-    private LocalDateTime startTime;
-    @Column(name = "end_time")
-    private LocalDateTime endTime;
-    @Column(name = "grade_converse")
-    private int gradeConverse;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "r_converse_members", schema = "main", joinColumns = {
-            @JoinColumn(name = "converse", nullable = false)
-    }, inverseJoinColumns = {@JoinColumn(name = "user_id", nullable = false)})
+    private int id;
+    private int chatrooom;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private int gradeConverse;
     private Set<UserDTO> users = new HashSet<>();
+    private Integer version;
 
     public ConversationDTO() {
     }
 
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
     public int getId() {
         return id;
     }
@@ -45,6 +36,7 @@ public class ConversationDTO {
         this.id = id;
     }
 
+    @Column(name = "chatroom")
     public int getChatrooom() {
         return chatrooom;
     }
@@ -53,6 +45,7 @@ public class ConversationDTO {
         this.chatrooom = chatrooom;
     }
 
+    @Column(name = "start_time")
     public LocalDateTime getStartTime() {
         return startTime;
     }
@@ -61,6 +54,7 @@ public class ConversationDTO {
         this.startTime = startTime;
     }
 
+    @Column(name = "end_time")
     public LocalDateTime getEndTime() {
         return endTime;
     }
@@ -69,6 +63,7 @@ public class ConversationDTO {
         this.endTime = endTime;
     }
 
+    @Column(name = "grade_converse")
     public int getGradeConverse() {
         return gradeConverse;
     }
@@ -77,6 +72,10 @@ public class ConversationDTO {
         this.gradeConverse = gradeConverse;
     }
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "r_converse_members", schema = "main", joinColumns = {
+            @JoinColumn(name = "converse", nullable = false)
+    }, inverseJoinColumns = {@JoinColumn(name = "user_id", nullable = false)})
     public Set<UserDTO> getUsers() {
         return users;
     }
@@ -93,22 +92,12 @@ public class ConversationDTO {
         this.users.remove(user);
     }
 
-    public Conversation transformToConversation() {
+    @Version
+    public Integer getVersion() {
+        return version;
+    }
 
-        Conversation conversation =
-                new Conversation(id,
-                chatrooom,
-                startTime,
-                endTime,
-                gradeConverse);
-        Set<User> users = new HashSet<>();
-
-        for (UserDTO u:
-             this.users) {
-            users.add(u.transformToUser());
-        }
-
-        conversation.setUsers(users);
-        return conversation;
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 }

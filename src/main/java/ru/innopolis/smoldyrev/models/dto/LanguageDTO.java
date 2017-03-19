@@ -13,17 +13,17 @@ import java.util.Set;
 @Table(name = "d_languages", schema = "main", catalog = "LFLChat")
 public class LanguageDTO {
 
-    @Id
-    @Column(name = "short_name")
+
     private String shortName;
-    @Column(name = "full_name")
     private String fullName;
-    @Column(name = "dialekt")
     private String dialekt;
+    private Integer version;
 
     public LanguageDTO() {
     }
 
+    @Id
+    @Column(name = "short_name")
     public String getShortName() {
         return shortName;
     }
@@ -32,6 +32,7 @@ public class LanguageDTO {
         this.shortName = shortName;
     }
 
+    @Column(name = "full_name")
     public String getFullName() {
         return fullName;
     }
@@ -40,6 +41,7 @@ public class LanguageDTO {
         this.fullName = fullName;
     }
 
+    @Column(name = "dialekt")
     public String getDialekt() {
         return dialekt;
     }
@@ -48,9 +50,12 @@ public class LanguageDTO {
         this.dialekt = dialekt;
     }
 
-    public Language transformToLanguage(){
-        Language language = new Language(shortName,fullName,dialekt);
-        return language;
+    @Version
+    public Integer getVersion() {
+        return version;
     }
 
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
 }

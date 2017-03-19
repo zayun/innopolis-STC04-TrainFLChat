@@ -8,6 +8,8 @@ import ru.innopolis.smoldyrev.common.exceptions.NotifyDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.NotifyServiceException;
 import ru.innopolis.smoldyrev.models.dao.interfaces.ILanguageDAO;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IPersonDAO;
+import ru.innopolis.smoldyrev.models.dto.DtoTransformer;
+import ru.innopolis.smoldyrev.models.dto.Transformer;
 import ru.innopolis.smoldyrev.models.pojo.LangOwner;
 import org.apache.log4j.Logger;
 import ru.innopolis.smoldyrev.models.pojo.Language;
@@ -42,7 +44,7 @@ public class LanguageService implements ILanguageService {
     }
 
     public Set<Language> getLanguagesOnPerson(Integer personId) throws LanguageServiceException {
-        Person person = personDAO.getEntityById(personId).transformToPerson();
+        Person person = Transformer.personEntityToPojo(personDAO.getEntityById(personId));
         return person.getLanguages();
     }
 

@@ -14,25 +14,20 @@ import javax.persistence.*;
 @Table(name = "d_users", schema = "main", catalog = "LFLChat")
 public class UserDTO {
 
+    private Integer userID;
+    private String userType;
+    private String login;
+    private String password;
+    private boolean blocked;
+    private PersonDTO person;
+    private Integer version;
+
+    public UserDTO() {
+    }
+
     @Id
     @GeneratedValue
     @Column(name = "user_id")
-    private Integer userID;
-    @Column(name = "usertype")
-    private String userType;
-    @Column(name = "login")
-    private String login;
-    @Column(name = "pwd")
-    private String password;
-
-    @Column(name = "blocked")
-    private boolean blocked;
-
-    @OneToOne
-    @JoinColumn(name = "person_id", referencedColumnName = "person_id")
-    private PersonDTO person;
-
-
     public Integer getUserID() {
         return userID;
     }
@@ -41,6 +36,7 @@ public class UserDTO {
         this.userID = userID;
     }
 
+    @Column(name = "usertype")
     public String getUserType() {
         return userType;
     }
@@ -49,6 +45,7 @@ public class UserDTO {
         this.userType = userType;
     }
 
+    @Column(name = "login")
     public String getLogin() {
         return login;
     }
@@ -57,6 +54,7 @@ public class UserDTO {
         this.login = login;
     }
 
+    @Column(name = "pwd")
     public String getPassword() {
         return password;
     }
@@ -65,6 +63,7 @@ public class UserDTO {
         this.password = password;
     }
 
+    @Column(name = "blocked")
     public boolean isBlocked() {
         return blocked;
     }
@@ -73,6 +72,8 @@ public class UserDTO {
         this.blocked = blocked;
     }
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "person_id", referencedColumnName = "person_id")
     public PersonDTO getPerson() {
         return person;
     }
@@ -81,17 +82,12 @@ public class UserDTO {
         this.person = person;
     }
 
-    public UserDTO() {
+    @Version
+    public Integer getVersion() {
+        return version;
     }
 
-
-    public User transformToUser() {
-        return new User(
-                userID,
-                userType,
-                login,
-                password,
-                person.transformToPerson(),
-                blocked);
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 }

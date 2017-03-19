@@ -14,13 +14,15 @@ import java.util.List;
 public interface IConverseDAO {
 
 
-    int getConversation(int chatroom, LocalDateTime date) throws  ConverseDaoException;
+    Integer getConversation(int chatroom, LocalDateTime date) throws  ConverseDaoException;
 
     ConversationDTO getEntityById(Integer id);
 
     boolean addConverseMember(int userId, int converse) throws  ConverseDaoException;
 
-    List<Conversation> getActiveConversation(LocalDateTime dateTime) throws  ConverseDaoException;
+    List<ConversationDTO> getActiveConversation(LocalDateTime dateTime) throws  ConverseDaoException;
 
     boolean checkUserInChatroom(int chatroom, int userId) throws ConverseDaoException;
+
+    ConversationDTO update(Conversation conv);
 }

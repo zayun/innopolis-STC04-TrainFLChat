@@ -21,5 +21,7 @@ public interface IUserService {
 
     User update(User user) throws UserServiceException, UserNotFoundException;
 
+    User updateAdm(User user) throws UserServiceException, UserNotFoundException;
+
 
 }

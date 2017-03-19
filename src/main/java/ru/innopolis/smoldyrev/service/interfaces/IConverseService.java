@@ -19,4 +19,8 @@ public interface IConverseService {
     List<Conversation> getActiveConversation(LocalDateTime dateTime) throws  ConverseServiceException;
 
     boolean checkConverseMember(int chatroom, int userId) throws ConverseServiceException;
+
+    Conversation getConversation(Integer converseId);
+
+    Conversation update(Conversation conv);
 }

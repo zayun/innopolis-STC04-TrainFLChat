@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.innopolis.smoldyrev.common.exceptions.UserDaoException;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IUserDAO;
+import ru.innopolis.smoldyrev.models.dto.DtoTransformer;
+import ru.innopolis.smoldyrev.models.dto.Transformer;
 
 /**
  * Created by smoldyrev on 16.03.17.
@@ -29,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         UserDetails user = null;
         try {
-            user = userDAO.getUserByLogin(username).transformToUser();
+            user = Transformer.userEntityToPojo(userDAO.getUserByLogin(username));
         } catch (UserDaoException e) {
             logger.error(e);
         }

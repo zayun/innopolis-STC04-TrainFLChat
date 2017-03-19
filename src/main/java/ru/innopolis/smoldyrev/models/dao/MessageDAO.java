@@ -45,11 +45,15 @@ public class MessageDAO implements IMessageDAO {
         CriteriaQuery<MessageDTO> cq = cb.createQuery(MessageDTO.class);
         Root<MessageDTO> from = cq.from(MessageDTO.class);
 
-        cq.select(from);
-        TypedQuery<MessageDTO> q = em.createQuery(cq);
-        List<MessageDTO> messages = q.getResultList();
+        try {
+            cq.select(from);
+            TypedQuery<MessageDTO> q = em.createQuery(cq);
+            List<MessageDTO> messages = q.getResultList();
+            return messages;
+        } finally {
+            em.close();
+        }
 
-        return messages;
     }
 
     public List<MessageDTO> getAllInRoom(int chatRoom) throws MessageDaoException {
@@ -59,23 +63,27 @@ public class MessageDAO implements IMessageDAO {
 
         CriteriaQuery<MessageDTO> cq = cb.createQuery(MessageDTO.class);
         Root<MessageDTO> from = cq.from(MessageDTO.class);
+        try {
+            cq.select(from);
+            cq.where(cb.and(cb.equal(from.get("chatRoom"), chatRoom)));
+            cq.orderBy(cb.desc(from.get("date")));
+            TypedQuery<MessageDTO> q = em.createQuery(cq);
+            List<MessageDTO> messages = q.getResultList();
+            return messages;
+        } finally {
+            em.close();
+        }
 
-        cq.select(from);
-        cq.orderBy(cb.desc(from.get("date")));
-        TypedQuery<MessageDTO> q = em.createQuery(cq);
-        List<MessageDTO> messages = q.getResultList();
-
-        return messages;
     }
 
     public boolean delete(Integer id) throws MessageDaoException {
 
         EntityManager entityManager = FACTORY.createEntityManager();
         entityManager.getTransaction().begin();
-        MessageDTO messageDTO = new MessageDTO();
-        messageDTO.setId(id);
+        MessageDTO messageDTO = getEntityById(id);
 
         entityManager.remove(entityManager.contains(messageDTO) ? messageDTO : entityManager.merge(messageDTO));
+//        entityManager.remove(messageDTO);
         entityManager.getTransaction().commit();
         entityManager.close();
         return true;
@@ -85,7 +93,12 @@ public class MessageDAO implements IMessageDAO {
         EntityManager entityManager = FACTORY.createEntityManager();
         TypedQuery<MessageDTO> query = entityManager.createQuery(
                 "SELECT message FROM MessageDTO message where message.id= :id", MessageDTO.class);
-        return query.setParameter("id", id).getSingleResult();
+        try {
+            MessageDTO messageDTO = query.setParameter("id", id).getSingleResult();
+            return messageDTO;
+        } finally {
+            entityManager.close();
+        }
     }
 
     public boolean create(Message entity) throws MessageDaoException {
@@ -108,11 +121,12 @@ public class MessageDAO implements IMessageDAO {
 
             messageDTO = entityManager.merge(messageDTO);
             entityManager.getTransaction().commit();
-            entityManager.close();
 
         } catch (UserDaoException e) {
             logger.error(e);
             throw new MessageDaoException();
+        } finally {
+            entityManager.close();
         }
         return true;
     }

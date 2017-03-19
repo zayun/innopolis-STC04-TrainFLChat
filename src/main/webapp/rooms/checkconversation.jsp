@@ -21,9 +21,25 @@
         <tr>
             <td><c:out value="${converse.getId()}"></c:out></td>
             <td><c:out value="${converse.getChatrooom()}"></c:out></td>
-            <td><c:out value="${converse.getGradeConverse()}"></c:out></td>
+            <td><form action="/changeconverse" method="post">
+                <input type="text" name="converseId" id="converseId" value="${converse.getId()}" hidden>
+                <input type="text" name="converseGrade" id="converseGrade" value="${converse.getGradeConverse()}"}>
+                <input type="submit" value="chng" formmethod="post">
+            </form></td>
             <td><c:out value="${converse.getStartTime()}"></c:out></td>
-            <td><c:out value="${converse.getEndTime()}"></c:out></td>
+            <td>
+                <form action="/changeconverse" method="post">
+                    <input type="text" name="converseId" id="converseId" value="${converse.getId()}" hidden>
+                    <input type="datetime" name="date_time" id="date_time" value="${converse.getEndTime()}">
+                    <input type="submit" value="chng" formmethod="post">
+                </form>
+            </td>
+            <td>
+                <form action="/privatechatroom" method="get">
+                    <input type="text" name="chatroom" id="chatroom" value="${converse.getChatrooom()}" hidden>
+                    <input type="submit" value="shw" formmethod="get">
+                </form>
+            </td>
         </tr>
     </c:forEach>
 

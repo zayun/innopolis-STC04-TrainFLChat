@@ -9,6 +9,8 @@ import ru.innopolis.smoldyrev.common.exceptions.UserNotFoundException;
 import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IPersonDAO;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IUserDAO;
+import ru.innopolis.smoldyrev.models.dto.DtoTransformer;
+import ru.innopolis.smoldyrev.models.dto.Transformer;
 import ru.innopolis.smoldyrev.models.dto.UserDTO;
 import ru.innopolis.smoldyrev.models.pojo.Person;
 import ru.innopolis.smoldyrev.models.pojo.User;
@@ -52,12 +54,8 @@ public class UserService implements IUserService {
 
         try {
             user.setPassword(bcryptEncoder.encode(user.getPassword()));
-            personDAO.create(user.getPerson());
             return (userDAO.create(user));
         } catch (UserDaoException e) {
-            logger.error(e);
-            throw new UserServiceException();
-        } catch (PersonDaoException e) {
             logger.error(e);
             throw new UserServiceException();
         }
@@ -70,7 +68,7 @@ public class UserService implements IUserService {
      */
     public User getUserById(int id) throws UserServiceException, UserNotFoundException {
         try {
-            User user = userDAO.getEntityById(id).transformToUser();
+            User user = Transformer.userEntityToPojo(userDAO.getEntityById(id));
 
             if (user == null)
                 throw new UserNotFoundException();
@@ -92,13 +90,13 @@ public class UserService implements IUserService {
      */
     public List<User> getAll() throws UserServiceException {
         try {
-            List<User> users = new ArrayList<>();
-
-            for (UserDTO u :
-                    userDAO.getAll()) {
-                users.add(u.transformToUser());
-            }
-            return users;
+//            List<User> users = new ArrayList<>();
+//
+//            for (UserDTO u :
+//                    userDAO.getAll()) {
+//                users.add(DtoTransformer.transform(u));
+//            }
+            return Transformer.userEntityToPojo(userDAO.getAll());
         } catch (UserDaoException e) {
             logger.error(e);
             throw new UserServiceException();
@@ -120,7 +118,7 @@ public class UserService implements IUserService {
 
             for (UserDTO u :
                     userDAO.getAllInConverse(converse)) {
-                users.add(u.transformToUser());
+                users.add(Transformer.userEntityToPojo(u));
             }
             return users;
         } catch (UserDaoException e) {
@@ -139,7 +137,30 @@ public class UserService implements IUserService {
         user.setPassword(bcryptEncoder.encode(user.getPassword()));
 
         try {
-            user = userDAO.update(user).transformToUser();
+            user = Transformer.userEntityToPojo(userDAO.update(user));
+
+            if (user == null)
+                throw new UserNotFoundException();
+
+            return user;
+        } catch (UserDaoException e) {
+            logger.error(e);
+            throw new UserServiceException();
+        } catch (UserNotFoundException e) {
+            logger.error(e);
+            throw new UserNotFoundException();
+        }
+    }
+
+    /**
+     * Обновить данные пользователя
+     *  административный доступ
+     *  пароль не меняется
+     * @throws UserServiceException при любых проблемах
+     */
+    public User updateAdm(User user) throws UserServiceException, UserNotFoundException {
+        try {
+            user = Transformer.userEntityToPojo(userDAO.update(user));
 
             if (user == null)
                 throw new UserNotFoundException();

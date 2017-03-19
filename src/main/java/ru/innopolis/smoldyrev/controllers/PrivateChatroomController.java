@@ -7,20 +7,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import ru.innopolis.smoldyrev.common.exceptions.ChatroomIsBusyException;
-import ru.innopolis.smoldyrev.common.exceptions.MessageServiceException;
-import ru.innopolis.smoldyrev.common.exceptions.PersonServiceException;
-import ru.innopolis.smoldyrev.models.dao.interfaces.IConverseDAO;
 import ru.innopolis.smoldyrev.models.pojo.*;
 import ru.innopolis.smoldyrev.service.interfaces.IConverseService;
 import ru.innopolis.smoldyrev.service.interfaces.IMessageService;
 import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -136,12 +130,37 @@ public class PrivateChatroomController {
         model.addAttribute("converse", converse);
         model.addAttribute("chatroom", chatroom);
 
-
         if (converseService.addConverseMember(userId, converse)) {
             return "redirect:/createconverse";
         }
 
         return "redirect:/createconverse";
+    }
+
+    /**
+     * Добавляем члена беседы
+     * @param converseGrade - оценка беседы
+     * @param datetime - дата окончания беседы
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
+    @RequestMapping(value = "/changeconverse", method = RequestMethod.POST)
+    public String changeConverse(Model model,
+                                    @RequestParam("converseId") int converse,
+                                    @RequestParam(value = "date_time",required = false) String datetime,
+                                    @RequestParam(value = "converseGrade",required = false) Integer converseGrade) throws Exception {
+
+        Conversation conversation = converseService.getConversation(converse);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        if (conversation!=null) {
+            if (converseGrade!=null) conversation.setGradeConverse(converseGrade);
+            if (datetime!=null) conversation.setEndTime(LocalDateTime.parse(datetime,formatter));
+
+            converseService.update(conversation);
+        }
+
+        return "redirect:/checkconversation";
     }
 }
 

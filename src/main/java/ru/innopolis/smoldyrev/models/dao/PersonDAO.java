@@ -50,27 +50,34 @@ public class PersonDAO implements IPersonDAO{
 
         EntityManager entityManager = FACTORY.createEntityManager();
         entityManager.getTransaction().begin();
+        try {
+            PersonDTO personDTO = getEntityById(entity.getId());
+            personDTO.setFirstName(entity.getFirstName());
+            personDTO.setLastName(entity.getLastName());
+            personDTO.setBirthday(entity.getBirthday());
+            personDTO.setEmail(entity.getEmail());
+            personDTO.setPhoneNumber(entity.getPhoneNumber());
+            personDTO.setMale(entity.isMale());
 
-        PersonDTO personDTO = getEntityById(entity.getId());
-        personDTO.setFirstName(entity.getFirstName());
-        personDTO.setLastName(entity.getLastName());
-        personDTO.setBirthday(entity.getBirthday());
-        personDTO.setEmail(entity.getEmail());
-        personDTO.setPhoneNumber(entity.getPhoneNumber());
-        personDTO.setMale(entity.isMale());
+            personDTO = entityManager.merge(personDTO);
+            entityManager.getTransaction().commit();
 
-        personDTO = entityManager.merge(personDTO);
-        entityManager.getTransaction().commit();
-        entityManager.close();
-
-        return personDTO;
+            return personDTO;
+        }finally {
+            entityManager.close();
+        }
     }
 
     public PersonDTO getEntityById(Integer id) {
         EntityManager entityManager = FACTORY.createEntityManager();
         TypedQuery<PersonDTO> query = entityManager.createQuery(
                 "SELECT person FROM PersonDTO person where person.id = :person_id", PersonDTO.class);
-        return query.setParameter("person_id", id).getSingleResult();
+        try {
+            PersonDTO personDTO =query.setParameter("person_id", id).getSingleResult();
+            return personDTO;
+        } finally {
+            entityManager.close();
+        }
     }
 
     /**
@@ -85,22 +92,25 @@ public class PersonDAO implements IPersonDAO{
         EntityManager entityManager = FACTORY.createEntityManager();
         entityManager.getTransaction().begin();
 
-        PersonDTO personDTO = new PersonDTO();
+        try {
+            PersonDTO personDTO = new PersonDTO();
 
-        personDTO.setId(entity.getId());
-        personDTO.setFirstName(entity.getFirstName());
-        personDTO.setLastName(entity.getLastName());
-        personDTO.setEmail(entity.getEmail());
-        personDTO.setPhoneNumber(entity.getPhoneNumber());
-        personDTO.setMale(entity.isMale());
-        personDTO.setBirthday(entity.getBirthday());
+            personDTO.setId(entity.getId());
+            personDTO.setFirstName(entity.getFirstName());
+            personDTO.setLastName(entity.getLastName());
+            personDTO.setEmail(entity.getEmail());
+            personDTO.setPhoneNumber(entity.getPhoneNumber());
+            personDTO.setMale(entity.isMale());
+            personDTO.setBirthday(entity.getBirthday());
 
-        personDTO = entityManager.merge(personDTO);
-        entityManager.getTransaction().commit();
-        entityManager.close();
+            personDTO = entityManager.merge(personDTO);
+            entityManager.getTransaction().commit();
 
-        entity.setId(personDTO.getId());
+            entity.setId(personDTO.getId());
 
-        return true;
+            return true;
+        }finally {
+            entityManager.close();
+        }
     }
 }

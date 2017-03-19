@@ -31,4 +31,5 @@ dependencies {
 
     compile 'org.springframework:spring-jdbc:4.3.5.RELEASE'
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.8.Final'
+    compile group: 'ma.glasnost.orika', name: 'orika-core', version: '1.5.0'
 }

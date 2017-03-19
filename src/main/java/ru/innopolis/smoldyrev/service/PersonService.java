@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.innopolis.smoldyrev.common.exceptions.PersonDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.PersonServiceException;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IPersonDAO;
+import ru.innopolis.smoldyrev.models.dto.DtoTransformer;
+import ru.innopolis.smoldyrev.models.dto.Transformer;
 import ru.innopolis.smoldyrev.models.pojo.Person;
 import org.apache.log4j.Logger;
 import ru.innopolis.smoldyrev.service.interfaces.IPersonService;
@@ -28,7 +30,7 @@ public class PersonService implements IPersonService {
 
     public Person update(Person person) throws PersonServiceException {
         try {
-            person = personDAO.update(person).transformToPerson();
+            person = Transformer.personEntityToPojo(personDAO.update(person));
             return person;
         } catch (PersonDaoException e) {
             logger.error(e);
