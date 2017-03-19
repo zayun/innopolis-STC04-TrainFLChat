@@ -12,10 +12,10 @@ import java.util.List;
 public class Transformer {
 
     private final static MapperFactory MAPPER_FACTORY = new DefaultMapperFactory.Builder().build();
-
-    static {
-        MAPPER_FACTORY.getConverterFactory().registerConverter(new LocalDateConverter());
-    }
+//
+//    static {
+//        MAPPER_FACTORY.getConverterFactory().registerConverter(new LocalDateConverter());
+//    }
     public static User userEntityToPojo(UserDTO entity) {
         MAPPER_FACTORY.classMap(UserDTO.class, User.class);
         MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();

@@ -5,6 +5,7 @@ import ru.innopolis.smoldyrev.common.exceptions.MessageDaoException;
 import ru.innopolis.smoldyrev.models.dto.ConversationDTO;
 import ru.innopolis.smoldyrev.models.pojo.Conversation;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,13 +15,13 @@ import java.util.List;
 public interface IConverseDAO {
 
 
-    Integer getConversation(int chatroom, LocalDateTime date) throws  ConverseDaoException;
+    Integer getConversation(int chatroom, Timestamp date) throws  ConverseDaoException;
 
     ConversationDTO getEntityById(Integer id);
 
     boolean addConverseMember(int userId, int converse) throws  ConverseDaoException;
 
-    List<ConversationDTO> getActiveConversation(LocalDateTime dateTime) throws  ConverseDaoException;
+    List<ConversationDTO> getActiveConversation(Timestamp dateTime) throws  ConverseDaoException;
 
     boolean checkUserInChatroom(int chatroom, int userId) throws ConverseDaoException;
 

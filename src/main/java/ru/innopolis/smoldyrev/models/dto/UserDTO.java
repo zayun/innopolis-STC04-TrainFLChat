@@ -72,7 +72,7 @@ public class UserDTO {
         this.blocked = blocked;
     }
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id", referencedColumnName = "person_id")
     public PersonDTO getPerson() {
         return person;

@@ -4,6 +4,7 @@ import ru.innopolis.smoldyrev.models.pojo.Message;
 import ru.innopolis.smoldyrev.models.pojo.User;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 /**
@@ -15,7 +16,7 @@ public class MessageDTO {
 
 
     private int id;
-    private LocalDateTime date;
+    private Timestamp date;
     private UserDTO fromUser;
     private UserDTO toUser;
     private String bodyText;
@@ -38,11 +39,11 @@ public class MessageDTO {
     }
 
     @Column(name = "date_time")
-    public LocalDateTime getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(Timestamp date) {
         this.date = date;
     }
 

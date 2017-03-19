@@ -13,6 +13,7 @@ import ru.innopolis.smoldyrev.service.interfaces.IConverseService;
 import ru.innopolis.smoldyrev.service.interfaces.IMessageService;
 import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -88,7 +89,7 @@ public class PrivateChatroomController {
                                @RequestParam(name = "chatroom") int chatroom,
                                @RequestParam(name = "converse") int converse) throws Exception {
 
-        converse = converseService.createConversation(chatroom, LocalDateTime.now());
+        converse = converseService.createConversation(chatroom, Timestamp.valueOf(LocalDateTime.now()));
         model.addAttribute("chatroom", chatroom);
         model.addAttribute("converse", converse);
         model.addAttribute("start_date", LocalDateTime.now());
@@ -107,7 +108,7 @@ public class PrivateChatroomController {
     @RequestMapping(value = "/checkconversation", method = RequestMethod.GET)
     public String checkConversation(Model model) throws Exception {
 
-        model.addAttribute("conversations", converseService.getActiveConversation(LocalDateTime.now()));
+        model.addAttribute("conversations", converseService.getActiveConversation(Timestamp.valueOf(LocalDateTime.now())));
 
         return "/rooms/checkconversation";
     }
@@ -151,11 +152,9 @@ public class PrivateChatroomController {
 
         Conversation conversation = converseService.getConversation(converse);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
         if (conversation!=null) {
             if (converseGrade!=null) conversation.setGradeConverse(converseGrade);
-            if (datetime!=null) conversation.setEndTime(LocalDateTime.parse(datetime,formatter));
+            if (datetime!=null) conversation.setEndTime(Timestamp.valueOf(datetime));
 
             converseService.update(conversation);
         }

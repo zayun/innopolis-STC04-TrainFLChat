@@ -34,7 +34,7 @@ public class ConverseDAO implements IConverseDAO {
             Persistence.createEntityManagerFactory("LFLChat");
 
     @Override
-    public Integer getConversation(int chatroom, LocalDateTime date) throws ConverseDaoException {
+    public Integer getConversation(int chatroom, Timestamp date) throws ConverseDaoException {
 
         EntityManager entityManager = FACTORY.createEntityManager();
         TypedQuery<ConversationDTO> query = entityManager.createQuery(
@@ -52,7 +52,7 @@ public class ConverseDAO implements IConverseDAO {
                     0,
                     chatroom,
                     date,
-                    date.plusDays(30),
+                    Timestamp.valueOf(LocalDateTime.now().plusDays(30)),
                     0);
             return create(conv).getId();
         } finally {
@@ -105,7 +105,7 @@ public class ConverseDAO implements IConverseDAO {
     }
 
     @Override
-    public List<ConversationDTO> getActiveConversation(LocalDateTime dateTime) throws ConverseDaoException {
+    public List<ConversationDTO> getActiveConversation(Timestamp dateTime) throws ConverseDaoException {
 
         EntityManager entityManager = FACTORY.createEntityManager();
         TypedQuery<ConversationDTO> query = entityManager.createQuery(

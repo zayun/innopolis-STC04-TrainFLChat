@@ -107,7 +107,6 @@ public class UserDAO implements IUserDAO {
                 "SELECT user FROM UserDTO user where user.userID = :user_id", UserDTO.class);
         try {
             UserDTO userDTO = query.setParameter("user_id", user_id).getSingleResult();
-            userDTO.getPerson().getLanguages();
             return userDTO;
         } finally {
             entityManager.close();

@@ -2,6 +2,7 @@ package ru.innopolis.smoldyrev.models.dto;
 
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,8 +17,8 @@ public class ConversationDTO {
 
     private int id;
     private int chatrooom;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private Timestamp startTime;
+    private Timestamp endTime;
     private int gradeConverse;
     private Set<UserDTO> users = new HashSet<>();
     private Integer version;
@@ -46,20 +47,20 @@ public class ConversationDTO {
     }
 
     @Column(name = "start_time")
-    public LocalDateTime getStartTime() {
+    public Timestamp getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(Timestamp startTime) {
         this.startTime = startTime;
     }
 
     @Column(name = "end_time")
-    public LocalDateTime getEndTime() {
+    public Timestamp getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
+    public void setEndTime(Timestamp endTime) {
         this.endTime = endTime;
     }
 

@@ -15,6 +15,7 @@ import ru.innopolis.smoldyrev.models.pojo.User;
 import ru.innopolis.smoldyrev.service.interfaces.IMessageService;
 import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 /**
@@ -67,7 +68,7 @@ public class MessageController {
         }
 
         Message message = new Message();
-        message.setDate(LocalDateTime.now());
+        message.setDate(Timestamp.valueOf(LocalDateTime.now()));
         message.setFromUser(userFrom);
         message.setToUser(userTo);
         message.setBodyText(textMessage);

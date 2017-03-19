@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 public class Message {
 
     private int id;
-    private LocalDateTime date;
+    private Timestamp date;
     private User fromUser;
     private User toUser;
     private String bodyText;
@@ -28,7 +28,7 @@ public class Message {
     public Message() {
     }
 
-    public Message(int id, LocalDateTime date, User fromUser, User toUser,
+    public Message(int id, Timestamp date, User fromUser, User toUser,
                    String bodyText, boolean viewed, int chatRoom) {
         this.id = id;
         this.date = date;
@@ -47,16 +47,16 @@ public class Message {
         this.id = id;
     }
 
-    public LocalDateTime getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(Timestamp date) {
         this.date = date;
     }
 
     public String getStrDate() {
-       return date.format(DateTimeFormatter.ofPattern("HH-mm-ss"));//.toLocalTime().toString();
+       return date.toString();// .format(DateTimeFormatter.ofPattern("HH-mm-ss"));//.toLocalTime().toString();
     }
 
     public User getFromUser() {

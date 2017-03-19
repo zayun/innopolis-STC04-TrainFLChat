@@ -16,6 +16,7 @@ import ru.innopolis.smoldyrev.models.pojo.Message;
 import ru.innopolis.smoldyrev.models.pojo.User;
 import ru.innopolis.smoldyrev.service.interfaces.IConverseService;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class ConverseService implements IConverseService {
         this.converseDAO = converseDAO;
     }
 
-    public int createConversation(int chatroom, LocalDateTime dateTime) throws ConverseServiceException {
+    public int createConversation(int chatroom, Timestamp dateTime) throws ConverseServiceException {
         try {
             return converseDAO.getConversation(chatroom, dateTime);
         } catch (ConverseDaoException e) {
@@ -55,13 +56,8 @@ public class ConverseService implements IConverseService {
         }
     }
 
-    public List<Conversation> getActiveConversation(LocalDateTime dateTime) throws ConverseServiceException {
+    public List<Conversation> getActiveConversation(Timestamp dateTime) throws ConverseServiceException {
         try {
-//            List<Conversation> list = new ArrayList<>();
-//            for (ConversationDTO conv:
-//                    converseDAO.getActiveConversation(dateTime)) {
-//                list.add(DtoTransformer.transform(conv));
-//            }
             return Transformer.conversationEntityToPojo(converseDAO.getActiveConversation(dateTime));
         } catch (ConverseDaoException e) {
             logger.error(e);

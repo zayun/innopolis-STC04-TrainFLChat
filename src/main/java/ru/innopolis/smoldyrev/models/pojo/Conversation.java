@@ -13,13 +13,13 @@ public class Conversation {
 
     private int id;
     private int chatrooom;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private Timestamp startTime;
+    private Timestamp endTime;
     private int gradeConverse;
 
     Set<User> users;
 
-    public Conversation(int id, int chatrooom, LocalDateTime startTime, LocalDateTime endTime, int gradeConverse) {
+    public Conversation(int id, int chatrooom, Timestamp startTime, Timestamp endTime, int gradeConverse) {
         this.id = id;
         this.chatrooom = chatrooom;
         this.startTime = startTime;
@@ -51,19 +51,19 @@ public class Conversation {
         this.gradeConverse = gradeConverse;
     }
 
-    public LocalDateTime getStartTime() {
+    public Timestamp getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(Timestamp startTime) {
         this.startTime = startTime;
     }
 
-    public LocalDateTime getEndTime() {
+    public Timestamp getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
+    public void setEndTime(Timestamp endTime) {
         this.endTime = endTime;
     }
 
