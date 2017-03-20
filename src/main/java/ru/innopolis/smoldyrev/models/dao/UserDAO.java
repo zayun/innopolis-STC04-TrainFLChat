@@ -41,6 +41,7 @@ public class UserDAO implements IUserDAO {
                 "SELECT user FROM UserDTO user where user.login = :login", UserDTO.class);
         try {
             UserDTO userDTO = query.setParameter("login", login).getSingleResult();
+            System.out.println(userDTO.getPerson());
             return userDTO;
         } finally {
             entityManager.close();
@@ -102,15 +103,11 @@ public class UserDAO implements IUserDAO {
     }
 
     public UserDTO getEntityById(Integer user_id) throws UserDaoException {
+
         EntityManager entityManager = FACTORY.createEntityManager();
-        TypedQuery<UserDTO> query = entityManager.createQuery(
-                "SELECT user FROM UserDTO user where user.userID = :user_id", UserDTO.class);
-        try {
-            UserDTO userDTO = query.setParameter("user_id", user_id).getSingleResult();
-            return userDTO;
-        } finally {
-            entityManager.close();
-        }
+
+        UserDTO userDTO = (UserDTO) entityManager.find(UserDTO.class, user_id);
+        return userDTO;
     }
 
     public boolean create(User entity) throws UserDaoException {

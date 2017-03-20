@@ -148,16 +148,9 @@ public class ConverseDAO implements IConverseDAO {
     public ConversationDTO getEntityById(Integer id) {
 
         EntityManager entityManager = FACTORY.createEntityManager();
-        TypedQuery<ConversationDTO> query = entityManager.createQuery(
-                "SELECT converse FROM ConversationDTO converse where converse.id = :id", ConversationDTO.class);
-        try {
-            return query.setParameter("id", id).getSingleResult();
-        } catch (NoResultException e) {
-            logger.error(e);
-            return null;
-        } finally {
-            entityManager.close();
-        }
+
+        ConversationDTO conversationDTO = (ConversationDTO) entityManager.find(ConversationDTO.class, id);
+        return conversationDTO;
 
     }
 

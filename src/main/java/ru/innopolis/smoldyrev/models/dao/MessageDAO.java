@@ -6,6 +6,7 @@ import ru.innopolis.smoldyrev.common.exceptions.UserDaoException;
 import ru.innopolis.smoldyrev.models.connector.DatabaseManager;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IMessageDAO;
 import ru.innopolis.smoldyrev.models.dto.MessageDTO;
+import ru.innopolis.smoldyrev.models.dto.Transformer;
 import ru.innopolis.smoldyrev.models.dto.UserDTO;
 import ru.innopolis.smoldyrev.models.pojo.Message;
 import ru.innopolis.smoldyrev.models.pojo.User;
@@ -91,14 +92,9 @@ public class MessageDAO implements IMessageDAO {
 
     public MessageDTO getEntityById(Integer id) {
         EntityManager entityManager = FACTORY.createEntityManager();
-        TypedQuery<MessageDTO> query = entityManager.createQuery(
-                "SELECT message FROM MessageDTO message where message.id= :id", MessageDTO.class);
-        try {
-            MessageDTO messageDTO = query.setParameter("id", id).getSingleResult();
-            return messageDTO;
-        } finally {
-            entityManager.close();
-        }
+
+        MessageDTO messageDTO = (MessageDTO) entityManager.find(MessageDTO.class, id);
+        return messageDTO;
     }
 
     public boolean create(Message entity) throws MessageDaoException {

@@ -70,14 +70,9 @@ public class PersonDAO implements IPersonDAO{
 
     public PersonDTO getEntityById(Integer id) {
         EntityManager entityManager = FACTORY.createEntityManager();
-        TypedQuery<PersonDTO> query = entityManager.createQuery(
-                "SELECT person FROM PersonDTO person where person.id = :person_id", PersonDTO.class);
-        try {
-            PersonDTO personDTO =query.setParameter("person_id", id).getSingleResult();
-            return personDTO;
-        } finally {
-            entityManager.close();
-        }
+
+        PersonDTO personDTO = (PersonDTO) entityManager.find(PersonDTO.class, id);
+        return personDTO;
     }
 
     /**
