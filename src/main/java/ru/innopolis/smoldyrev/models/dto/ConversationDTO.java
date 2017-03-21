@@ -16,7 +16,7 @@ public class ConversationDTO {
 
 
     private int id;
-    private int chatrooom;
+    private int chatroom;
     private Timestamp startTime;
     private Timestamp endTime;
     private int gradeConverse;
@@ -38,12 +38,12 @@ public class ConversationDTO {
     }
 
     @Column(name = "chatroom")
-    public int getChatrooom() {
-        return chatrooom;
+    public int getChatroom() {
+        return chatroom;
     }
 
-    public void setChatrooom(int chatrooom) {
-        this.chatrooom = chatrooom;
+    public void setChatroom(int chatroom) {
+        this.chatroom = chatroom;
     }
 
     @Column(name = "start_time")
@@ -93,7 +93,6 @@ public class ConversationDTO {
         this.users.remove(user);
     }
 
-    @Version
     public Integer getVersion() {
         return version;
     }

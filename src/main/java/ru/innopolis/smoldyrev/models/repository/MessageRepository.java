@@ -15,5 +15,5 @@ import java.util.List;
 @Repository
 @Transactional
 public interface MessageRepository extends JpaRepository<MessageDTO, Integer> {
-    List<MessageDTO> findByChatroom(@Param("chatroom") Integer chatroom);
+    List<MessageDTO> findByChatRoomOrderByDateDesc(@Param("chatroom") int chatroom);
 }

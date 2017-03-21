@@ -83,8 +83,8 @@ public class MessageDAO implements IMessageDAO {
         entityManager.getTransaction().begin();
         MessageDTO messageDTO = getEntityById(id);
 
-        entityManager.remove(entityManager.contains(messageDTO) ? messageDTO : entityManager.merge(messageDTO));
-//        entityManager.remove(messageDTO);
+//        entityManager.remove(entityManager.contains(messageDTO) ? messageDTO : entityManager.merge(messageDTO));
+        entityManager.remove(messageDTO);
         entityManager.getTransaction().commit();
         entityManager.close();
         return true;

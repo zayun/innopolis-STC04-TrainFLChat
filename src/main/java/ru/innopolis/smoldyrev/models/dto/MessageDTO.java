@@ -94,7 +94,6 @@ public class MessageDTO {
         this.chatRoom = chatRoom;
     }
 
-    @Version
     public Integer getVersion() {
         return version;
     }

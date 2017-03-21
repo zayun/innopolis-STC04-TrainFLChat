@@ -12,19 +12,28 @@ import java.util.Set;
 public class Conversation {
 
     private int id;
-    private int chatrooom;
+    private int chatroom;
     private Timestamp startTime;
     private Timestamp endTime;
     private int gradeConverse;
 
-    Set<User> users;
+    private Set<User> users;
 
     public Conversation(int id, int chatrooom, Timestamp startTime, Timestamp endTime, int gradeConverse) {
         this.id = id;
-        this.chatrooom = chatrooom;
+        this.chatroom = chatroom;
         this.startTime = startTime;
         this.endTime = endTime;
         this.gradeConverse = gradeConverse;
+    }
+
+    public Conversation(int id, int chatroom, Timestamp startTime, Timestamp endTime, int gradeConverse, Set<User> users) {
+        this.id = id;
+        this.chatroom = chatroom;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.gradeConverse = gradeConverse;
+        this.users = users;
     }
 
     public int getId() {
@@ -35,12 +44,12 @@ public class Conversation {
         this.id = id;
     }
 
-    public int getChatrooom() {
-        return chatrooom;
+    public int getChatroom() {
+        return chatroom;
     }
 
-    public void setChatrooom(int chatrooom) {
-        this.chatrooom = chatrooom;
+    public void setChatroom(int chatroom) {
+        this.chatroom = chatroom;
     }
 
     public int getGradeConverse() {

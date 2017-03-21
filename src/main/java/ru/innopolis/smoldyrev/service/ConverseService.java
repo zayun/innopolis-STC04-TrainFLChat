@@ -5,15 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.innopolis.smoldyrev.common.exceptions.ConverseDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.ConverseServiceException;
-import ru.innopolis.smoldyrev.common.exceptions.MessageDaoException;
-import ru.innopolis.smoldyrev.common.exceptions.MessageServiceException;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IConverseDAO;
 import ru.innopolis.smoldyrev.models.dto.ConversationDTO;
-import ru.innopolis.smoldyrev.models.dto.DtoTransformer;
 import ru.innopolis.smoldyrev.models.dto.Transformer;
+import ru.innopolis.smoldyrev.models.dto.UserDTO;
 import ru.innopolis.smoldyrev.models.pojo.Conversation;
-import ru.innopolis.smoldyrev.models.pojo.Message;
-import ru.innopolis.smoldyrev.models.pojo.User;
+import ru.innopolis.smoldyrev.models.repository.ConverseRepository;
+import ru.innopolis.smoldyrev.models.repository.UserRepository;
 import ru.innopolis.smoldyrev.service.interfaces.IConverseService;
 
 import java.sql.Timestamp;
@@ -32,16 +30,39 @@ public class ConverseService implements IConverseService {
 
 
     private IConverseDAO converseDAO;
+    private ConverseRepository converseRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private void setConverseDAO(IConverseDAO converseDAO) {
         this.converseDAO = converseDAO;
     }
 
+    @Autowired
+    public void setConverseRepository(ConverseRepository converseRepository) {
+        this.converseRepository = converseRepository;
+    }
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     public int createConversation(int chatroom, Timestamp dateTime) throws ConverseServiceException {
         try {
-            return converseDAO.getConversation(chatroom, dateTime);
-        } catch (ConverseDaoException e) {
+
+            ConversationDTO conv =
+                    converseRepository.findByChatroomAndStartTimeBeforeAndEndTimeAfter(chatroom,dateTime,dateTime);
+            if (conv == null) {
+                ConversationDTO newConv = new ConversationDTO();
+                newConv.setChatroom(chatroom);
+                newConv.setStartTime(dateTime);
+                newConv.setEndTime(Timestamp.valueOf(LocalDateTime.now().plusDays(30)));
+                conv = converseRepository.saveAndFlush(newConv);
+            }
+
+            return conv.getId();
+        } catch (Exception e) {
             logger.error(e);
             throw new ConverseServiceException();
         }
@@ -49,8 +70,11 @@ public class ConverseService implements IConverseService {
 
     public boolean addConverseMember(int userId, int converse) throws ConverseServiceException {
         try {
-            return converseDAO.addConverseMember(userId, converse);
-        } catch (ConverseDaoException e) {
+            ConversationDTO conv = converseRepository.findOne(converse);
+            conv.addUser(userRepository.findOne(userId));
+            converseRepository.saveAndFlush(conv);
+            return true;
+        } catch (Exception e) {
             logger.error(e);
             throw new ConverseServiceException();
         }
@@ -58,29 +82,43 @@ public class ConverseService implements IConverseService {
 
     public List<Conversation> getActiveConversation(Timestamp dateTime) throws ConverseServiceException {
         try {
-            return Transformer.conversationEntityToPojo(converseDAO.getActiveConversation(dateTime));
-        } catch (ConverseDaoException e) {
+            List<Conversation> ls = new ArrayList<>();
+            for (ConversationDTO c:
+                    converseRepository.findByEndTimeAfter(dateTime)) {
+                ls.add(Transformer.conversation(c));
+            }
+            return ls;
+        } catch (Exception e) {
             logger.error(e);
             throw new ConverseServiceException();
         }
 
     }
 
+    /**Заглушка
+     * переделать на проверку наличия в беседе, а не чатруме
+     * */
     @Override
     public boolean checkConverseMember(int chatroom, int userId) throws ConverseServiceException {
         try {
-            return converseDAO.checkUserInChatroom(chatroom, userId);
-        } catch (ConverseDaoException e) {
+            ConversationDTO conv = converseRepository.findByChatroom(chatroom);
+
+            for (UserDTO u:
+                 conv.getUsers()) {
+                if (u.getUserID()==userId) return true;
+            }
+            return false;
+        } catch (Exception e) {
             logger.error(e);
             throw new ConverseServiceException();
         }
     }
 
     public Conversation getConversation(Integer converseId) {
-        return Transformer.conversationEntityToPojo(converseDAO.getEntityById(converseId));
+        return Transformer.conversation(converseRepository.findOne(converseId));
     }
 
     public Conversation update(Conversation conv) {
-        return Transformer.conversationEntityToPojo(converseDAO.update(conv));
+        return Transformer.conversation(converseRepository.saveAndFlush(Transformer.conversation(conv)));
     }
 }

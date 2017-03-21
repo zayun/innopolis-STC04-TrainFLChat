@@ -63,7 +63,7 @@ public class AdminkaController {
             user.setBlocked(!user.isBlocked());
         }
 
-        user = userService.updateAdm(user);
+        user = userService.updateWp(user);
         logger.trace("update " + user.getUserID() + " is ok");
 
         return "redirect:" + "/adm/adminoffice";

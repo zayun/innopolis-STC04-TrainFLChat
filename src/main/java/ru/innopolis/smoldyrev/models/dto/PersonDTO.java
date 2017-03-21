@@ -114,7 +114,6 @@ public class PersonDTO {
         this.languages.add(language);
     }
 
-    @Version
     public Integer getVersion() {
         return version;
     }

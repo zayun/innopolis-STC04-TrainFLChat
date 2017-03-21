@@ -12,17 +12,14 @@ import java.util.List;
 public class Transformer {
 
     private final static MapperFactory MAPPER_FACTORY = new DefaultMapperFactory.Builder().build();
-//
-//    static {
-//        MAPPER_FACTORY.getConverterFactory().registerConverter(new LocalDateConverter());
-//    }
-    public static User userEntityToPojo(UserDTO entity) {
+
+    public static User user(UserDTO entity) {
         MAPPER_FACTORY.classMap(UserDTO.class, User.class);
         MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
         return mapper.map(entity, User.class);
     }
 
-    public static List<User> userEntityToPojo(List<UserDTO> listEntities) {
+    public static List<User> user(List<UserDTO> listEntities) {
         MAPPER_FACTORY.classMap(UserDTO.class, User.class);
         MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
         List<User> listUsers = new ArrayList<>();
@@ -32,13 +29,19 @@ public class Transformer {
         return listUsers;
     }
 
-    public static Person personEntityToPojo(PersonDTO entity) {
+    public static UserDTO user(User pojo) {
+        MAPPER_FACTORY.classMap(User.class, UserDTO.class);
+        MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
+        return mapper.map(pojo, UserDTO.class);
+    }
+
+    public static Person person(PersonDTO entity) {
         MAPPER_FACTORY.classMap(PersonDTO.class, Person.class);
         MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
         return mapper.map(entity, Person.class);
     }
 
-    public static List<Person> personEntityToPojo(List<PersonDTO> listEntities) {
+    public static List<Person> person(List<PersonDTO> listEntities) {
         MAPPER_FACTORY.classMap(PersonDTO.class, Person.class);
         MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
         List<Person> listPersons = new ArrayList<>();
@@ -48,13 +51,19 @@ public class Transformer {
         return listPersons;
     }
 
-    public static Message messageEntityToPojo(MessageDTO entity) {
+    public static PersonDTO person(Person pojo) {
+        MAPPER_FACTORY.classMap(Person.class, PersonDTO.class);
+        MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
+        return mapper.map(pojo, PersonDTO.class);
+    }
+
+    public static Message message(MessageDTO entity) {
         MAPPER_FACTORY.classMap(MessageDTO.class, Message.class);
         MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
         return mapper.map(entity, Message.class);
     }
 
-    public static List<Message> messageEntityToPojo(List<MessageDTO> listEntities) {
+    public static List<Message> message(List<MessageDTO> listEntities) {
         MAPPER_FACTORY.classMap(MessageDTO.class, Message.class);
         MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
         List<Message> listMessages = new ArrayList<>();
@@ -64,13 +73,19 @@ public class Transformer {
         return listMessages;
     }
 
-    public static Language languageEntityToPojo(LanguageDTO entity) {
+    public static MessageDTO message(Message pojo) {
+        MAPPER_FACTORY.classMap(Message.class, MessageDTO.class);
+        MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
+        return mapper.map(pojo, MessageDTO.class);
+    }
+
+    public static Language language(LanguageDTO entity) {
         MAPPER_FACTORY.classMap(LanguageDTO.class, Language.class);
         MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
         return mapper.map(entity, Language.class);
     }
 
-    public static List<Language> languageEntityToPojo(List<LanguageDTO> listEntities) {
+    public static List<Language> language(List<LanguageDTO> listEntities) {
         MAPPER_FACTORY.classMap(LanguageDTO.class, Language.class);
         MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
         List<Language> listLanguages = new ArrayList<>();
@@ -80,13 +95,13 @@ public class Transformer {
         return listLanguages;
     }
 
-    public static Conversation conversationEntityToPojo(ConversationDTO entity) {
+    public static Conversation conversation(ConversationDTO entity) {
         MAPPER_FACTORY.classMap(ConversationDTO.class, Conversation.class);
         MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
         return mapper.map(entity, Conversation.class);
     }
 
-    public static List<Conversation> conversationEntityToPojo(List<ConversationDTO> listEntities) {
+    public static List<Conversation> conversation(List<ConversationDTO> listEntities) {
         MAPPER_FACTORY.classMap(LanguageDTO.class, Conversation.class);
         MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
         List<Conversation> listConversations = new ArrayList<>();
@@ -96,5 +111,10 @@ public class Transformer {
         return listConversations;
     }
 
+    public static ConversationDTO conversation(Conversation pojo) {
+        MAPPER_FACTORY.classMap(Conversation.class, ConversationDTO.class);
+        MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
+        return mapper.map(pojo, ConversationDTO.class);
+    }
 
 }

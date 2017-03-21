@@ -38,7 +38,7 @@ public class ConverseDAO implements IConverseDAO {
 
         EntityManager entityManager = FACTORY.createEntityManager();
         TypedQuery<ConversationDTO> query = entityManager.createQuery(
-                "SELECT converse FROM ConversationDTO converse where converse.chatrooom = :chatroom " +
+                "SELECT converse FROM ConversationDTO converse where converse.chatroom = :chatroom " +
                         "and converse.endTime > :date and converse.startTime < :date", ConversationDTO.class);
         query.setParameter("chatroom", chatroom);
         query.setParameter("date", date);
@@ -90,7 +90,7 @@ public class ConverseDAO implements IConverseDAO {
         try {
 
             ConversationDTO conversationDTO = getEntityById(conv.getId());
-            conversationDTO.setChatrooom(conv.getChatrooom());
+            conversationDTO.setChatroom(conv.getChatroom());
             conversationDTO.setGradeConverse(conv.getGradeConverse());
             conversationDTO.setStartTime(conv.getStartTime());
             conversationDTO.setEndTime(conv.getEndTime());
@@ -127,7 +127,7 @@ public class ConverseDAO implements IConverseDAO {
 
         EntityManager entityManager = FACTORY.createEntityManager();
         TypedQuery<ConversationDTO> query = entityManager.createQuery(
-                "SELECT converse FROM ConversationDTO converse where converse.chatrooom = :chatroom ",
+                "SELECT converse FROM ConversationDTO converse where converse.chatroom = :chatroom ",
                 ConversationDTO.class);
         query.setParameter("chatroom", chatroom);
         try {
@@ -162,7 +162,7 @@ public class ConverseDAO implements IConverseDAO {
 
             ConversationDTO conversationDTO = new ConversationDTO();
 
-            conversationDTO.setChatrooom(entity.getChatrooom());
+            conversationDTO.setChatroom(entity.getChatroom());
             conversationDTO.setStartTime(entity.getStartTime());
             conversationDTO.setEndTime(entity.getEndTime());
 

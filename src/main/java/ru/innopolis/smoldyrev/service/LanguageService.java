@@ -4,21 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.innopolis.smoldyrev.common.exceptions.LanguageDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.LanguageServiceException;
-import ru.innopolis.smoldyrev.common.exceptions.NotifyDaoException;
-import ru.innopolis.smoldyrev.common.exceptions.NotifyServiceException;
 import ru.innopolis.smoldyrev.models.dao.interfaces.ILanguageDAO;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IPersonDAO;
-import ru.innopolis.smoldyrev.models.dto.DtoTransformer;
 import ru.innopolis.smoldyrev.models.dto.Transformer;
 import ru.innopolis.smoldyrev.models.pojo.LangOwner;
 import org.apache.log4j.Logger;
 import ru.innopolis.smoldyrev.models.pojo.Language;
-import ru.innopolis.smoldyrev.models.pojo.Notifyer;
 import ru.innopolis.smoldyrev.models.pojo.Person;
 import ru.innopolis.smoldyrev.service.interfaces.ILanguageService;
 
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -44,7 +39,7 @@ public class LanguageService implements ILanguageService {
     }
 
     public Set<Language> getLanguagesOnPerson(Integer personId) throws LanguageServiceException {
-        Person person = Transformer.personEntityToPojo(personDAO.getEntityById(personId));
+        Person person = Transformer.person(personDAO.getEntityById(personId));
         return person.getLanguages();
     }
 

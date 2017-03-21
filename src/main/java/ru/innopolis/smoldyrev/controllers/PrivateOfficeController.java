@@ -63,7 +63,7 @@ public class PrivateOfficeController {
 
         User user = (User)
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+        user = userService.getUserById(user.getUserID());
         if (userId!=user.getUserID()) {
                 throw new InvalidRoleException("У вас нет прав на посещение этой страницы!");
         }

@@ -16,9 +16,9 @@ import ru.innopolis.smoldyrev.models.pojo.User;
 @Transactional
 public interface UserRepository extends JpaRepository<UserDTO, Integer> {
 
-    User findByLoginAndPassword(@Param("login") String login, @Param("password") String password);
+    UserDTO findByLoginAndPassword(@Param("login") String login, @Param("password") String password);
 
-    User findByLogin(@Param("login") String login);
+    UserDTO findByLogin(@Param("login") String login);
 
 }
 

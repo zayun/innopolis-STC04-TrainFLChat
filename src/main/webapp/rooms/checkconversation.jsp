@@ -20,7 +20,7 @@
     <c:forEach items="${conversations}" var="converse">
         <tr>
             <td><c:out value="${converse.getId()}"></c:out></td>
-            <td><c:out value="${converse.getChatrooom()}"></c:out></td>
+            <td><c:out value="${converse.getChatroom()}"></c:out></td>
             <td><form action="/changeconverse" method="post">
                 <input type="text" name="converseId" id="converseId" value="${converse.getId()}" hidden>
                 <input type="text" name="converseGrade" id="converseGrade" value="${converse.getGradeConverse()}"}>
@@ -36,7 +36,7 @@
             </td>
             <td>
                 <form action="/privatechatroom" method="get">
-                    <input type="text" name="chatroom" id="chatroom" value="${converse.getChatrooom()}" hidden>
+                    <input type="text" name="chatroom" id="chatroom" value="${converse.getChatroom()}" hidden>
                     <input type="submit" value="shw" formmethod="get">
                 </form>
             </td>

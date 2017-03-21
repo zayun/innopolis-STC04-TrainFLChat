@@ -50,7 +50,6 @@ public class LanguageDTO {
         this.dialekt = dialekt;
     }
 
-    @Version
     public Integer getVersion() {
         return version;
     }

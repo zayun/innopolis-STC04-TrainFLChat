@@ -82,7 +82,6 @@ public class UserDTO {
         this.person = person;
     }
 
-    @Version
     public Integer getVersion() {
         return version;
     }

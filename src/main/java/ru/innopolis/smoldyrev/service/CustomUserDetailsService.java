@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.innopolis.smoldyrev.common.exceptions.UserDaoException;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IUserDAO;
-import ru.innopolis.smoldyrev.models.dto.DtoTransformer;
 import ru.innopolis.smoldyrev.models.dto.Transformer;
+import ru.innopolis.smoldyrev.models.repository.UserRepository;
 
 /**
  * Created by smoldyrev on 16.03.17.
@@ -19,11 +19,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private static Logger logger = Logger.getLogger(CustomUserDetailsService.class);
 
-    private IUserDAO userDAO;
+    private UserRepository userRepository;
 
     @Autowired
-    private void setUserDAO(IUserDAO userDAO) {
-        this.userDAO = userDAO;
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -31,8 +31,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         UserDetails user = null;
         try {
-            user = Transformer.userEntityToPojo(userDAO.getUserByLogin(username));
-        } catch (UserDaoException e) {
+            user = Transformer.user(userRepository.findByLogin(username));
+        } catch (Exception e) {
             logger.error(e);
         }
 
