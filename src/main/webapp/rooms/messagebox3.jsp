@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="ru.innopolis.smoldyrev.models.pojo.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -41,8 +40,8 @@
             stompClient.connect({}, function (frame) {
                 setConnected(true);
                 console.log('Connected: ' + frame);
-                stompClient.subscribe('/topic/greetings', function (greeting) {
-                    showGreeting(JSON.parse(greeting.body).content);
+                stompClient.subscribe('/topic/greetings', function (message) {
+                    showGreeting(JSON.parse(message.body).content);
                 });
             });
         }
@@ -54,8 +53,10 @@
         }
 
         function sendName() {
-            var name = document.getElementById('name').value;
-            stompClient.send("/app/messageListener", {}, JSON.stringify({'name': name}));
+            var bodyText = document.getElementById('name').value;
+//            stompClient.send("/app/messageListener", {}, JSON.stringify({'bodyText': bodyText}));
+            stompClient.send("/app/messageListener", {},
+                JSON.stringify({'chatRoom':0, 'fromUser':0, 'toUser':10, 'bodyText': bodyText}));
         }
 
         function showGreeting(message) {
