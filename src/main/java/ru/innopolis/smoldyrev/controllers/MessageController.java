@@ -77,11 +77,7 @@ public class MessageController {
         messageService.sendMessage(message);
 
         model.addAttribute("chatroom", chatroom);
-        if (chatroom == 0) {
-            return "redirect:" + "/generalchat";
-        } else {
-            return "redirect:" + "/privatechatroom";
-        }
+        return (chatroom == 0) ? "redirect:/generalchat" : "redirect:/privatechatroom";
     }
 
     /**

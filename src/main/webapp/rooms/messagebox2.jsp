@@ -25,8 +25,8 @@
                         </span>
                 <div class="chat-body clearfix">
                     <div class="header">
-                        <strong class="primary-font"><c:out
-                                value="${message.getFromUser().getLogin()}"></c:out></strong>
+                        <strong class="primary-font">
+                            <c:out value="${message.getFromUser().getLogin()}"></c:out></strong>
                         <small class="pull-right text-muted"><span
                                 class="glyphicon glyphicon-time"></span>
                             <p>

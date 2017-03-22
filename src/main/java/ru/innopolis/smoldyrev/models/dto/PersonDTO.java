@@ -32,6 +32,17 @@ public class PersonDTO {
     public PersonDTO() {
     }
 
+    public PersonDTO(Integer id, String firstName, String lastName, String email, String phoneNumber, boolean male, Date birthday, Set<LanguageDTO> languages) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.male = male;
+        this.birthday = birthday;
+        this.languages = languages;
+    }
+
     @Id
     @GeneratedValue
     @Column(name = "person_id")

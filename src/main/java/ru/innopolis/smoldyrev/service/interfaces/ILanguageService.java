@@ -14,4 +14,5 @@ import java.util.Set;
 public interface ILanguageService {
 
         Set<Language> getLanguagesOnPerson(Integer personId) throws LanguageServiceException;
+        boolean addLangToPerson(int personId, String language) throws LanguageServiceException;
 }

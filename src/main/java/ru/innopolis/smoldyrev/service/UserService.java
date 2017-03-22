@@ -8,11 +8,13 @@ import ru.innopolis.smoldyrev.common.exceptions.UserNotFoundException;
 import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IPersonDAO;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IUserDAO;
+import ru.innopolis.smoldyrev.models.dto.ConversationDTO;
 import ru.innopolis.smoldyrev.models.dto.Transformer;
 import ru.innopolis.smoldyrev.models.dto.UserDTO;
 import ru.innopolis.smoldyrev.models.pojo.Person;
 import ru.innopolis.smoldyrev.models.pojo.User;
 import org.apache.log4j.Logger;
+import ru.innopolis.smoldyrev.models.repository.ConverseRepository;
 import ru.innopolis.smoldyrev.models.repository.UserRepository;
 import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
@@ -27,25 +29,25 @@ import java.util.List;
 public class UserService implements IUserService {
 
     private static Logger logger = Logger.getLogger(UserService.class);
-    private IUserDAO userDAO;
-    private IPersonDAO personDAO;
     private UserRepository userRepository;
+    private ConverseRepository converseRepository;
+
 
     private BCryptPasswordEncoder bcryptEncoder;
 
-    @Autowired
-    private void setUserDAO(IUserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
-
-    @Autowired
-    private void setPersonDAO(IPersonDAO personDAO) {
-        this.personDAO = personDAO;
-    }
 
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Autowired
+    public ConverseRepository getConverseRepository() {
+        return converseRepository;
+    }
+
+    public void setConverseRepository(ConverseRepository converseRepository) {
+        this.converseRepository = converseRepository;
     }
 
     /**
@@ -109,16 +111,11 @@ public class UserService implements IUserService {
      */
     public List<User> getAllInConverse(int converse) throws UserServiceException {
 
+        ConversationDTO conv = converseRepository.findOne(converse);
+        Transformer.user(conv.getUsers());
         try {
-
-            List<User> users = new ArrayList<>();
-
-            for (UserDTO u :
-                    userDAO.getAllInConverse(converse)) {
-                users.add(Transformer.user(u));
-            }
-            return users;
-        } catch (UserDaoException e) {
+            return Transformer.user(conv.getUsers());
+        } catch (Exception e) {
             logger.error(e);
             throw new UserServiceException();
         }

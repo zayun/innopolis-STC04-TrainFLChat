@@ -20,14 +20,7 @@ public class PersonService implements IPersonService {
 
     private static Logger logger = Logger.getLogger(PersonService.class);
 
-
-    private IPersonDAO personDAO;
     private PersonRepository personRepository;
-
-    @Autowired
-    private void setPersonDAO(IPersonDAO personDAO) {
-        this.personDAO = personDAO;
-    }
 
     @Autowired
     public void setPersonRepository(PersonRepository personRepository) {

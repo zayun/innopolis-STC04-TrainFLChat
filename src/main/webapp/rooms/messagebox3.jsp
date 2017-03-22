@@ -9,7 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%--<c:set var="currUserId" value="<%=((User) org.springframework.security.core.context.SecurityContextHolder.getContext()--%>
-        <%--.getAuthentication().getPrincipal()).getUserID()%>"/>--%>
+<%--.getAuthentication().getPrincipal()).getUserID()%>"/>--%>
 <html>
 <head>
 
@@ -40,8 +40,8 @@
             stompClient.connect({}, function (frame) {
                 setConnected(true);
                 console.log('Connected: ' + frame);
-                stompClient.subscribe('/topic/greetings', function (message) {
-                    showGreeting(JSON.parse(message.body).content);
+                stompClient.subscribe('/topic/recieve', function (message) {
+                    showMessage(JSON.parse(message.body).bodyText);
                 });
             });
         }
@@ -52,20 +52,23 @@
             console.log("Disconnected");
         }
 
-        function sendName() {
-            var bodyText = document.getElementById('name').value;
+        function sendMessage() {
+            var bodyText = document.getElementById('textMessage').value;
 //            stompClient.send("/app/messageListener", {}, JSON.stringify({'bodyText': bodyText}));
             stompClient.send("/app/messageListener", {},
-                JSON.stringify({'chatRoom':0, 'fromUser':0, 'toUser':10, 'bodyText': bodyText}));
+                JSON.stringify({'chatRoom': 0, 'fromUser': 0, 'toUser': 10, 'bodyText': bodyText}));
         }
 
-        function showGreeting(message) {
-//            var response = document.getElementById('response');
+        function showMessage(message) {
             var response = document.getElementById('chatbox');
             var childNotify = document.createElement('div');
             childNotify.className = 'childNotify';
             childNotify.appendChild(document.createTextNode(message));
             response.appendChild(childNotify);
+        }
+
+        function test() {
+            document.write("");
         }
 
         function init() {
@@ -80,18 +83,29 @@
         <button id="connect" onclick="connect();" hidden>Connect</button>
         <button id="disconnect" disabled="disabled" onclick="disconnect();" hidden>Disconnect</button>
     </div>
-    <div id="conversationDiv">
-        <label>message</label><input type="text" id="name" />
-        <button id="sendName" onclick="sendName();">Send</button>
+    <div id="conversationDiv" class="form-inline">
+        <input  type="text" id="textMessage" placeholder="Type your message here..." maxlength="100"/>
+        <button class="btn btn-primary btn-sm" id="sendMessage" onclick="sendMessage();">Send</button>
         <div id="response"></div>
     </div>
 
-
+    <%--<div id="conversationDiv2">--%>
+        <%--<form class="form-inline" onclick="sendMessage();">--%>
+            <%--<input type="number" name="chatroom" id="chatroom" value="0" readonly hidden>--%>
+            <%--<input type="number" name="toUserId" id="toUserId" value="${toUserId}" placeholder="userTo">--%>
+            <%--<input type="text" id="name"/>--%>
+            <%--<input name="textMessage" id="textMessage" type="text" placeholder="Type your message here..."--%>
+                   <%--maxlength="100">--%>
+            <%--<button class="btn btn-primary btn-sm" id="btn-chat">--%>
+                <%--Send--%>
+            <%--</button>--%>
+        <%--</form>--%>
+        <%--<div id="response2"></div>--%>
+    <%--</div>--%>
 </div>
 <ul id="chatbox" class="chat">
 
 </ul>
-
 
 
 </body>

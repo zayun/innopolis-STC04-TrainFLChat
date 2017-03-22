@@ -22,13 +22,7 @@ public class MessageService implements IMessageService {
 
     private static Logger logger = Logger.getLogger(MessageService.class);
 
-    private IMessageDAO messageDAO;
     private MessageRepository messageRepository;
-
-    @Autowired
-    private void setMessageDAO(IMessageDAO messageDAO) {
-        this.messageDAO = messageDAO;
-    }
 
     @Autowired
     public void setMessageRepository(MessageRepository messageRepository) {

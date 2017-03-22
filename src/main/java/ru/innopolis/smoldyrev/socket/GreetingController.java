@@ -12,11 +12,11 @@ public class GreetingController {
 
 
     @MessageMapping("/messageListener")
-    @SendTo("/topic/greetings")
-    public Greeting greeting(SocketMessage message) throws Exception {
+    @SendTo("/topic/recieve")
+    public SocketMessage recieveMessage(SocketMessage message) throws Exception {
         Thread.sleep(100); // simulated delay
         System.out.println("//////"+message.getBodyText());
-        return new Greeting("Hello, " + message.getBodyText() + "!");
+        return message;
     }
 
     @RequestMapping(value = "/message", method = RequestMethod.GET)

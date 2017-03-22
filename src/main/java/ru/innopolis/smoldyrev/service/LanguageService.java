@@ -6,11 +6,14 @@ import ru.innopolis.smoldyrev.common.exceptions.LanguageDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.LanguageServiceException;
 import ru.innopolis.smoldyrev.models.dao.interfaces.ILanguageDAO;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IPersonDAO;
+import ru.innopolis.smoldyrev.models.dto.PersonDTO;
 import ru.innopolis.smoldyrev.models.dto.Transformer;
 import ru.innopolis.smoldyrev.models.pojo.LangOwner;
 import org.apache.log4j.Logger;
 import ru.innopolis.smoldyrev.models.pojo.Language;
 import ru.innopolis.smoldyrev.models.pojo.Person;
+import ru.innopolis.smoldyrev.models.repository.LanguageRepository;
+import ru.innopolis.smoldyrev.models.repository.PersonRepository;
 import ru.innopolis.smoldyrev.service.interfaces.ILanguageService;
 
 
@@ -25,32 +28,35 @@ public class LanguageService implements ILanguageService {
 
     private static Logger logger = Logger.getLogger(LanguageService.class);
 
-    private ILanguageDAO languageDAO;
-    private IPersonDAO personDAO;
+    private PersonRepository personRepository;
+    private LanguageRepository languageRepository;
 
     @Autowired
-    public void setLanguageDAO(ILanguageDAO languageDAO) {
-        this.languageDAO = languageDAO;
+    public void setPersonRepository(PersonRepository personRepository) {
+        this.personRepository = personRepository;
     }
 
     @Autowired
-    public void setPersonDAO(IPersonDAO personDAO) {
-        this.personDAO = personDAO;
+    public void setLanguageRepository(LanguageRepository languageRepository) {
+        this.languageRepository = languageRepository;
     }
 
     public Set<Language> getLanguagesOnPerson(Integer personId) throws LanguageServiceException {
-        Person person = Transformer.person(personDAO.getEntityById(personId));
+        Person person = Transformer.person(personRepository.findOne(personId));
         return person.getLanguages();
     }
 
-    public void create(LangOwner langOwner) throws LanguageServiceException {
-
+    public boolean addLangToPerson(int personId, String language) throws LanguageServiceException {
         try {
-            languageDAO.createLangOwner(langOwner);
-        } catch (LanguageDaoException e) {
-            logger.error(e);
-            throw new LanguageServiceException(e.getMessage());
-        }
 
+            PersonDTO person = personRepository.findOne(personId);
+            person.addLanguage(languageRepository.findOne(language));
+            personRepository.saveAndFlush(person);
+
+            return true;
+        } catch (Exception e) {
+            logger.error(e);
+            throw new LanguageServiceException();
+        }
     }
 }

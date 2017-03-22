@@ -72,12 +72,13 @@
         </td>
     </table>
     <%--<table border="1" width="10%" cellpadding="1">--%>
+
+
     <table border="1" cellpadding="1">
         <tr>
             <th>ShortName</th>
             <th>FullName</th>
             <th>Dialekt</th>
-            <th>Level</th>
             <th>Operation</th>
         </tr>
 
@@ -86,7 +87,6 @@
                 <td><c:out value="${lang.getShortName()}"></c:out></td>
                 <td><c:out value="${lang.getFullName()}"></c:out></td>
                 <td><c:out value="${lang.getDialekt()}"></c:out></td>
-                <%--<td><c:out value="${lang.level}"></c:out></td>--%>
 
                 <%--<td><a href="/chat/edit?id=${lang.language}">edit</a>--%>
                     <%--/<a href="/chat/delete?id=${lang.language}">del</a></td>--%>
@@ -96,6 +96,11 @@
     </table>
 
     <input type="submit" value="ОК" formmethod="post">
+</form>
+<form action="/addlanguage" method="post">
+    <input type="text" name="userId" id="userId" value="${user.userID}"} hidden>
+    <input type="text" name="langId" id="langId" value=""}>
+    <input type="submit" value="Add" formmethod="post">
 </form>
 <form action="/generalchat" method="get">
     <input type="submit" value="exit" formmethod="get">

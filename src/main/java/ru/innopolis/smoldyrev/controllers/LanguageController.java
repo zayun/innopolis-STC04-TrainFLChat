@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.innopolis.smoldyrev.models.pojo.LangOwner;
 import ru.innopolis.smoldyrev.models.pojo.Language;
+import ru.innopolis.smoldyrev.models.pojo.User;
 import ru.innopolis.smoldyrev.service.LanguageService;
 import ru.innopolis.smoldyrev.service.interfaces.ILanguageService;
 import ru.innopolis.smoldyrev.service.interfaces.IUserService;
@@ -45,18 +46,14 @@ public class LanguageController {
     @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     @RequestMapping(value = "/addlanguage", method = RequestMethod.POST)
     public String addLanguage(Model model,
-                              @ModelAttribute("sessionUserId") int userId,
-                            @RequestParam(name = "personId") int personId,
-                            @RequestParam(name = "langId") String langId,
-                              @RequestParam(name = "level") int level) throws Exception {
+                              @ModelAttribute("userId") Integer userId,
+                            @RequestParam(name = "langId") String langId) throws Exception {
+        User user = userService.getUserById(userId);
+        Integer personId = user.getPerson().getId();
+        languageService.addLangToPerson(personId, langId);
 
-        userService.getUserById(userId);
-        LangOwner langOwner = new LangOwner();
-        langOwner.setPerson(userService.getUserById(userId).getPerson());
-        langOwner.setLanguage(new Language("langId","langId","langID"));  //заглушка
-        langOwner.setLevel(level);
-
-        model.addAttribute("langOwner", langOwner);
+        model.addAttribute("user", user);
+        model.addAttribute("languages", user.getPerson().getLanguages());
 
         return "redirect:" + "/privateoffice";
     }

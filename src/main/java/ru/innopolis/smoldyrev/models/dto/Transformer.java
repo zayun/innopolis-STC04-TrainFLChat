@@ -7,7 +7,9 @@ import ru.innopolis.smoldyrev.common.utilities.LocalDateConverter;
 import ru.innopolis.smoldyrev.models.pojo.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class Transformer {
 
@@ -19,7 +21,7 @@ public class Transformer {
         return mapper.map(entity, User.class);
     }
 
-    public static List<User> user(List<UserDTO> listEntities) {
+    public static List<User> user(Collection<UserDTO> listEntities) {
         MAPPER_FACTORY.classMap(UserDTO.class, User.class);
         MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
         List<User> listUsers = new ArrayList<>();
@@ -41,7 +43,7 @@ public class Transformer {
         return mapper.map(entity, Person.class);
     }
 
-    public static List<Person> person(List<PersonDTO> listEntities) {
+    public static List<Person> person(Collection<PersonDTO> listEntities) {
         MAPPER_FACTORY.classMap(PersonDTO.class, Person.class);
         MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
         List<Person> listPersons = new ArrayList<>();
@@ -63,7 +65,7 @@ public class Transformer {
         return mapper.map(entity, Message.class);
     }
 
-    public static List<Message> message(List<MessageDTO> listEntities) {
+    public static List<Message> message(Collection<MessageDTO> listEntities) {
         MAPPER_FACTORY.classMap(MessageDTO.class, Message.class);
         MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
         List<Message> listMessages = new ArrayList<>();
@@ -85,7 +87,7 @@ public class Transformer {
         return mapper.map(entity, Language.class);
     }
 
-    public static List<Language> language(List<LanguageDTO> listEntities) {
+    public static List<Language> language(Collection<LanguageDTO> listEntities) {
         MAPPER_FACTORY.classMap(LanguageDTO.class, Language.class);
         MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
         List<Language> listLanguages = new ArrayList<>();
@@ -101,7 +103,7 @@ public class Transformer {
         return mapper.map(entity, Conversation.class);
     }
 
-    public static List<Conversation> conversation(List<ConversationDTO> listEntities) {
+    public static List<Conversation> conversation(Collection<ConversationDTO> listEntities) {
         MAPPER_FACTORY.classMap(LanguageDTO.class, Conversation.class);
         MapperFacade mapper = MAPPER_FACTORY.getMapperFacade();
         List<Conversation> listConversations = new ArrayList<>();

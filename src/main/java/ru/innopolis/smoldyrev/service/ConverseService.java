@@ -28,15 +28,8 @@ public class ConverseService implements IConverseService {
 
     private static Logger logger = Logger.getLogger(ConverseService.class);
 
-
-    private IConverseDAO converseDAO;
     private ConverseRepository converseRepository;
     private UserRepository userRepository;
-
-    @Autowired
-    private void setConverseDAO(IConverseDAO converseDAO) {
-        this.converseDAO = converseDAO;
-    }
 
     @Autowired
     public void setConverseRepository(ConverseRepository converseRepository) {
