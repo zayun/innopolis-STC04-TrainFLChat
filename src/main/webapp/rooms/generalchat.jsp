@@ -13,6 +13,61 @@
 <head>
     <title>Общий чат</title>
 
+
+    <script src="/resources/static/sockjs-0.3.4.js"></script>
+    <script src="/resources/static/stomp.js"></script>
+    <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js'></script>
+    <script type="text/javascript">
+        var stompClient = null;
+
+        function setConnected(connected) {
+            document.getElementById('connect').disabled = connected;
+            document.getElementById('disconnect').disabled = !connected;
+            document.getElementById('conversationDiv').style.visibility = connected ? 'visible' : 'hidden';
+
+            document.getElementById('response').innerHTML = '';
+        }
+
+        function connect() {
+            var socket = new SockJS('/messageListener');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                setConnected(true);
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/greetings', function (greeting) {
+                    showGreeting(JSON.parse(greeting.body).content);
+                });
+            });
+        }
+
+        function disconnect() {
+            stompClient.disconnect();
+            setConnected(false);
+            console.log("Disconnected");
+        }
+
+        function sendMessage() {
+            var name = document.getElementById('textMessage').value;
+            stompClient.send("/app/messageListener", {}, JSON.stringify({'name': name}));
+        }
+
+        function showGreeting(message) {
+//            var response = document.getElementById('response');
+            var response = document.getElementsByClassName('chat');
+            var childNotify = document.createElement('div');
+            childNotify.className = 'childNotify';
+            childNotify.appendChild(document.createTextNode(message));
+            response.appendChild(childNotify);
+
+        }
+
+        function init() {
+            connect();
+        }
+    </script>
+
+
+
     <style>
         <%@include file='/resources/bootstrap/css/bootstrap.css'%>
     </style>
@@ -40,7 +95,7 @@
         }
     </style>
 </head>
-<body>
+<body onload="init()">
 <div>
     <%@include file='navbar.jsp' %>
 </div>
@@ -60,6 +115,18 @@
         </button>
 
     </form>
+
+    <div>
+        <div>
+            <button id="connect" onclick="connect();" hidden>Connect</button>
+            <button id="disconnect" disabled="disabled" onclick="disconnect();" hidden>Disconnect</button>
+        </div>
+        <div id="conversationDiv">
+            <label>message</label><input type="text" id="name" />
+            <button id="sendName" onclick="sendMessage();">Send</button>
+            <div id="response"></div>
+        </div>
+    </div>
 
     <div class="userlist">
         <div>
