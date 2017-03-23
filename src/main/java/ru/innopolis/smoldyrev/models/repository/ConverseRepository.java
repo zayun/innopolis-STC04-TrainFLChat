@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.innopolis.smoldyrev.models.dto.ConversationDTO;
+import ru.innopolis.smoldyrev.models.entity.ConversationEntity;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -14,15 +14,15 @@ import java.util.List;
  */
 @Repository
 @Transactional
-public interface ConverseRepository extends JpaRepository<ConversationDTO, Integer> {
+public interface ConverseRepository extends JpaRepository<ConversationEntity, Integer> {
 
-    ConversationDTO findByChatroomAndStartTimeBeforeAndEndTimeAfter(
+    ConversationEntity findByChatroomAndStartTimeBeforeAndEndTimeAfter(
             @Param("chatroom") int chatroom,
             @Param("startTime") Timestamp startTime,
             @Param("endTime") Timestamp endTime);
 
-    List<ConversationDTO> findByEndTimeAfter(@Param("endTime") Timestamp datetime);
+    List<ConversationEntity> findByEndTimeAfter(@Param("endTime") Timestamp datetime);
 
-    ConversationDTO findByChatroom(@Param("chatroom") int chatroom);
+    ConversationEntity findByChatroom(@Param("chatroom") int chatroom);
 
 }

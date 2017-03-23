@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.innopolis.smoldyrev.models.dto.MessageDTO;
+import ru.innopolis.smoldyrev.models.entity.MessageEntity;
 
 import java.util.List;
 
@@ -14,6 +14,6 @@ import java.util.List;
 
 @Repository
 @Transactional
-public interface MessageRepository extends JpaRepository<MessageDTO, Integer> {
-    List<MessageDTO> findByChatRoomOrderByDateDesc(@Param("chatroom") int chatroom);
+public interface MessageRepository extends JpaRepository<MessageEntity, Integer> {
+    List<MessageEntity> findByChatRoomOrderByDateDesc(@Param("chatroom") int chatroom);
 }

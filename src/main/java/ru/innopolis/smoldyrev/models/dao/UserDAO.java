@@ -3,9 +3,9 @@ package ru.innopolis.smoldyrev.models.dao;
 import org.springframework.stereotype.Repository;
 import ru.innopolis.smoldyrev.common.exceptions.UserDaoException;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IUserDAO;
-import ru.innopolis.smoldyrev.models.dto.ConversationDTO;
-import ru.innopolis.smoldyrev.models.dto.PersonDTO;
-import ru.innopolis.smoldyrev.models.dto.UserDTO;
+import ru.innopolis.smoldyrev.models.entity.ConversationEntity;
+import ru.innopolis.smoldyrev.models.entity.PersonEntity;
+import ru.innopolis.smoldyrev.models.entity.UserEntity;
 import ru.innopolis.smoldyrev.models.pojo.User;
 import org.apache.log4j.Logger;
 
@@ -34,80 +34,80 @@ public class UserDAO implements IUserDAO {
      * @param login - логин пользователя
      * @throws UserDaoException
      */
-    public UserDTO getUserByLogin(String login) throws UserDaoException {
+    public UserEntity getUserByLogin(String login) throws UserDaoException {
 
         EntityManager entityManager = FACTORY.createEntityManager();
-        TypedQuery<UserDTO> query = entityManager.createQuery(
-                "SELECT user FROM UserDTO user where user.login = :login", UserDTO.class);
+        TypedQuery<UserEntity> query = entityManager.createQuery(
+                "SELECT user FROM UserEntity user where user.login = :login", UserEntity.class);
         try {
-            UserDTO userDTO = query.setParameter("login", login).getSingleResult();
-            System.out.println(userDTO.getPerson());
-            return userDTO;
+            UserEntity userEntity = query.setParameter("login", login).getSingleResult();
+            System.out.println(userEntity.getPerson());
+            return userEntity;
         } finally {
             entityManager.close();
         }
     }
 
-    public List<UserDTO> getAll() throws UserDaoException {
+    public List<UserEntity> getAll() throws UserDaoException {
 
         EntityManager em = FACTORY.createEntityManager();
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
         try {
-            CriteriaQuery<UserDTO> cq = cb.createQuery(UserDTO.class);
-            Root<UserDTO> from = cq.from(UserDTO.class);
+            CriteriaQuery<UserEntity> cq = cb.createQuery(UserEntity.class);
+            Root<UserEntity> from = cq.from(UserEntity.class);
 
             cq.select(from);
             cq.orderBy(cb.asc(from.get("login")));
-            TypedQuery<UserDTO> q = em.createQuery(cq);
-            List<UserDTO> users = q.getResultList();
+            TypedQuery<UserEntity> q = em.createQuery(cq);
+            List<UserEntity> users = q.getResultList();
             return users;
         } finally {
             em.close();
         }
     }
 
-    public Set<UserDTO> getAllInConverse(int converse) throws UserDaoException {
+    public Set<UserEntity> getAllInConverse(int converse) throws UserDaoException {
 
         EntityManager entityManager = FACTORY.createEntityManager();
-        TypedQuery<ConversationDTO> query = entityManager.createQuery(
-                "SELECT converse FROM ConversationDTO converse where converse.id = :id", ConversationDTO.class);
+        TypedQuery<ConversationEntity> query = entityManager.createQuery(
+                "SELECT converse FROM ConversationEntity converse where converse.id = :id", ConversationEntity.class);
         try {
-            ConversationDTO conversation = query.setParameter("id", converse).getSingleResult();
+            ConversationEntity conversation = query.setParameter("id", converse).getSingleResult();
             return conversation.getUsers();
         } finally {
             entityManager.close();
         }
     }
 
-    public UserDTO update(User entity) throws UserDaoException {
+    public UserEntity update(User entity) throws UserDaoException {
 
         EntityManager entityManager = FACTORY.createEntityManager();
         entityManager.getTransaction().begin();
 
         try {
 
-            UserDTO userDTO = getEntityById(entity.getUserID());
-            userDTO.setLogin(entity.getLogin());
-            userDTO.setPassword(entity.getPassword());
-            userDTO.setUserType(entity.getUserType());
-            userDTO.setBlocked(entity.isBlocked());
-            userDTO.setPerson(userDTO.getPerson());
-            entityManager.merge(userDTO);
+            UserEntity userEntity = getEntityById(entity.getUserID());
+            userEntity.setLogin(entity.getLogin());
+            userEntity.setPassword(entity.getPassword());
+            userEntity.setUserType(entity.getUserType());
+            userEntity.setBlocked(entity.isBlocked());
+            userEntity.setPerson(userEntity.getPerson());
+            entityManager.merge(userEntity);
             entityManager.getTransaction().commit();
-            return userDTO;
+            return userEntity;
         } finally {
             entityManager.close();
         }
     }
 
-    public UserDTO getEntityById(Integer user_id) throws UserDaoException {
+    public UserEntity getEntityById(Integer user_id) throws UserDaoException {
 
         EntityManager entityManager = FACTORY.createEntityManager();
 
-        UserDTO userDTO = (UserDTO) entityManager.find(UserDTO.class, user_id);
-        return userDTO;
+        UserEntity userEntity = (UserEntity) entityManager.find(UserEntity.class, user_id);
+        return userEntity;
     }
 
     public boolean create(User entity) throws UserDaoException {
@@ -116,24 +116,24 @@ public class UserDAO implements IUserDAO {
         entityManager.getTransaction().begin();
 
         try {
-            UserDTO userDTO = new UserDTO();
-            PersonDTO personDTO = new PersonDTO();
+            UserEntity userEntity = new UserEntity();
+            PersonEntity personEntity = new PersonEntity();
 
-            personDTO.setId(entity.getPerson().getId());
-            personDTO.setFirstName(entity.getPerson().getFirstName());
-            personDTO.setLastName(entity.getPerson().getLastName());
-            personDTO.setEmail(entity.getPerson().getEmail());
-            personDTO.setPhoneNumber(entity.getPerson().getPhoneNumber());
-            personDTO.setMale(entity.getPerson().isMale());
-            personDTO.setBirthday(entity.getPerson().getBirthday());
+            personEntity.setId(entity.getPerson().getId());
+            personEntity.setFirstName(entity.getPerson().getFirstName());
+            personEntity.setLastName(entity.getPerson().getLastName());
+            personEntity.setEmail(entity.getPerson().getEmail());
+            personEntity.setPhoneNumber(entity.getPerson().getPhoneNumber());
+            personEntity.setMale(entity.getPerson().isMale());
+            personEntity.setBirthday(entity.getPerson().getBirthday());
 
-            userDTO.setLogin(entity.getLogin());
-            userDTO.setPassword(entity.getPassword());
-            userDTO.setUserType(entity.getUserType());
-            userDTO.setBlocked(entity.isBlocked());
-            userDTO.setPerson(personDTO);
+            userEntity.setLogin(entity.getLogin());
+            userEntity.setPassword(entity.getPassword());
+            userEntity.setUserType(entity.getUserType());
+            userEntity.setBlocked(entity.isBlocked());
+            userEntity.setPerson(personEntity);
 
-            userDTO = entityManager.merge(userDTO);
+            userEntity = entityManager.merge(userEntity);
             entityManager.getTransaction().commit();
 
             return true;

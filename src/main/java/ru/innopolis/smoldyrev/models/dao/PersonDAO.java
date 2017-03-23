@@ -2,10 +2,8 @@ package ru.innopolis.smoldyrev.models.dao;
 
 import org.springframework.stereotype.Repository;
 import ru.innopolis.smoldyrev.common.exceptions.PersonDaoException;
-import ru.innopolis.smoldyrev.models.connector.DatabaseManager;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IPersonDAO;
-import ru.innopolis.smoldyrev.models.dto.PersonDTO;
-import ru.innopolis.smoldyrev.models.dto.UserDTO;
+import ru.innopolis.smoldyrev.models.entity.PersonEntity;
 import ru.innopolis.smoldyrev.models.pojo.Person;
 import org.apache.log4j.Logger;
 
@@ -16,8 +14,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,48 +27,48 @@ public class PersonDAO implements IPersonDAO{
     private static final EntityManagerFactory FACTORY =
             Persistence.createEntityManagerFactory("LFLChat");
 
-    public List<PersonDTO> getAll() throws PersonDaoException {
+    public List<PersonEntity> getAll() throws PersonDaoException {
 
         EntityManager em = FACTORY.createEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
-        CriteriaQuery<PersonDTO> cq = cb.createQuery(PersonDTO.class);
-        Root<PersonDTO> from = cq.from(PersonDTO.class);
+        CriteriaQuery<PersonEntity> cq = cb.createQuery(PersonEntity.class);
+        Root<PersonEntity> from = cq.from(PersonEntity.class);
 
         cq.select(from);
-        TypedQuery<PersonDTO> q = em.createQuery(cq);
-        List<PersonDTO> persones = q.getResultList();
+        TypedQuery<PersonEntity> q = em.createQuery(cq);
+        List<PersonEntity> persones = q.getResultList();
 
         return persones;
     }
 
-    public PersonDTO update(Person entity) throws PersonDaoException {
+    public PersonEntity update(Person entity) throws PersonDaoException {
 
         EntityManager entityManager = FACTORY.createEntityManager();
         entityManager.getTransaction().begin();
         try {
-            PersonDTO personDTO = getEntityById(entity.getId());
-            personDTO.setFirstName(entity.getFirstName());
-            personDTO.setLastName(entity.getLastName());
-            personDTO.setBirthday(entity.getBirthday());
-            personDTO.setEmail(entity.getEmail());
-            personDTO.setPhoneNumber(entity.getPhoneNumber());
-            personDTO.setMale(entity.isMale());
+            PersonEntity personEntity = getEntityById(entity.getId());
+            personEntity.setFirstName(entity.getFirstName());
+            personEntity.setLastName(entity.getLastName());
+            personEntity.setBirthday(entity.getBirthday());
+            personEntity.setEmail(entity.getEmail());
+            personEntity.setPhoneNumber(entity.getPhoneNumber());
+            personEntity.setMale(entity.isMale());
 
-            personDTO = entityManager.merge(personDTO);
+            personEntity = entityManager.merge(personEntity);
             entityManager.getTransaction().commit();
 
-            return personDTO;
+            return personEntity;
         }finally {
             entityManager.close();
         }
     }
 
-    public PersonDTO getEntityById(Integer id) {
+    public PersonEntity getEntityById(Integer id) {
         EntityManager entityManager = FACTORY.createEntityManager();
 
-        PersonDTO personDTO = (PersonDTO) entityManager.find(PersonDTO.class, id);
-        return personDTO;
+        PersonEntity personEntity = (PersonEntity) entityManager.find(PersonEntity.class, id);
+        return personEntity;
     }
 
     /**
@@ -88,20 +84,20 @@ public class PersonDAO implements IPersonDAO{
         entityManager.getTransaction().begin();
 
         try {
-            PersonDTO personDTO = new PersonDTO();
+            PersonEntity personEntity = new PersonEntity();
 
-            personDTO.setId(entity.getId());
-            personDTO.setFirstName(entity.getFirstName());
-            personDTO.setLastName(entity.getLastName());
-            personDTO.setEmail(entity.getEmail());
-            personDTO.setPhoneNumber(entity.getPhoneNumber());
-            personDTO.setMale(entity.isMale());
-            personDTO.setBirthday(entity.getBirthday());
+            personEntity.setId(entity.getId());
+            personEntity.setFirstName(entity.getFirstName());
+            personEntity.setLastName(entity.getLastName());
+            personEntity.setEmail(entity.getEmail());
+            personEntity.setPhoneNumber(entity.getPhoneNumber());
+            personEntity.setMale(entity.isMale());
+            personEntity.setBirthday(entity.getBirthday());
 
-            personDTO = entityManager.merge(personDTO);
+            personEntity = entityManager.merge(personEntity);
             entityManager.getTransaction().commit();
 
-            entity.setId(personDTO.getId());
+            entity.setId(personEntity.getId());
 
             return true;
         }finally {

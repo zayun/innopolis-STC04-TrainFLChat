@@ -24,7 +24,7 @@
         </property>
         <!--поиск сущностей в этом пакете-->
         <property name="packagesToScan"
-                  value="ru.innopolis.smoldyrev.models.dto"/>
+                  value="ru.innopolis.smoldyrev.models.entity"/>
     </bean>
 
     <!--Activates various annotations to be detected in bean classes: Spring's @Required and @Autowired and so on-->

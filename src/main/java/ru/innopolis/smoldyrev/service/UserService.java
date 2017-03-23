@@ -3,14 +3,10 @@ package ru.innopolis.smoldyrev.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.innopolis.smoldyrev.common.exceptions.UserDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.UserNotFoundException;
 import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;
-import ru.innopolis.smoldyrev.models.dao.interfaces.IPersonDAO;
-import ru.innopolis.smoldyrev.models.dao.interfaces.IUserDAO;
-import ru.innopolis.smoldyrev.models.dto.ConversationDTO;
 import ru.innopolis.smoldyrev.models.dto.Transformer;
-import ru.innopolis.smoldyrev.models.dto.UserDTO;
+import ru.innopolis.smoldyrev.models.entity.ConversationEntity;
 import ru.innopolis.smoldyrev.models.pojo.Person;
 import ru.innopolis.smoldyrev.models.pojo.User;
 import org.apache.log4j.Logger;
@@ -18,7 +14,6 @@ import ru.innopolis.smoldyrev.models.repository.ConverseRepository;
 import ru.innopolis.smoldyrev.models.repository.UserRepository;
 import ru.innopolis.smoldyrev.service.interfaces.IUserService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -111,7 +106,7 @@ public class UserService implements IUserService {
      */
     public List<User> getAllInConverse(int converse) throws UserServiceException {
 
-        ConversationDTO conv = converseRepository.findOne(converse);
+        ConversationEntity conv = converseRepository.findOne(converse);
         Transformer.user(conv.getUsers());
         try {
             return Transformer.user(conv.getUsers());

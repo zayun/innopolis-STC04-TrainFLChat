@@ -1,9 +1,8 @@
-package ru.innopolis.smoldyrev.models.dto;
+package ru.innopolis.smoldyrev.models.entity;
 
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,7 +11,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "r_conversation", schema = "main", catalog = "LFLChat")
-public class ConversationDTO {
+public class ConversationEntity {
 
 
     private int id;
@@ -20,10 +19,10 @@ public class ConversationDTO {
     private Timestamp startTime;
     private Timestamp endTime;
     private int gradeConverse;
-    private Set<UserDTO> users = new HashSet<>();
+    private Set<UserEntity> users = new HashSet<>();
     private Integer version;
 
-    public ConversationDTO() {
+    public ConversationEntity() {
     }
 
     @Id
@@ -77,19 +76,19 @@ public class ConversationDTO {
     @JoinTable(name = "r_converse_members", schema = "main", joinColumns = {
             @JoinColumn(name = "converse", nullable = false)
     }, inverseJoinColumns = {@JoinColumn(name = "user_id", nullable = false)})
-    public Set<UserDTO> getUsers() {
+    public Set<UserEntity> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<UserDTO> users) {
+    public void setUsers(Set<UserEntity> users) {
         this.users = users;
     }
 
-    public void addUser(UserDTO user) {
+    public void addUser(UserEntity user) {
         this.users.add(user);
     }
 
-    public void removeUser(UserDTO user) {
+    public void removeUser(UserEntity user) {
         this.users.remove(user);
     }
 

@@ -3,12 +3,10 @@ package ru.innopolis.smoldyrev.service;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.innopolis.smoldyrev.common.exceptions.ConverseDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.ConverseServiceException;
-import ru.innopolis.smoldyrev.models.dao.interfaces.IConverseDAO;
-import ru.innopolis.smoldyrev.models.dto.ConversationDTO;
 import ru.innopolis.smoldyrev.models.dto.Transformer;
-import ru.innopolis.smoldyrev.models.dto.UserDTO;
+import ru.innopolis.smoldyrev.models.entity.ConversationEntity;
+import ru.innopolis.smoldyrev.models.entity.UserEntity;
 import ru.innopolis.smoldyrev.models.pojo.Conversation;
 import ru.innopolis.smoldyrev.models.repository.ConverseRepository;
 import ru.innopolis.smoldyrev.models.repository.UserRepository;
@@ -44,10 +42,10 @@ public class ConverseService implements IConverseService {
     public int createConversation(int chatroom, Timestamp dateTime) throws ConverseServiceException {
         try {
 
-            ConversationDTO conv =
+            ConversationEntity conv =
                     converseRepository.findByChatroomAndStartTimeBeforeAndEndTimeAfter(chatroom,dateTime,dateTime);
             if (conv == null) {
-                ConversationDTO newConv = new ConversationDTO();
+                ConversationEntity newConv = new ConversationEntity();
                 newConv.setChatroom(chatroom);
                 newConv.setStartTime(dateTime);
                 newConv.setEndTime(Timestamp.valueOf(LocalDateTime.now().plusDays(30)));
@@ -63,7 +61,7 @@ public class ConverseService implements IConverseService {
 
     public boolean addConverseMember(int userId, int converse) throws ConverseServiceException {
         try {
-            ConversationDTO conv = converseRepository.findOne(converse);
+            ConversationEntity conv = converseRepository.findOne(converse);
             conv.addUser(userRepository.findOne(userId));
             converseRepository.saveAndFlush(conv);
             return true;
@@ -76,7 +74,7 @@ public class ConverseService implements IConverseService {
     public List<Conversation> getActiveConversation(Timestamp dateTime) throws ConverseServiceException {
         try {
             List<Conversation> ls = new ArrayList<>();
-            for (ConversationDTO c:
+            for (ConversationEntity c:
                     converseRepository.findByEndTimeAfter(dateTime)) {
                 ls.add(Transformer.conversation(c));
             }
@@ -94,9 +92,9 @@ public class ConverseService implements IConverseService {
     @Override
     public boolean checkConverseMember(int chatroom, int userId) throws ConverseServiceException {
         try {
-            ConversationDTO conv = converseRepository.findByChatroom(chatroom);
+            ConversationEntity conv = converseRepository.findByChatroom(chatroom);
 
-            for (UserDTO u:
+            for (UserEntity u:
                  conv.getUsers()) {
                 if (u.getUserID()==userId) return true;
             }

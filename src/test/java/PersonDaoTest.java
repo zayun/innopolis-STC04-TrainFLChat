@@ -1,17 +1,10 @@
 import org.junit.jupiter.api.Test;
 import ru.innopolis.smoldyrev.models.dao.LanguageDAO;
 import ru.innopolis.smoldyrev.models.dao.PersonDAO;
-import ru.innopolis.smoldyrev.models.dto.LanguageDTO;
-import ru.innopolis.smoldyrev.models.dto.PersonDTO;
-import ru.innopolis.smoldyrev.models.pojo.Language;
-import ru.innopolis.smoldyrev.models.pojo.Person;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by smoldyrev on 18.03.17.

@@ -3,12 +3,8 @@ package ru.innopolis.smoldyrev.models.pojo;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.innopolis.smoldyrev.models.dto.UserDTO;
 import ru.innopolis.smoldyrev.service.interfaces.GrantedAuthorityImpl;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collection;
 

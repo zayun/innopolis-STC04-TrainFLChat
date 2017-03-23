@@ -1,17 +1,16 @@
-package ru.innopolis.smoldyrev.models.dto;
+package ru.innopolis.smoldyrev.models.entity;
 
-import ru.innopolis.smoldyrev.models.pojo.Language;
-
-import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Created by smoldyrev on 18.03.17.
  */
 @Entity
 @Table(name = "d_languages", schema = "main", catalog = "LFLChat")
-public class LanguageDTO {
+public class LanguageEntity {
 
 
     private String shortName;
@@ -19,7 +18,7 @@ public class LanguageDTO {
     private String dialekt;
     private Integer version;
 
-    public LanguageDTO() {
+    public LanguageEntity() {
     }
 
     @Id

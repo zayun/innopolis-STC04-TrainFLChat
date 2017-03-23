@@ -3,7 +3,7 @@ package ru.innopolis.smoldyrev.models.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.innopolis.smoldyrev.models.dto.LanguageDTO;
+import ru.innopolis.smoldyrev.models.entity.LanguageEntity;
 
 /**
  * Created by smoldyrev on 22.03.17.
@@ -11,6 +11,6 @@ import ru.innopolis.smoldyrev.models.dto.LanguageDTO;
 
 @Repository
 @Transactional
-public interface LanguageRepository extends JpaRepository<LanguageDTO, String> {
+public interface LanguageRepository extends JpaRepository<LanguageEntity, String> {
 
 }

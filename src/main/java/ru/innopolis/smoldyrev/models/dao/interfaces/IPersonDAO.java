@@ -1,7 +1,7 @@
 package ru.innopolis.smoldyrev.models.dao.interfaces;
 
 import ru.innopolis.smoldyrev.common.exceptions.PersonDaoException;
-import ru.innopolis.smoldyrev.models.dto.PersonDTO;
+import ru.innopolis.smoldyrev.models.entity.PersonEntity;
 import ru.innopolis.smoldyrev.models.pojo.Person;
 
 import java.util.List;
@@ -11,11 +11,11 @@ import java.util.List;
  */
 public interface IPersonDAO {
 
-    List<PersonDTO> getAll() throws PersonDaoException;
+    List<PersonEntity> getAll() throws PersonDaoException;
 
-    PersonDTO getEntityById(Integer id);
+    PersonEntity getEntityById(Integer id);
 
-    PersonDTO update(Person entity) throws PersonDaoException;
+    PersonEntity update(Person entity) throws PersonDaoException;
 
     boolean create(Person entity) throws PersonDaoException;
 

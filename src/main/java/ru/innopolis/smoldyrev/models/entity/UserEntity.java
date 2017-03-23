@@ -1,6 +1,4 @@
-package ru.innopolis.smoldyrev.models.dto;
-
-import ru.innopolis.smoldyrev.models.pojo.User;
+package ru.innopolis.smoldyrev.models.entity;
 
 import javax.persistence.*;
 
@@ -12,17 +10,17 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "d_users", schema = "main", catalog = "LFLChat")
-public class UserDTO {
+public class UserEntity {
 
     private Integer userID;
     private String userType;
     private String login;
     private String password;
     private boolean blocked;
-    private PersonDTO person;
+    private PersonEntity person;
     private Integer version;
 
-    public UserDTO() {
+    public UserEntity() {
     }
 
     @Id
@@ -74,11 +72,11 @@ public class UserDTO {
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id", referencedColumnName = "person_id")
-    public PersonDTO getPerson() {
+    public PersonEntity getPerson() {
         return person;
     }
 
-    public void setPerson(PersonDTO person) {
+    public void setPerson(PersonEntity person) {
         this.person = person;
     }
 

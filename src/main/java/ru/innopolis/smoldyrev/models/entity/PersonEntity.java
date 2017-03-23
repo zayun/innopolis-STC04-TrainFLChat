@@ -1,8 +1,6 @@
-package ru.innopolis.smoldyrev.models.dto;
+package ru.innopolis.smoldyrev.models.entity;
 
 import org.hibernate.annotations.Type;
-import ru.innopolis.smoldyrev.models.pojo.Language;
-import ru.innopolis.smoldyrev.models.pojo.Person;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -17,7 +15,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "d_persons", schema = "main", catalog = "LFLChat")
-public class PersonDTO {
+public class PersonEntity {
 
     private Integer id;
     private String firstName;
@@ -26,13 +24,13 @@ public class PersonDTO {
     private String phoneNumber;
     private boolean male;
     private Date birthday;
-    private Set<LanguageDTO> languages = new HashSet<>();
+    private Set<LanguageEntity> languages = new HashSet<>();
     private Integer version;
 
-    public PersonDTO() {
+    public PersonEntity() {
     }
 
-    public PersonDTO(Integer id, String firstName, String lastName, String email, String phoneNumber, boolean male, Date birthday, Set<LanguageDTO> languages) {
+    public PersonEntity(Integer id, String firstName, String lastName, String email, String phoneNumber, boolean male, Date birthday, Set<LanguageEntity> languages) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -113,15 +111,15 @@ public class PersonDTO {
     @JoinTable(name = "r_langowner", schema = "main", joinColumns = {
             @JoinColumn(name = "person_id", nullable = false, updatable = false)
     }, inverseJoinColumns = {@JoinColumn(name = "lang_id", nullable = false, updatable = false)})
-    public Set<LanguageDTO> getLanguages() {
+    public Set<LanguageEntity> getLanguages() {
         return languages;
     }
 
-    public void setLanguages(Set<LanguageDTO> languages) {
+    public void setLanguages(Set<LanguageEntity> languages) {
         this.languages = languages;
     }
 
-    public void addLanguage(LanguageDTO language) {
+    public void addLanguage(LanguageEntity language) {
         this.languages.add(language);
     }
 

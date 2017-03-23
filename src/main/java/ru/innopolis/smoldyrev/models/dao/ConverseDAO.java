@@ -3,23 +3,15 @@ package ru.innopolis.smoldyrev.models.dao;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import ru.innopolis.smoldyrev.common.exceptions.ConverseDaoException;
-import ru.innopolis.smoldyrev.common.exceptions.MessageDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.UserDaoException;
-import ru.innopolis.smoldyrev.models.connector.DatabaseManager;
 import ru.innopolis.smoldyrev.models.dao.interfaces.IConverseDAO;
-import ru.innopolis.smoldyrev.models.dto.ConversationDTO;
-import ru.innopolis.smoldyrev.models.dto.MessageDTO;
-import ru.innopolis.smoldyrev.models.dto.UserDTO;
+import ru.innopolis.smoldyrev.models.entity.ConversationEntity;
+import ru.innopolis.smoldyrev.models.entity.UserEntity;
 import ru.innopolis.smoldyrev.models.pojo.Conversation;
-import ru.innopolis.smoldyrev.models.pojo.Message;
 
 import javax.persistence.*;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,13 +29,13 @@ public class ConverseDAO implements IConverseDAO {
     public Integer getConversation(int chatroom, Timestamp date) throws ConverseDaoException {
 
         EntityManager entityManager = FACTORY.createEntityManager();
-        TypedQuery<ConversationDTO> query = entityManager.createQuery(
-                "SELECT converse FROM ConversationDTO converse where converse.chatroom = :chatroom " +
-                        "and converse.endTime > :date and converse.startTime < :date", ConversationDTO.class);
+        TypedQuery<ConversationEntity> query = entityManager.createQuery(
+                "SELECT converse FROM ConversationEntity converse where converse.chatroom = :chatroom " +
+                        "and converse.endTime > :date and converse.startTime < :date", ConversationEntity.class);
         query.setParameter("chatroom", chatroom);
         query.setParameter("date", date);
         try {
-            ConversationDTO conversation = query.getSingleResult();
+            ConversationEntity conversation = query.getSingleResult();
             return conversation.getId();
         } catch (NoResultException e) {
             logger.trace(e);
@@ -68,9 +60,9 @@ public class ConverseDAO implements IConverseDAO {
         try {
             UserDAO udao = new UserDAO();
 
-            ConversationDTO conversationDTO = getEntityById(converse);
-            conversationDTO.addUser(udao.getEntityById(userId));
-            conversationDTO = entityManager.merge(conversationDTO);
+            ConversationEntity conversationEntity = getEntityById(converse);
+            conversationEntity.addUser(udao.getEntityById(userId));
+            conversationEntity = entityManager.merge(conversationEntity);
 
             entityManager.getTransaction().commit();
 
@@ -83,21 +75,21 @@ public class ConverseDAO implements IConverseDAO {
         }
     }
 
-    public ConversationDTO update(Conversation conv) {
+    public ConversationEntity update(Conversation conv) {
         EntityManager entityManager = FACTORY.createEntityManager();
         entityManager.getTransaction().begin();
 
         try {
 
-            ConversationDTO conversationDTO = getEntityById(conv.getId());
-            conversationDTO.setChatroom(conv.getChatroom());
-            conversationDTO.setGradeConverse(conv.getGradeConverse());
-            conversationDTO.setStartTime(conv.getStartTime());
-            conversationDTO.setEndTime(conv.getEndTime());
-            conversationDTO = entityManager.merge(conversationDTO);
+            ConversationEntity conversationEntity = getEntityById(conv.getId());
+            conversationEntity.setChatroom(conv.getChatroom());
+            conversationEntity.setGradeConverse(conv.getGradeConverse());
+            conversationEntity.setStartTime(conv.getStartTime());
+            conversationEntity.setEndTime(conv.getEndTime());
+            conversationEntity = entityManager.merge(conversationEntity);
             entityManager.getTransaction().commit();
 
-            return conversationDTO;
+            return conversationEntity;
         } finally {
             entityManager.close();
         }
@@ -105,16 +97,16 @@ public class ConverseDAO implements IConverseDAO {
     }
 
     @Override
-    public List<ConversationDTO> getActiveConversation(Timestamp dateTime) throws ConverseDaoException {
+    public List<ConversationEntity> getActiveConversation(Timestamp dateTime) throws ConverseDaoException {
 
         EntityManager entityManager = FACTORY.createEntityManager();
-        TypedQuery<ConversationDTO> query = entityManager.createQuery(
-                "SELECT converse FROM ConversationDTO converse where converse.endTime > :date", ConversationDTO.class);
+        TypedQuery<ConversationEntity> query = entityManager.createQuery(
+                "SELECT converse FROM ConversationEntity converse where converse.endTime > :date", ConversationEntity.class);
         query.setParameter("date", dateTime);
         try {
 
 
-            List<ConversationDTO> list = query.getResultList();
+            List<ConversationEntity> list = query.getResultList();
 
             return list;
         }finally {
@@ -126,13 +118,13 @@ public class ConverseDAO implements IConverseDAO {
     public boolean checkUserInChatroom(int chatroom, int userId) throws ConverseDaoException {
 
         EntityManager entityManager = FACTORY.createEntityManager();
-        TypedQuery<ConversationDTO> query = entityManager.createQuery(
-                "SELECT converse FROM ConversationDTO converse where converse.chatroom = :chatroom ",
-                ConversationDTO.class);
+        TypedQuery<ConversationEntity> query = entityManager.createQuery(
+                "SELECT converse FROM ConversationEntity converse where converse.chatroom = :chatroom ",
+                ConversationEntity.class);
         query.setParameter("chatroom", chatroom);
         try {
-            ConversationDTO conversation = query.getSingleResult();
-            for (UserDTO u :
+            ConversationEntity conversation = query.getSingleResult();
+            for (UserEntity u :
                     conversation.getUsers()) {
                 if (u.getUserID().equals(userId)) return true;
             }
@@ -145,32 +137,32 @@ public class ConverseDAO implements IConverseDAO {
     }
 
     @Override
-    public ConversationDTO getEntityById(Integer id) {
+    public ConversationEntity getEntityById(Integer id) {
 
         EntityManager entityManager = FACTORY.createEntityManager();
 
-        ConversationDTO conversationDTO = (ConversationDTO) entityManager.find(ConversationDTO.class, id);
-        return conversationDTO;
+        ConversationEntity conversationEntity = (ConversationEntity) entityManager.find(ConversationEntity.class, id);
+        return conversationEntity;
 
     }
 
-    public ConversationDTO create(Conversation entity) {
+    public ConversationEntity create(Conversation entity) {
 
         EntityManager entityManager = FACTORY.createEntityManager();
         entityManager.getTransaction().begin();
         try {
 
-            ConversationDTO conversationDTO = new ConversationDTO();
+            ConversationEntity conversationEntity = new ConversationEntity();
 
-            conversationDTO.setChatroom(entity.getChatroom());
-            conversationDTO.setStartTime(entity.getStartTime());
-            conversationDTO.setEndTime(entity.getEndTime());
+            conversationEntity.setChatroom(entity.getChatroom());
+            conversationEntity.setStartTime(entity.getStartTime());
+            conversationEntity.setEndTime(entity.getEndTime());
 
-            conversationDTO = entityManager.merge(conversationDTO);
+            conversationEntity = entityManager.merge(conversationEntity);
             entityManager.getTransaction().commit();
 
 
-            return conversationDTO;
+            return conversationEntity;
         }finally {
             entityManager.close();
         }

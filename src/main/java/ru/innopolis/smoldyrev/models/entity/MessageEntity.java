@@ -1,30 +1,26 @@
-package ru.innopolis.smoldyrev.models.dto;
-
-import ru.innopolis.smoldyrev.models.pojo.Message;
-import ru.innopolis.smoldyrev.models.pojo.User;
+package ru.innopolis.smoldyrev.models.entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
  * Created by smoldyrev on 18.03.17.
  */
 @Entity
 @Table(name = "r_messages", schema = "main", catalog = "LFLChat")
-public class MessageDTO {
+public class MessageEntity {
 
 
     private int id;
     private Timestamp date;
-    private UserDTO fromUser;
-    private UserDTO toUser;
+    private UserEntity fromUser;
+    private UserEntity toUser;
     private String bodyText;
     private boolean viewed;
     private int chatRoom;
     private Integer version;
 
-    public MessageDTO() {
+    public MessageEntity() {
     }
 
     @Id
@@ -49,21 +45,21 @@ public class MessageDTO {
 
     @ManyToOne
     @JoinColumn(name = "from_user")
-    public UserDTO getFromUser() {
+    public UserEntity getFromUser() {
         return fromUser;
     }
 
-    public void setFromUser(UserDTO fromUser) {
+    public void setFromUser(UserEntity fromUser) {
         this.fromUser = fromUser;
     }
 
     @ManyToOne
     @JoinColumn(name = "to_user")
-    public UserDTO getToUser() {
+    public UserEntity getToUser() {
         return toUser;
     }
 
-    public void setToUser(UserDTO toUser) {
+    public void setToUser(UserEntity toUser) {
         this.toUser = toUser;
     }
 

@@ -1,10 +1,9 @@
 package ru.innopolis.smoldyrev.models.dao.interfaces;
 
 import ru.innopolis.smoldyrev.common.exceptions.MessageDaoException;
-import ru.innopolis.smoldyrev.models.dto.MessageDTO;
+import ru.innopolis.smoldyrev.models.entity.MessageEntity;
 import ru.innopolis.smoldyrev.models.pojo.Message;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -12,9 +11,9 @@ import java.util.List;
  */
 public interface IMessageDAO {
 
-    List<MessageDTO> getAll() throws MessageDaoException;
+    List<MessageEntity> getAll() throws MessageDaoException;
 
-    List<MessageDTO> getAllInRoom(int chatRoom) throws MessageDaoException;
+    List<MessageEntity> getAllInRoom(int chatRoom) throws MessageDaoException;
 
     boolean delete(Integer id) throws MessageDaoException;
 

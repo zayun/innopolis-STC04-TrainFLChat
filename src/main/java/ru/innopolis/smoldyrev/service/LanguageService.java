@@ -2,14 +2,10 @@ package ru.innopolis.smoldyrev.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.innopolis.smoldyrev.common.exceptions.LanguageDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.LanguageServiceException;
-import ru.innopolis.smoldyrev.models.dao.interfaces.ILanguageDAO;
-import ru.innopolis.smoldyrev.models.dao.interfaces.IPersonDAO;
-import ru.innopolis.smoldyrev.models.dto.PersonDTO;
-import ru.innopolis.smoldyrev.models.dto.Transformer;
-import ru.innopolis.smoldyrev.models.pojo.LangOwner;
 import org.apache.log4j.Logger;
+import ru.innopolis.smoldyrev.models.dto.Transformer;
+import ru.innopolis.smoldyrev.models.entity.PersonEntity;
 import ru.innopolis.smoldyrev.models.pojo.Language;
 import ru.innopolis.smoldyrev.models.pojo.Person;
 import ru.innopolis.smoldyrev.models.repository.LanguageRepository;
@@ -49,7 +45,7 @@ public class LanguageService implements ILanguageService {
     public boolean addLangToPerson(int personId, String language) throws LanguageServiceException {
         try {
 
-            PersonDTO person = personRepository.findOne(personId);
+            PersonEntity person = personRepository.findOne(personId);
             person.addLanguage(languageRepository.findOne(language));
             personRepository.saveAndFlush(person);
 
