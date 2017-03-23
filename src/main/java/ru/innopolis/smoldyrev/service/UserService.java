@@ -37,10 +37,6 @@ public class UserService implements IUserService {
     }
 
     @Autowired
-    public ConverseRepository getConverseRepository() {
-        return converseRepository;
-    }
-
     public void setConverseRepository(ConverseRepository converseRepository) {
         this.converseRepository = converseRepository;
     }

@@ -23,6 +23,7 @@
             <td><c:out value="${converse.getChatroom()}"></c:out></td>
             <td><form action="/changeconverse" method="post">
                 <input type="text" name="converseId" id="converseId" value="${converse.getId()}" hidden>
+                <input type="text" name="version" id="version" value="${converse.version}" hidden>
                 <input type="text" name="converseGrade" id="converseGrade" value="${converse.getGradeConverse()}"}>
                 <input type="submit" value="chng" formmethod="post">
             </form></td>
@@ -30,6 +31,7 @@
             <td>
                 <form action="/changeconverse" method="post">
                     <input type="text" name="converseId" id="converseId" value="${converse.getId()}" hidden>
+                    <input type="text" name="version" id="version" value="${converse.version}" hidden>
                     <input type="datetime" name="date_time" id="date_time" value="${converse.getEndTime()}">
                     <input type="submit" value="chng" formmethod="post">
                 </form>

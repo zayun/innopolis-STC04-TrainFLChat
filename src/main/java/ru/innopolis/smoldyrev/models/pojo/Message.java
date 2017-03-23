@@ -21,6 +21,7 @@ public class Message {
     private String bodyText;
     private boolean viewed;
     private int chatRoom;
+    private int version;
 
     /**Дефолтный конструктор
      * требуется для JAXB
@@ -97,5 +98,13 @@ public class Message {
 
     public void setChatRoom(int chatRoom) {
         this.chatRoom = chatRoom;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 }

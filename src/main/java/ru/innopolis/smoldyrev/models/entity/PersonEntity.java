@@ -25,7 +25,7 @@ public class PersonEntity {
     private boolean male;
     private Date birthday;
     private Set<LanguageEntity> languages = new HashSet<>();
-    private Integer version;
+    private int version;
 
     public PersonEntity() {
     }
@@ -123,11 +123,12 @@ public class PersonEntity {
         this.languages.add(language);
     }
 
-    public Integer getVersion() {
+    @Version
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(Integer version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 }

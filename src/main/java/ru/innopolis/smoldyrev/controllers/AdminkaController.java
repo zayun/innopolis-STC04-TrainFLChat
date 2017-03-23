@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import ru.innopolis.smoldyrev.common.exceptions.InvalidObjectVersionException;
 import ru.innopolis.smoldyrev.common.exceptions.UserNotFoundException;
 import ru.innopolis.smoldyrev.common.exceptions.UserServiceException;
 import ru.innopolis.smoldyrev.models.pojo.User;
@@ -55,10 +56,12 @@ public class AdminkaController {
     @Secured("ROLE_ADMIN")
     public String editUser(Model model,
                            @RequestParam(name = "userId") String userId,
-                           @RequestParam(name = "block") Boolean block) throws Exception {
+                           @RequestParam(name = "block") Boolean block,
+                           @RequestParam(name = "version", required = false) int version) throws Exception {
 
         User user = userService.getUserById(Integer.parseInt(userId));
-
+        if (version!=user.getVersion()) throw new InvalidObjectVersionException(
+                "Изменяемый объект был изменен, потворите попытку");
         if (block != null) {
             user.setBlocked(!user.isBlocked());
         }
@@ -77,9 +80,12 @@ public class AdminkaController {
     @Secured("ROLE_ADMIN")
     public String editUser(Model model,
                            @RequestParam(name = "userId") String userId,
-                           @RequestParam(name = "usertype") String usertype) throws Exception {
+                           @RequestParam(name = "usertype") String usertype,
+                           @RequestParam(name = "version", required = false) int version) throws Exception {
 
         User user = userService.getUserById(Integer.parseInt(userId));
+        if (version!=user.getVersion()) throw new InvalidObjectVersionException(
+                "Изменяемый объект был изменен, потворите попытку");
         if (usertype != null) {
             user.setUserType(usertype);
         }

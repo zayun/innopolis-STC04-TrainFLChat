@@ -55,6 +55,7 @@
             <td><c:out value="${user.isBlocked()}"></c:out>
                 <form action="/adm/edituserblock" method="post">
                     <input type="text" name="userId" id="userId" value="${user.getUserID()}" hidden>
+                    <input type="text" name="version" id="version" value="${user.getVersion()}"} hidden>
                     <input type="text" name="block" id="block" value="${user.isBlocked()}"} hidden>
                     <input type="submit" value="change" formmethod="post">
                 </form>
@@ -62,6 +63,7 @@
             <td>
                 <form action="/adm/editusertype" method="post">
                     <input type="text" name="userId" id="userId" value="${user.getUserID()}" hidden>
+                    <input type="text" name="version" id="version" value="${user.getVersion()}"} hidden>
                     <input type="text" name="usertype" id="usertype" value="${user.getUserType()}"}>
                     <input type="submit" value="change" formmethod="post">
                 </form>

@@ -59,21 +59,21 @@ public class PrivateOfficeController {
     @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     @RequestMapping(value = "/privateoffice", method = RequestMethod.GET)
     public String showPrivateOfficePage(Model model,
-                                       @RequestParam(name = "userId") int userId) throws Exception {
+                                        @RequestParam(name = "userId") int userId) throws Exception {
 
         User user = (User)
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         user = userService.getUserById(user.getUserID());
-        if (userId!=user.getUserID()) {
-                throw new InvalidRoleException("У вас нет прав на посещение этой страницы!");
+        if (userId != user.getUserID()) {
+            throw new InvalidRoleException("У вас нет прав на посещение этой страницы!");
         }
 
-            Set<Language> languages = languageService.getLanguagesOnPerson(user.getPerson().getId());
+        Set<Language> languages = languageService.getLanguagesOnPerson(user.getPerson().getId());
 
-            model.addAttribute("user", user);
-            model.addAttribute("languages", languages);
+        model.addAttribute("user", user);
+        model.addAttribute("languages", languages);
 
-            return "/rooms/privateoffice";
+        return "/rooms/privateoffice";
     }
 
 
@@ -93,22 +93,33 @@ public class PrivateOfficeController {
                               @RequestParam(name = "birthday") Date birthday,
                               @RequestParam(name = "email") String email,
                               @RequestParam(name = "phoneNumber") String phoneNumber,
-                              @RequestParam(name = "male") Boolean isMale) throws Exception {
+                              @RequestParam(name = "male") Boolean isMale,
+                              @RequestParam(name = "version") int version) throws Exception {
 
-            User user = userService.getUserById(id);
-            user.setLogin(login);
-            user.setPassword(password);
-            user.getPerson().setFirstName(firstName);
-            user.getPerson().setLastName(lastName);
-            user.getPerson().setBirthday(birthday);
-            user.getPerson().setEmail(email);
-            user.getPerson().setPhoneNumber(phoneNumber);
-            user.getPerson().setMale(isMale);
+        User user = userService.getUserById(id);
 
-            personService.update(user.getPerson());
-            userService.update(user);
+        user.setLogin(login);
+        user.setPassword(password);
+        user.getPerson().setFirstName(firstName);
+        user.getPerson().setLastName(lastName);
+        user.getPerson().setBirthday(birthday);
+        user.getPerson().setEmail(email);
+        user.getPerson().setPhoneNumber(phoneNumber);
+        user.getPerson().setMale(isMale);
 
-            return "redirect:/generalchat";
+        if (version != user.getVersion()) {
+            Set<Language> languages = languageService.getLanguagesOnPerson(user.getPerson().getId());
+
+            model.addAttribute("msg", "Объект был изменен в другой сессии, повторите попытку");
+            model.addAttribute("user", user);
+            model.addAttribute("languages", languages);
+
+            return "/rooms/privateoffice";
+        }
+        
+        userService.update(user);
+
+        return "redirect:/generalchat";
     }
 
 }

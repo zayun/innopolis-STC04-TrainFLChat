@@ -10,6 +10,7 @@ public class Language {
     private String shortName;
     private String fullName;
     private String dialekt;
+    private int version;
 
     /**Дефолтный конструктор
      * требуется для JAXB
@@ -45,5 +46,13 @@ public class Language {
 
     public void setDialekt(String dialekt) {
         this.dialekt = dialekt;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 }

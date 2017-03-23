@@ -1,58 +1,27 @@
 import org.junit.jupiter.api.Test;
-import ru.innopolis.smoldyrev.models.dao.LanguageDAO;
-import ru.innopolis.smoldyrev.models.dao.PersonDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import ru.innopolis.smoldyrev.models.entity.PersonEntity;
+import ru.innopolis.smoldyrev.models.repository.LanguageRepository;
+import ru.innopolis.smoldyrev.models.repository.PersonRepository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-/**
- * Created by smoldyrev on 18.03.17.
- */
+@ContextConfiguration(classes = { TestConfiguration.class }, loader = AnnotationConfigContextLoader.class)
 public class PersonDaoTest {
 
-    private static final EntityManagerFactory FACTORY =
-            Persistence.createEntityManagerFactory("LFLChat");
-
-    private static final PersonDAO personDAO = new PersonDAO();
-
-//    @Test
-//    public void getEntityById() {
-//        Integer id = 68;
-//        EntityManager entityManager = FACTORY.createEntityManager();
-//
-//        TypedQuery<PersonDTO> query = entityManager.createQuery(
-//                "SELECT person FROM PersonDTO person where person.id = :person_id", PersonDTO.class);
-//
-//        PersonDTO personDTO = query.setParameter("person_id", id).getSingleResult();
-//        Person person = personDAO.getEntityById(id).transformToPerson();
-//
-//        assertNotNull(person);
-//        System.out.println(person.getLanguages().size());
-//        for (Language l:
-//             person.getLanguages()) {
-//            System.out.println(l.getFullName());
-//        }
-//    }
+    @Autowired
+    private PersonRepository personRepository;
+    @Autowired
+    private LanguageRepository languageRepository;
 
 
     @Test
     public void addLanguageToPerson() {
-        Integer id = 68;
-
-        EntityManager entityManager = FACTORY.createEntityManager();
-        entityManager.getTransaction().begin();
-
-        LanguageDAO ldao = new LanguageDAO();
-        LanguageDTO l = ldao.getEntityById("UKR");
-
-        PersonDTO personDTO = personDAO.getEntityById(id);
-        System.out.println(personDTO.getLanguages().size());
-        personDTO.addLanguage(l);
-        System.out.println(personDTO.getLanguages().size());
-        personDTO = entityManager.merge(personDTO);
-        entityManager.getTransaction().commit();
-        entityManager.close();
+        int personId = 156;
+        String language = "RUS";
+        PersonEntity person = personRepository.findOne(personId);
+        person.addLanguage(languageRepository.findOne(language));
+//        personRepository.saveAndFlush(person);
     }
 
 }

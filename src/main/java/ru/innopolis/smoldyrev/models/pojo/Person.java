@@ -18,6 +18,7 @@ public class Person {
     private String phoneNumber;
     private boolean male;
     private Date birthday;
+    private int version;
 
     Set<Language> languages;
 
@@ -102,4 +103,11 @@ public class Person {
         this.languages = languages;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
 }

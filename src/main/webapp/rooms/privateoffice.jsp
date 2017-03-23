@@ -18,10 +18,11 @@
     <%@include file='/rooms/navbar.jsp' %>
 </div>
 <h1>Добро пожаловать в личный кабинет, ${user.person.firstName}</h1>
-
+${msg}
 <form action="/privateoffice" method="post">
     <table border="0" width="10%" cellpadding="2">
-        <input type="text" name="id" id="id" value="${user.userID}" placeholder="id" hidden>
+        <input type="text" name="id" id="id" value="${user.userID}" hidden>
+        <input type="text" name="version" id="version" value="${user.version}" hidden>
         <tr>
             <td><label for="login">Login:</label>
                 <input type="text" name="login" id="login" value="${user.login}" placeholder="Login" minlength="3" maxlength="20">

@@ -22,6 +22,7 @@ public class User implements UserDetails{
     private String password;
     private Person person;
     private boolean blocked;
+    private int version;
 
     /**Конструктор
      * @param userID
@@ -84,6 +85,14 @@ public class User implements UserDetails{
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.innopolis.smoldyrev.common.exceptions.ChatroomIsBusyException;
+import ru.innopolis.smoldyrev.common.exceptions.InvalidObjectVersionException;
 import ru.innopolis.smoldyrev.models.pojo.*;
 import ru.innopolis.smoldyrev.service.interfaces.IConverseService;
 import ru.innopolis.smoldyrev.service.interfaces.IMessageService;
@@ -148,9 +149,13 @@ public class PrivateChatroomController {
     public String changeConverse(Model model,
                                     @RequestParam("converseId") int converse,
                                     @RequestParam(value = "date_time",required = false) String datetime,
-                                    @RequestParam(value = "converseGrade",required = false) Integer converseGrade) throws Exception {
+                                    @RequestParam(value = "converseGrade",required = false) Integer converseGrade,
+                                    @RequestParam(value = "version",required = false) Integer version) throws Exception {
 
         Conversation conversation = converseService.getConversation(converse);
+
+        if (version!=conversation.getVersion()) throw new InvalidObjectVersionException(
+                "Изменяемая беседа была изменена, потворите попытку");
 
         if (conversation!=null) {
             if (converseGrade!=null) conversation.setGradeConverse(converseGrade);

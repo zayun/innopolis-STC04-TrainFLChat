@@ -1,6 +1,7 @@
 package ru.innopolis.smoldyrev.models.entity;
 
 
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -20,7 +21,8 @@ public class ConversationEntity {
     private Timestamp endTime;
     private int gradeConverse;
     private Set<UserEntity> users = new HashSet<>();
-    private Integer version;
+    private int version;
+
 
     public ConversationEntity() {
     }
@@ -92,11 +94,12 @@ public class ConversationEntity {
         this.users.remove(user);
     }
 
-    public Integer getVersion() {
+    @Version
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(Integer version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 }

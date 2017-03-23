@@ -18,7 +18,7 @@ public class MessageEntity {
     private String bodyText;
     private boolean viewed;
     private int chatRoom;
-    private Integer version;
+    private int version;
 
     public MessageEntity() {
     }
@@ -90,11 +90,12 @@ public class MessageEntity {
         this.chatRoom = chatRoom;
     }
 
-    public Integer getVersion() {
+    @Version
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(Integer version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 }

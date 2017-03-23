@@ -1,9 +1,7 @@
 package ru.innopolis.smoldyrev.models.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 
 /**
  * Created by smoldyrev on 18.03.17.
@@ -16,7 +14,7 @@ public class LanguageEntity {
     private String shortName;
     private String fullName;
     private String dialekt;
-    private Integer version;
+    private int version;
 
     public LanguageEntity() {
     }
@@ -49,11 +47,13 @@ public class LanguageEntity {
         this.dialekt = dialekt;
     }
 
-    public Integer getVersion() {
+    @Version
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(Integer version) {
+    public void setVersion(int version) {
         this.version = version;
     }
+
 }

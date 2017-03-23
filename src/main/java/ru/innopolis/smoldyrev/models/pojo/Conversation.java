@@ -16,6 +16,7 @@ public class Conversation {
     private Timestamp startTime;
     private Timestamp endTime;
     private int gradeConverse;
+    private int version;
 
     private Set<User> users;
 
@@ -82,5 +83,13 @@ public class Conversation {
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 }

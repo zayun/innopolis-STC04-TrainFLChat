@@ -10,6 +10,7 @@ public class Notifyer {
     private int id;
     private User user;
     private String notType;
+    private int version;
 
     public Notifyer(int id, User user, String notType) {
         this.id = id;
@@ -42,5 +43,13 @@ public class Notifyer {
 
     public void setNotType(String notType) {
         this.notType = notType;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 }

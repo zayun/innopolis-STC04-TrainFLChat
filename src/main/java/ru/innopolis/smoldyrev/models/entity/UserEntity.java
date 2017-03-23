@@ -18,7 +18,7 @@ public class UserEntity {
     private String password;
     private boolean blocked;
     private PersonEntity person;
-    private Integer version;
+    private int version;
 
     public UserEntity() {
     }
@@ -80,11 +80,12 @@ public class UserEntity {
         this.person = person;
     }
 
-    public Integer getVersion() {
+    @Version
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(Integer version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 }

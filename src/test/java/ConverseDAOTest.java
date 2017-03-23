@@ -3,6 +3,8 @@ import ru.innopolis.smoldyrev.common.exceptions.ConverseDaoException;
 import ru.innopolis.smoldyrev.common.exceptions.UserDaoException;
 import ru.innopolis.smoldyrev.models.dao.ConverseDAO;
 import ru.innopolis.smoldyrev.models.dao.UserDAO;
+import ru.innopolis.smoldyrev.models.entity.ConversationEntity;
+import ru.innopolis.smoldyrev.models.entity.UserEntity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -57,10 +59,10 @@ public class ConverseDAOTest {
             UserDAO udao = new UserDAO();
             ConverseDAO cdao = new ConverseDAO();
 
-            UserDTO u = udao.getEntityById(userId);
+            UserEntity u = udao.getEntityById(userId);
 
 
-            ConversationDTO conversationDTO = cdao.getEntityById(converse);
+            ConversationEntity conversationDTO = cdao.getEntityById(converse);
             System.out.println(conversationDTO.getUsers().size());
             conversationDTO.addUser(u);
             System.out.println(conversationDTO.getUsers().size());
